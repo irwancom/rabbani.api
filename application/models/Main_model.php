@@ -1029,6 +1029,8 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                         $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
 
                         $dataProduct = $this->db->get_where('shop_cart as a', array('a.idcart' => $dO->idcart))->result();
+						//print_r($dataProduct);
+						//exit;
                         $voucher = $this->db->get_where('voucher', array('vouchercode' => $data->voucher))->result();
                         if (!empty($dataProduct)) {
                             $dataOrdersx = array(
@@ -1046,17 +1048,18 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                                 'weight' => ($dataProduct[0]->weight) * $dataProduct[0]->qty,
                                 'subtotal' => ($dataProduct[0]->price) * $dataProduct[0]->qty
                             );
-                            //print_r($dataOrdersx);
+                           // print_r($dataOrdersx);
                             $subtotal[] = $dataOrdersx['subtotal'];
                             $subdisc[] = $dataOrdersx['disc'];
                             $totalweight[] = ($dataOrdersx['weight']);
-                        }
-                    }
+                   
 
                     $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
                     $this->db->insert('transaction_details', $dataOrdersx);
                     $this->db->where('idcart', $dO->idcart);
                     $this->db->delete('shop_cart');
+					     }
+                    }
 
                     $cost = $data->shippingprice * ceil(array_sum($totalweight) / 1000);
 
@@ -1089,11 +1092,9 @@ Mohon konfirmasi setelah melakukan tranfers Jazakallahu khairan katsiran... ';
                     $this->wa->SendWa($verify[0]->hp, $message);
                 }
             } else {
-                return $this->empty_response();
+                return $this->token_response();
             }
-            // }
-            // }
-            // }
+        
 
 
 

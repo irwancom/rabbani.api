@@ -600,7 +600,7 @@ class Admin_model extends CI_Model {
 
     public function productAddData($data = '') {
 
-        // print_r($data);
+         //print_r($data);
          //exit;
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();
@@ -1761,7 +1761,8 @@ class Admin_model extends CI_Model {
                 $this->db->from('transaction');
 
                 if (!empty($data[2])) {
-                    $paging = $data[2] * 10;
+//                    $paging = $data[2] * 10;
+                    $paging = 0;
                 } else {
                     $paging = 0;
                 }
@@ -1778,17 +1779,9 @@ class Admin_model extends CI_Model {
                     $hal = ceil($jlh / 10) - 1;
                 }
 
-
-
-
-
-
-
-
                 foreach ($queryx as $q) {
                     //print_r($q);
                     //	exit;
-
 
                     $this->db->select('a.*,b.*,c.*');
                     $this->db->from('transaction_details as a');
@@ -1810,10 +1803,6 @@ class Admin_model extends CI_Model {
                     $transaction_details = $this->db->get_where('transaction_details')->result();
                     $jlh = $transaction_details[0]->transaction_details;
                     $hal = ceil($jlh / 10) - 1;
-
-
-
-
 
                     $datax[] = array(
                         'order' => $q,
@@ -2807,6 +2796,11 @@ class Admin_model extends CI_Model {
             $query = $this->db->get_where('product_images', $data)->result();
             if (!empty($query)) {
                 // unlink($query[0]->dir . $query[0]->imageFile) or die("Couldn't delete file");
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object($query[0]->dir.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images');
 
@@ -2955,6 +2949,11 @@ class Admin_model extends CI_Model {
                 // if (empty(unlink(fil)ename))) {
                 //     # code...
                 // }
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object($query[0]->dir.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images_ditails');
 
@@ -3314,7 +3313,7 @@ class Admin_model extends CI_Model {
     }
 
     public function addOrders($data = '') {
-        //print_r($data);
+       // print_r($data);
         //exit;
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();

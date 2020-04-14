@@ -1994,6 +1994,11 @@ class Sellercenter_model extends CI_Model {
             $query = $this->db->get_where('product_images', $data)->result();
             if (!empty($query)) {
                 // unlink($query[0]->dir . $query[0]->imageFile) or die("Couldn't delete file");
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object($query[0]->dir.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images');
 
@@ -2100,6 +2105,11 @@ class Sellercenter_model extends CI_Model {
                 // if (empty(unlink(fil)ename))) {
                 //     # code...
                 // }
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object($query[0]->dir.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images_ditails');
 

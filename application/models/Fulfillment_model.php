@@ -354,7 +354,8 @@ class Fulfillment_model extends CI_Model {
         }
     }
     public function bcWaCashier() {
-        $data = $this->db->get('store_cashier')->result();
+//        $data = $this->db->get('store_cashier')->result();
+        $data = $this->db->query('SELECT * FROM store_cashier WHERE`idcashier` BETWEEN 561 AND 600')->result();
         return $data;
     }
 

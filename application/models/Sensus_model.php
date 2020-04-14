@@ -254,7 +254,7 @@ class Sensus_model extends CI_Model {
                     'idauthuser' => $insert_id
                 );
                 $zupdate = $this->db->insert('reseller', $data4);
-                $wa = '08112370111';
+                $wa = '08112346165';
                 $message1 = '*Reseller Baru* 
 WA : https://wa.me/+62' . substr($data->wa,1) . ', 
 Nama : _' . ($data->nama) . '_,
@@ -269,7 +269,7 @@ Tolong Di FU';
 Terima Kasih Kak _' . strtoupper($data->nama) . '_, 
 Anda Sudah Mendaftar Jadi Member *REBAHAN*,
 Team Kami Akan Segera Menghubungi Anda,
-Untuk Info Lanjut Juga Bisa Wa *https://wa.me/628112370111* ';
+Untuk Info Lanjut Juga Bisa Wa *https://wa.me/628112346165* ';
                 $this->wa->SendWa($data->wa, $message);
                 $this->wa->SendWa($wa, $message1);
 				} 

@@ -172,7 +172,8 @@ class Admin extends REST_Controller {
             $data = array(
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
-                //$this->input->post('desc'),
+                $this->input->post('desc'),
+				$this->input->post('descditails'),
                 $this->input->post('data')
             );
 //            print_r($data);
@@ -261,7 +262,7 @@ class Admin extends REST_Controller {
     public function staffpic_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -569,7 +570,7 @@ class Admin extends REST_Controller {
     public function uploadpic_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -608,7 +609,7 @@ class Admin extends REST_Controller {
     public function imagecat_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -648,7 +649,7 @@ class Admin extends REST_Controller {
     public function imagesubcat_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -705,7 +706,7 @@ class Admin extends REST_Controller {
     public function uploadpicditails_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -745,7 +746,7 @@ class Admin extends REST_Controller {
     public function addpicditails_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -840,7 +841,7 @@ class Admin extends REST_Controller {
     public function addbanner_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';

@@ -210,7 +210,7 @@ class Fulfillment extends REST_Controller {
 
     function sendWa($phone = '', $msg = '') {
         $curl = curl_init();
-        $token = "pqDrUflvrimq7ThP0ceEcvrktD5aZQsXzmz2l5YfzywYoHGNB5mWtEBllPEoclUB";
+        $token = "Z1ZrcYypiCPBJQ9NPAGc6SInTxj6dgiFZ8Km4c7EQziqKwNfa9pxlJpnZuI2QUpy";
         $data = [
             'phone' => $phone,
             'message' => $msg,
@@ -223,7 +223,7 @@ class Fulfillment extends REST_Controller {
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($curl, CURLOPT_URL, "https://console.wablas.com/api/send-message");
+        curl_setopt($curl, CURLOPT_URL, "https://kemusu.wablas.com/api/send-message");
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         $result = curl_exec($curl);
@@ -258,14 +258,17 @@ class Fulfillment extends REST_Controller {
         if (!empty($data)) {
             foreach ($data as $dt) {
                 $hp = $dt->phone;
-                $msg = 'Assalamualaikum _'.$dt->name.'_, untuk merapihkan data dan mengakuratkan data untuk proses pembagian trafic pesanan yg akan di arahkan oleh CCR, silahkan melakukan update data dengan membalas pesan ini dengan format : *update#nama lengkap#id toko*, contoh : *update#'.$dt->name.'#'.$dt->codeRshare.'* nama boleh pake spasi dan cantumkan nama lengkap, untuk no toko pastikan data yang benar dan bukan data toko lain.';
-                $msg2 = 'Pembaharuan data di buka dari jam 11:30 WIB - 14:00 WIB.';
+//                echo $hp;
+//                exit;
+                $msg = 'Assalamualaikum _'.$dt->name.'_, mohon untuk melakukan *BLOCK WA* secara serentak pada no http://wa.me/628112370111, untuk tutorial melakukan bock no tersebut sebagai berikut https://youtu.be/2uyOWLNL2AY , karena no tersebut telah di retas dan merugikan banyak konsumen dengan modus mengatas namakan rabbani, mohon kerjasamanya dan lakukan sekarang, terimakasih.';
+//                $msg2 = 'Pembaharuan data di buka dari jam 11:30 WIB - 14:00 WIB.';
 //                echo $hp . ' - ' . $msg . ' - ' . $msg2;
 //                $this->sendWa($hp, $msg);
 //                $this->sendWa($hp, $msg2);
 //                exit;
             }
         }
+        echo 'xxx';
 
         exit;
 //        $phoneNo = '6208986002287';
