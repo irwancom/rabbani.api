@@ -11,7 +11,8 @@ class Admin extends REST_Controller {
         header('Access-Control-Allow-Method: PUT, GET, POST, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, x-xsrf-token, X-API-KEY');
         $this->load->model('admin_model');
-        $this->load->library('wa');
+        //$this->load->library('wa');
+        $this->load->library('sms');
 
         $this->load->helper(array('form', 'url'));
     }
@@ -172,7 +173,8 @@ class Admin extends REST_Controller {
             $data = array(
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
-                //$this->input->post('desc'),
+                $this->input->post('desc'),
+                $this->input->post('descditails'),
                 $this->input->post('data')
             );
 //            print_r($data);
@@ -192,6 +194,33 @@ class Admin extends REST_Controller {
                 $this->input->post('idproduct')
             );
             $data = $this->admin_model->productDeleteData($data);
+        } elseif ($pg == 'v2') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+            $data = $this->admin_model->productGetData_v2($data);
+        } elseif ($pg == 'details') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idProduct')
+            );
+            $data = $this->admin_model->productGetDetails_v2($data);
+        } elseif ($pg == 'update_v2') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idproduct'),
+                $this->input->post('productName'),
+                $this->input->post('descr'),
+                $this->input->post('descr_en'),
+                $this->input->post('descrDitails'),
+                $this->input->post('descrDitails_en'),
+                $this->input->post('delproduct'),
+                $this->input->post('idcategory')
+            );
+            $data = $this->admin_model->productUpdate_v2($data);
         } else {
             $data = array(
                 $this->input->post('keyCodeStaff'),
@@ -258,10 +287,97 @@ class Admin extends REST_Controller {
         }
     }
 
+    public function uploadImageV2_post($pg = '') {
+        if ($pg == 'delete') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idpimages'),
+                $this->input->post('imageName')
+            );
+            $data = $this->admin_model->productUpload_v2($data, 'del');
+        } elseif ($pg == 'dataCollor') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idProduct')
+            );
+            $data = $this->admin_model->productUpload_v2($data, 'dataCollor');
+        } elseif ($pg == 'imagesDetailsProductDel') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idpimagesdetails'),
+                $this->input->post('imageName')
+            );
+            $data = $this->admin_model->productUpload_v2($data, 'imagesDetailsProductDel');
+        } elseif ($pg == 'imagesDetailsProduct') {
+            $config['upload_path'] = 'img';
+            $config['encrypt_name'] = true;
+            $config['use_storage_service'] = true;
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('filePic')) {
+                $error = array('error' => $this->upload->display_errors());
+
+                $data = array(
+                    $error
+                );
+                // dd($data);
+                $data = $this->admin_model->productUpload_v2($data, 'imagesDetailsProduct');
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+
+                $data = array(
+                    $this->input->post('keyCodeStaff'),
+                    $this->input->post('secret'),
+                    $this->input->post('idproduct'),
+                    $this->input->post('collor'),
+                    $data,
+                    $config['upload_path']
+                );
+                $data = $this->admin_model->productUpload_v2($data, 'imagesDetailsProduct');
+            }
+        } else {
+            $config['upload_path'] = 'img';
+            $config['encrypt_name'] = true;
+            $config['use_storage_service'] = true;
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('filePic')) {
+                $error = array('error' => $this->upload->display_errors());
+
+                $data = array(
+                    $error
+                );
+                // dd($data);
+                $data = $this->admin_model->productUpload_v2($data);
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+
+                $data = array(
+                    $this->input->post('keyCodeStaff'),
+                    $this->input->post('secret'),
+                    $this->input->post('idproduct'),
+                    $data,
+                    $config['upload_path']
+                );
+                $data = $this->admin_model->productUpload_v2($data);
+            }
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
     public function staffpic_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -569,7 +685,7 @@ class Admin extends REST_Controller {
     public function uploadpic_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -608,7 +724,7 @@ class Admin extends REST_Controller {
     public function imagecat_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -644,11 +760,51 @@ class Admin extends REST_Controller {
             }
         }
     }
+	
+	 public function imagecat2_post() {
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $config['upload_path'] = 'img';
+            $config['encrypt_name'] = true;
+            $config['use_storage_service'] = true;
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            //$config['max_size'] = 100;
+            //$config['max_width'] = 700;
+            //$config['max_height'] = 700;
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('filePic')) {
+                $error = array('error' => $this->upload->display_errors());
+
+                $data = array(
+                    $error
+                );
+                // dd($data);
+                $data = $this->admin_model->imagecat2($data);
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+
+                $data = array(
+                    $this->input->post('keyCodeStaff'),
+                    $this->input->post('secret'),
+                    $this->input->post('idcat'),
+                    $data,
+                    $config['upload_path']
+                );
+                $data = $this->admin_model->imagecat2($data);
+            }
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
 
     public function imagesubcat_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -705,7 +861,7 @@ class Admin extends REST_Controller {
     public function uploadpicditails_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -745,7 +901,7 @@ class Admin extends REST_Controller {
     public function addpicditails_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
@@ -840,7 +996,7 @@ class Admin extends REST_Controller {
     public function addbanner_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $config['upload_path'] = '';
+            $config['upload_path'] = 'img';
             $config['encrypt_name'] = true;
             $config['use_storage_service'] = true;
             $config['allowed_types'] = 'gif|jpg|png|jpeg';

@@ -73,27 +73,31 @@ class Admin_model extends CI_Model {
             if (!empty($verify)) {
                 $this->db->select('a.*,b.urlImage');
                 $this->db->join('category_images as b', 'b.idcategory = a.idcategory', 'left');
+
                 $this->db->where('a.delcat', '0');
                 $this->db->order_by('a.categoryName', 'ASC');
                 $dataCat = $this->db->get_where('category as a', array('a.parentidcategory' => 0))->result();
-                // print_r($dataCat);
+                //print_r($dataCat);
                 //exit;
                 foreach ($dataCat as $dC) {
-                    //print_r($dC);
+                    //print_r($dataCat);
                     //exit;
                     $this->db->select('a.parentidcategory,a.idcategory,a.categoryName,b.urlImage');
                     $this->db->join('category_images as b', 'b.parentidcategory = a.parentidcategory', 'left');
                     $dataSubCat = $this->db->get_where('category as a', array('a.parentidcategory' => $dC->idcategory))->result();
-                    //print_r($dataSubCat);
-                    //exit;
+
+
                     $dataCatx[] = array(
                         'idcategory' => $dC->idcategory,
                         'categoryName' => $dC->categoryName,
                         'imagecategory' => $dC->urlImage,
+                        //'imageicon' => $data1,
                         'subCategory' => $dataSubCat
                     );
                 }
-                //$supdate = $dataCatx;
+                $this->db->select('a.*,b.urlImage');
+                $this->db->join('category_images_icon as b', 'b.idcategory = a.idcategory', 'left');
+                $data1 = $this->db->get_where('category as a')->result();
             } else {
                 return $this->token_response();
             }
@@ -103,6 +107,7 @@ class Admin_model extends CI_Model {
                 $response['error'] = false;
                 $response['totalData'] = count($dataCat);
                 $response['data'] = $dataCatx;
+                $response['icon'] = $data1;
                 return $response;
             } else {
                 $response['status'] = 502;
@@ -376,11 +381,11 @@ class Admin_model extends CI_Model {
 
                 $this->db->select('a.*,b.*');
                 $this->db->from('product as a');
-				$this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+                $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
                 $this->db->where('delproduct', 0);
                 $this->db->group_by('skuProduct');
                 $this->db->like('productName', $data[2]);
-				$this->db->or_like('skuPditails', $data[2]);
+                $this->db->or_like('skuPditails', $data[2]);
                 $sql = $this->db->get()->result();
             } else {
                 $supdate = $verify;
@@ -459,6 +464,7 @@ class Admin_model extends CI_Model {
                 $this->db->like('firstname', $data[2]);
                 $this->db->or_like('username', $data[2]);
                 $this->db->or_like('email', $data[2]);
+                $this->db->or_like('hp', $data[2]);
                 $sql = $this->db->get()->result();
             } else {
                 $supdate = $verify;
@@ -598,28 +604,231 @@ class Admin_model extends CI_Model {
         }
     }
 
-    public function productAddData($data = '') {
+    public function productGetData_v2($data = '') {
 
-        // print_r($data);
-         //exit;
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();
         } else {
             $verify = $this->verfyAccount($data[0], $data[1]);
-			  
+
+            if (!empty($verify)) {
+
+                $this->db->select('a.idproduct, a.skuProduct, a.productName, b.urlImage, b.imageFile, c.categoryName, a.delproduct');
+                $this->db->from('product as a');
+//                $this->db->where('delproduct', '0');
+                $this->db->join('product_images as b', 'b.idproduct = a.idproduct', 'left');
+                $this->db->join('category as c', 'c.idcategory = a.idcategory', 'left');
+                $this->db->order_by('a.productName', 'ASC');
+                $this->db->group_by("a.skuProduct");
+                $query = $this->db->get()->result();
+//                print_r($query);
+            } else {
+                return $this->token_response();
+            }
+            if (!empty($query)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['totalData'] = count($query);
+                $response['data'] = $query;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function productGetDetails_v2($data = '') {
+
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+
+            if (!empty($verify)) {
+
+                $this->db->from('product as a');
+//                $this->db->where('delproduct', '0');
+                $this->db->join('category as c', 'c.idcategory = a.idcategory', 'left');
+                $this->db->order_by('a.productName', 'ASC');
+                $this->db->where('a.idproduct', $data[2]);
+                $query = $this->db->get()->result();
+
+                $this->db->select('idpditails, idproduct, skuPditails, collor, size, price, stock');
+                $query2 = $this->db->get_where('product_ditails', array('idproduct' => $query[0]->idproduct))->result();
+                $this->db->select('idpimages, idproduct, urlImage, imageFile');
+                $query3 = $this->db->get_where('product_images', array('idproduct' => $query[0]->idproduct))->result();
+                $this->db->select('idpimagesdetails, idproduct, collor, urlImage, imageFile');
+                $this->db->group_by("collor");
+                $query4 = $this->db->get_where('product_images_ditails', array('idproduct' => $query[0]->idproduct))->result();
+            } else {
+                return $this->token_response();
+            }
+            if (!empty($query)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['totalData'] = count($query);
+                $response['dataProduct'] = $query;
+                $response['dataDetailsProduct'] = $query2;
+                $response['images'] = array(
+                    'imagesProduct' => $query3,
+                    'imagesDetailsProduct' => $query4
+                );
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function productUpdate_v2($data = '') {
+
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+
+            if (!empty($verify)) {
+
+                $this->db->set('productName', strtoupper($data[3]));
+                $this->db->set('timeCreate', date('H:i:s'));
+                $this->db->set('dateCreate', date('Y-m-d'));
+                $this->db->set('descr', $data[4]);
+                $this->db->set('descr_en', $data[5]);
+                $this->db->set('descrDitails', $data[6]);
+                $this->db->set('descrDitails_en', $data[7]);
+                $this->db->set('delproduct', $data[8]);
+                $this->db->set('idcategory', $data[9]);
+                $this->db->where('idproduct', $data[2]);
+                $query = $this->db->update('product');
+            } else {
+                return $this->token_response();
+            }
+            if (!empty($query)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function productUpload_v2($data = '', $pg = '') {
+
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+
+            if (!empty($verify)) {
+                if ($pg == 'del') {
+                    $this->db->delete('product_images', array('idpimages' => $data[2]));
+                    $this->load->library('S3_Storage');
+                    S3_Storage::delete_object('img/large/' . $data[3]);
+                    S3_Storage::delete_object('img/medium/' . $data[3]);
+                    S3_Storage::delete_object('img/small/' . $data[3]);
+                    $supdate = 1;
+                } elseif ($pg == 'imagesDetailsProductDel') {
+                    $dataimagesDetailsProductDel = $this->db->get_where('product_images_ditails', array('idpimagesdetails' => $data[2]))->result();
+                    if (!empty($dataimagesDetailsProductDel)) {
+                        foreach ($dataimagesDetailsProductDel as $didp) {
+                            $this->db->delete('product_images_ditails', array('idproduct' => $didp->idproduct, 'collor' => $didp->collor));
+                        }
+                    }
+//                    $this->db->delete('product_images_ditails', array('idpimagesdetails' => $data[2]));
+                    $this->load->library('S3_Storage');
+                    S3_Storage::delete_object('img/large/' . $data[3]);
+                    S3_Storage::delete_object('img/medium/' . $data[3]);
+                    S3_Storage::delete_object('img/small/' . $data[3]);
+                    $supdate = 1;
+                } elseif ($pg == 'imagesDetailsProduct') {
+                    $dataidpditails = $this->db->get_where('product_ditails', array('idproduct' => $data[2], 'collor' => $data[3]))->result();
+                    if (!empty($dataidpditails)) {
+                        foreach ($dataidpditails as $dt) {
+                            $dataax = array(
+                                'idproduct' => $data[2],
+                                'idpditails' => $dt->idpditails,
+                                'collor' => $data[3],
+                                'urlImage' => $data[4]['upload_data']['file_url'],
+                                'imageFile' => $data[4]['upload_data']['file_name']
+                            );
+
+                            $this->db->insert('product_images_ditails', $dataax);
+                            
+                            $this->db->set('delproductditails', '0');
+                            $this->db->where('idpditails', $dt->idpditails);
+                            $this->db->update('product_ditails');
+                        }
+                    }
+                    $supdate = $dataax;
+                } elseif ($pg == 'dataCollor') {
+                    $this->db->select('idproduct, collor');
+                    $this->db->group_by("collor");
+                    $data = $this->db->get_where('product_ditails', array('idproduct' => $data[2]))->result();
+                    $supdate = $data;
+                } else {
+
+                    $data = array(
+                        'idproduct' => $data[2],
+                        'urlImage' => $data[3]['upload_data']['file_url'],
+                        'imageFile' => $data[3]['upload_data']['file_name']
+                    );
+
+                    $this->db->insert('product_images', $data);
+                    $supdate = $data;
+                }
+            } else {
+                $supdate = $verify;
+            }
+            if (!empty($supdate)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['data'] = $supdate;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function productAddData($data = '') {
+
+        //print_r($data);
+        //exit;
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+
             if (!empty($verify)) {
 
 //                $str = substr($data[2], 1, strlen($data[2]) - 2); // remove outer ( and )
 //                $str = preg_replace("/([a-zA-Z0-9_]+?):/", "\"$1\":", $data[2]); // fix variable names
-               // $str = str_replace(array("\n"), "", $data[2]);
+                // $str = str_replace(array("\n"), "", $data[2]);
 
                 $datam = json_decode($data[4]);
-				//print_r($datam->skuProduct);
+                //print_r($datam->skuProduct);
                 //exit;
-             
+
 
                 $checkDataInsert = $this->db->get_where('product', array('skuProduct' => $datam->skuProduct))->result();
-               //print_r($checkDataInsert);
+                //print_r($checkDataInsert);
                 //exit;
                 if (empty($checkDataInsert)) {
                     $datac = array(
@@ -647,8 +856,8 @@ class Admin_model extends CI_Model {
                         'descrDitails_en' => rawurldecode($datam->descrDitails_en),
                         'delproduct' => 0
                     );
-					//print_r($datac);
-                //exit;
+                    //print_r($datac);
+                    //exit;
                     $this->db->set($datac);
                     $this->db->where('idproduct', $checkDataInsert[0]->idproduct);
                     $this->db->update('product');
@@ -656,7 +865,6 @@ class Admin_model extends CI_Model {
                 }
 //                print_r($datac);
 //                exit;
-
 //                if (!empty($datam['productDitails'])) {
 //                    foreach ($datam['productDitails'] as $dPd) {
 //                        $checkDataInsertDitailsProduct = $this->db->get_where('product_ditails', array('skuPditails' => $dPd['sku']))->result();
@@ -683,8 +891,6 @@ class Admin_model extends CI_Model {
 //                }
 //                print_r($datac);
 //                exit;
-
-
 //                $sql = $this->db->query("SELECT skuProduct FROM product where skuProduct='" . $datam['skuProduct'] . "'");
 //                $cek_sku = $sql->num_rows();
 //                if (empty($datam['skuProduct'])) {
@@ -718,7 +924,6 @@ class Admin_model extends CI_Model {
                 // print_r($datac);
                 // exit;
                 // $idproduct = $this->db->insert_id();
-                
             } else {
                 return $this->token_response();
             }
@@ -1615,7 +1820,7 @@ class Admin_model extends CI_Model {
                             'priceDiscount' => $ddt->priceDiscount,
                             'stock' => $ddt->stock,
                             'weight' => $data->weight,
-							'realprice' => $ddt->price - $ddt->priceDiscount
+                            'realprice' => $ddt->price - $ddt->priceDiscount
                         );
                     }
                     //print_r($datax);
@@ -1632,12 +1837,12 @@ class Admin_model extends CI_Model {
                     //if (empty($query)) {
                     // }
                 }
-                //print_r($datax);
-                //exit;
             } else {
                 return $this->token_response();
             }
             $query = $this->db->get_where('product_ditails')->result();
+
+
             if (!empty($query)) {
                 foreach ($datax as $dx) {
 
@@ -1645,7 +1850,14 @@ class Admin_model extends CI_Model {
                     $this->db->insert('product_ditails', $dx);
                 }
                 $idtransaction = $this->db->insert_id();
+                foreach ($query as $dy) {
+                    //print_r($dy->idpditails);
+                    //exit;
+
+                    $this->db->insert('product_images_ditails', array('idpditails' => $dy->idpditails));
+                }
             }
+
             if (!empty($datax)) {
                 $response['status'] = 200;
                 $response['error'] = false;
@@ -1761,14 +1973,16 @@ class Admin_model extends CI_Model {
                 $this->db->from('transaction');
 
                 if (!empty($data[2])) {
-                    $paging = $data[2] * 10;
+//                    $paging = $data[2] * 10;
+                    $paging = $data[2];
                 } else {
                     $paging = 0;
                 }
                 $this->db->limit(10, $paging);
 
                 $queryx = $this->db->get()->result();
-                $this->db->order_by('idtransaction', 'DESC');
+                $this->db->order_by('dateCreate', 'DESC');
+                $this->db->order_by('timeCreate', 'DESC');
                 $this->db->select('count(*) as transaction');
                 $transaction = $this->db->get_where('transaction')->result();
                 if ($transaction[0]->transaction = 0) {
@@ -1778,17 +1992,9 @@ class Admin_model extends CI_Model {
                     $hal = ceil($jlh / 10) - 1;
                 }
 
-
-
-
-
-
-
-
                 foreach ($queryx as $q) {
                     //print_r($q);
                     //	exit;
-
 
                     $this->db->select('a.*,b.*,c.*');
                     $this->db->from('transaction_details as a');
@@ -1810,10 +2016,6 @@ class Admin_model extends CI_Model {
                     $transaction_details = $this->db->get_where('transaction_details')->result();
                     $jlh = $transaction_details[0]->transaction_details;
                     $hal = ceil($jlh / 10) - 1;
-
-
-
-
 
                     $datax[] = array(
                         'order' => $q,
@@ -1957,7 +2159,7 @@ class Admin_model extends CI_Model {
 //                if(!empty($dataWa)){
 //                    
 //                }
-                $this->wa->SendWa('08986002287', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
+                //               $this->wa->SendWa('08986002287', date('H:i:s d-m-Y') . ' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
 //                $this->wa->SendWa('088229343096', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
 //                $this->wa->SendWa('0811120444', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
 //                $this->wa->SendWa('0895347167160', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
@@ -2562,8 +2764,8 @@ class Admin_model extends CI_Model {
     }
 
     public function uploadPic($data = '') {
-       // print_r($data);
-      //  exit;
+        // print_r($data);
+        //  exit;
         //$image_width = $data[3]['upload_data']['image_width'];
         //$image_height = $data[3]['upload_data']['image_height'];
 
@@ -2596,7 +2798,7 @@ class Admin_model extends CI_Model {
                         //'image_width' => $data[3]['upload_data']['image_width'],
                         //'image_height' => $data[3]['upload_data']['image_height']
                 );
-               // print_r($data);
+                // print_r($data);
                 //exit;
 
                 $this->db->insert('product_images', $data);
@@ -2646,7 +2848,7 @@ class Admin_model extends CI_Model {
                     $dataProduct = $this->db->get_where('category_images as a', array('idcategory' => $data[2]))->result();
                     //print_r($dataProduct);
                     //exit;
-                    unlink($dataProduct[0]->dir . '/' . $dataProduct[0]->imageFile);
+                    //unlink($dataProduct[0]->dir . '/' . $dataProduct[0]->imageFile);
                     $datax = array(
                         //'idcategory' => $data[2],
                         //'urlImage' => 'http://img.rmall.id/' . $data[3]['upload_data']['file_name'],
@@ -2678,6 +2880,85 @@ class Admin_model extends CI_Model {
                     //exit;
                     //$this->db->insert('idcategory', $data[2]);
                     $this->db->insert('category_images', $datax);
+                    // } else {
+                    // return $this->ukuran_response();
+                }
+            } else {
+                return $this->empty_response();
+            }
+
+            if ($datax) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data received successfully.';
+                $response['data'] = $datax;
+                return $response;
+            } else {
+                // unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function imagecat2($data = '') {
+
+
+
+        if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+                if (empty($verify)) {
+
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data failed to receive.';
+                    return $response;
+                    exit;
+                }
+                $query = $this->db->get_where('category_images_icon', array('idcategory' => $data[2]))->result();
+                $sql = $this->db->query("SELECT idcategory FROM category_images_icon where idcategory='$data[2]'");
+                $cek_id = $sql->num_rows();
+                if ($cek_id > 0) {
+                    $dataProduct = $this->db->get_where('category_images_icon as a', array('idcategory' => $data[2]))->result();
+                    //print_r($dataProduct);
+                    //exit;
+                    //unlink($dataProduct[0]->dir . '/' . $dataProduct[0]->imageFile);
+                    $datax = array(
+                        //'idcategory' => $data[2],
+                        //'urlImage' => 'http://img.rmall.id/' . $data[3]['upload_data']['file_name'],
+                        'urlImage' => $data[3]['upload_data']['file_url'],
+                        'dir' => $data[4],
+                        'imageFile' => $data[3]['upload_data']['file_name'],
+                        'size' => $data[3]['upload_data']['file_size'],
+                        'type' => $data[3]['upload_data']['image_type'],
+                    );
+                    //print_r($datax);
+                    //exit;
+                    $this->db->where('idcategory', $data[2]);
+                    $this->db->update('category_images_icon', $datax);
+                } else {
+
+
+
+
+                    $datax = array(
+                        'idcategory' => $data[2],
+                        //'urlImage' => 'http://img.rmall.id/' . $data[3]['upload_data']['file_name'],
+                        'urlImage' => $data[3]['upload_data']['file_url'],
+                        'dir' => $data[4],
+                        'imageFile' => $data[3]['upload_data']['file_name'],
+                        'size' => $data[3]['upload_data']['file_size'],
+                        'type' => $data[3]['upload_data']['image_type'],
+                    );
+                    //print_r($datax);
+                    //exit;
+                    //$this->db->insert('idcategory', $data[2]);
+                    $this->db->insert('category_images_icon', $datax);
                     // } else {
                     // return $this->ukuran_response();
                 }
@@ -2807,6 +3088,12 @@ class Admin_model extends CI_Model {
             $query = $this->db->get_where('product_images', $data)->result();
             if (!empty($query)) {
                 // unlink($query[0]->dir . $query[0]->imageFile) or die("Couldn't delete file");
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object('img/large/' . $query[0]->imageFile);
+                S3_Storage::delete_object('img/medium/' . $query[0]->imageFile);
+                S3_Storage::delete_object('img/small/' . $query[0]->imageFile);
+
                 $this->db->where($data);
                 $this->db->delete('product_images');
 
@@ -2839,13 +3126,13 @@ class Admin_model extends CI_Model {
                 foreach ($datay->productDitails as $skuPditails) {
                     //print_r($skuPditails);
                     //exit;
-					$this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
+                    $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
                     $query = $this->db->get_where('product_ditails as a', array('a.skuPditails' => $skuPditails->sku))->result();
-					
-			
-				// $sql = $this->db->query("SELECT id FROM product where sku='$data->sku'");
-               // $cek_sku = $sql->num_rows();
-                 //if($cek_sku > 0){
+
+
+                    // $sql = $this->db->query("SELECT id FROM product where sku='$data->sku'");
+                    // $cek_sku = $sql->num_rows();
+                    //if($cek_sku > 0){
 
                     $datax = array(
                         'idpditails' => $query[0]->idpditails,
@@ -2874,6 +3161,15 @@ class Admin_model extends CI_Model {
                 return $response;
             } else {
                 // unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                // deleting object from storage service
+                if (isset($data[3]['upload_data'])) {
+                    $this->load->library('S3_Storage');
+
+                    S3_Storage::delete_object('img/large/' . $data[3]['upload_data']['file_name']);
+                    S3_Storage::delete_object('img/medium/' . $data[3]['upload_data']['file_name']);
+                    S3_Storage::delete_object('img/small/' . $data[3]['upload_data']['file_name']);
+                }
+
                 $response['status'] = 502;
                 $response['error'] = true;
                 $response['message'] = 'Data failed to receive.';
@@ -2912,6 +3208,15 @@ class Admin_model extends CI_Model {
                 return $response;
             } else {
                 // unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                // deleting object from storage service
+                if (isset($data[3]['upload_data'])) {
+                    $this->load->library('S3_Storage');
+
+                    S3_Storage::delete_object('img/large/' . $data[3]['upload_data']['file_name']);
+                    S3_Storage::delete_object('img/medium/' . $data[3]['upload_data']['file_name']);
+                    S3_Storage::delete_object('img/small/' . $data[3]['upload_data']['file_name']);
+                }
+
                 $response['status'] = 502;
                 $response['error'] = true;
                 $response['message'] = 'Data failed to receive.';
@@ -2955,6 +3260,12 @@ class Admin_model extends CI_Model {
                 // if (empty(unlink(fil)ename))) {
                 //     # code...
                 // }
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object('img/large/' . $query[0]->imageFile);
+                S3_Storage::delete_object('img/medium/' . $query[0]->imageFile);
+                S3_Storage::delete_object('img/small/' . $query[0]->imageFile);
+
                 $this->db->where($data);
                 $this->db->delete('product_images_ditails');
 
@@ -3314,7 +3625,7 @@ class Admin_model extends CI_Model {
     }
 
     public function addOrders($data = '') {
-        //print_r($data);
+        // print_r($data);
         //exit;
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();

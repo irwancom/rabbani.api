@@ -1959,7 +1959,16 @@ class Sellercenter_model extends CI_Model {
                 $response['message'] = 'Data received successfully.';
                 return $response;
             } else {
-                unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                //unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                // deleting object from storage service
+                if (isset($data[3]['upload_data'])) {
+	            	$this->load->library('S3_Storage');
+	             	
+	                S3_Storage::delete_object('img/large/'.$data[3]['upload_data']['file_name']);
+	                S3_Storage::delete_object('img/medium/'.$data[3]['upload_data']['file_name']);
+	                S3_Storage::delete_object('img/small/'.$data[3]['upload_data']['file_name']);
+                }
+                
                 $response['status'] = 502;
                 $response['error'] = true;
                 $response['message'] = 'Data failed to receive.';
@@ -1994,6 +2003,13 @@ class Sellercenter_model extends CI_Model {
             $query = $this->db->get_where('product_images', $data)->result();
             if (!empty($query)) {
                 // unlink($query[0]->dir . $query[0]->imageFile) or die("Couldn't delete file");
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object('img/large/'.$query[0]->imageFile);
+                S3_Storage::delete_object('img/medium/'.$query[0]->imageFile);
+                S3_Storage::delete_object('img/small/'.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images');
 
@@ -2057,6 +2073,15 @@ class Sellercenter_model extends CI_Model {
                 return $response;
             } else {
                 // unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
+                // deleting object from storage service
+                if (isset($data[3]['upload_data'])) {
+	            	$this->load->library('S3_Storage');
+	             	
+	                S3_Storage::delete_object('img/large/'.$data[3]['upload_data']['file_name']);
+	                S3_Storage::delete_object('img/medium/'.$data[3]['upload_data']['file_name']);
+	                S3_Storage::delete_object('img/small/'.$data[3]['upload_data']['file_name']);
+                }
+                
                 $response['status'] = 502;
                 $response['error'] = true;
                 $response['message'] = 'Data failed to receive.';
@@ -2100,6 +2125,13 @@ class Sellercenter_model extends CI_Model {
                 // if (empty(unlink(fil)ename))) {
                 //     # code...
                 // }
+                
+                // deleting object from storage service
+                $this->load->library('S3_Storage');
+                S3_Storage::delete_object('img/large/'.$query[0]->imageFile);
+                S3_Storage::delete_object('img/medium/'.$query[0]->imageFile);
+                S3_Storage::delete_object('img/small/'.$query[0]->imageFile);
+                
                 $this->db->where($data);
                 $this->db->delete('product_images_ditails');
 
