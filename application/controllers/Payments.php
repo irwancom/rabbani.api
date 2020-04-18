@@ -23,6 +23,14 @@ class Payments extends CI_Controller
 		$this->load->helper(array('form', 'url'));
 	}
 	
+	public function get_tables()
+	{
+		$this->load->database('db2');
+		
+		$data = $this->db->get('transaction_details')->result_array();
+		print_r($data);
+	}
+	
 	/**
 	 * Payment Page
 	 * 
@@ -31,13 +39,88 @@ class Payments extends CI_Controller
 	 */
 	public function index()
 	{
-		$data['invoice'] = self::DOKU_INVOICE_PREFIX.'123';
-		$data['currency'] = '360';
-		$data['amount'] = '10000.00';
-		$data['words'] = sha1($data['amount'].self::DOKU_STORE_ID.self::DOKU_SHARED_KEY.$data['invoice']);
-		$data['words_raw'] = $data['amount'].self::DOKU_STORE_ID.self::DOKU_SHARED_KEY.$data['invoice'];
+		require_once(APPPATH.'libraries/doku/Doku.php');
+		
+		Doku_Initiate::$sharedKey = self::DOKU_SHARED_KEY;
+		Doku_Initiate::$mallId = self::DOKU_STORE_ID;
+		
+		$invoice = self::DOKU_INVOICE_PREFIX.'124782368';
+		
+		$params = array(
+			'amount' => '10000.00',
+			'invoice' => $invoice,
+			'currency' => '360'
+		);
+		
+		$words = Doku_Library::doCreateWords($params);
+
+		$data['store_id'] = self::DOKU_STORE_ID;
+		$data['invoice'] = $params['invoice'];
+		$data['currency'] = $params['currency'];
+		$data['amount'] = $params['amount'];
+		$data['words'] = $words;
 		
 		$this->load->view('payment_form', $data);
+	}
+	
+	public function charge()
+	{
+		require_once(APPPATH.'libraries/doku/Doku.php');
+		
+		Doku_Initiate::$sharedKey = self::DOKU_SHARED_KEY;
+		Doku_Initiate::$mallId = self::DOKU_STORE_ID;
+		
+		$token = $this->input->post('doku-token');
+		$pairing_code = $this->input->post('doku-pairing-code');
+		$invoice_no = $this->input->post('doku-invoice-no');
+		
+		$params = array(
+			'amount' => '10000.00',
+			'invoice' => $invoice_no,
+			'currency' => '360',
+			'pairing_code' => $pairing_code,
+			'token' => $token
+		);
+		
+		$words = Doku_Library::doCreateWords($params);
+		
+		$basket[] = array(
+			'name' => 'sayur',
+			'amount' => '10000.00',
+			'quantity' => '1',
+			'subtotal' => '10000.00'
+		);
+		
+		$customer = array(
+			'name' => 'TEST NAME',
+			'data_phone' => '08121111111', 'data_email' => 'test@test.com', 'data_address' => 'bojong gede #1 08/01'
+		);
+		
+		$dataPayment = array(
+			'req_mall_id' => Doku_Initiate::$mallId, 'req_chain_merchant' => 'NA',
+			'req_amount' => '10000.00',
+			'req_words' => $words,
+			'req_purchase_amount' => '10000.00',
+			'req_trans_id_merchant' => $invoice_no,
+			'req_request_date_time' => date('YmdHis'),
+			'req_currency' => '360',
+			'req_purchase_currency' => '360',
+			'req_session_id' => sha1(date('YmdHis')),
+			'req_name' => $customer['name'],
+			'req_payment_channel' => 15,
+			'req_basket' => $basket,
+			'req_email' => $customer['data_email'],
+			'req_mobile_phone' => $customer['data_phone'],
+			'req_token_id' => $token
+		);
+		
+		$result = Doku_Api::doPayment($dataPayment);
+		
+		if ($result->res_response_code == '0000') {
+			echo 'SUCCESS'; //success transaction
+		} else {
+			echo 'FAILED'; //failed transaction
+		}
 	}
 	
 	/**

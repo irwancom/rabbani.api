@@ -199,6 +199,7 @@ class H2h_model extends CI_Model {
                 'skuDitails' => $data['skuDitails'],
                 'collor' => $data['collor'],
                 'size' => $data['size'],
+                'price' => $data['price'],
                 'weight' => $data['weight']
             );
             if (empty($checkDataSku)) {
@@ -259,6 +260,149 @@ class H2h_model extends CI_Model {
                     );
                 }
             }
+            if ($transactionData) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['data'] = $data;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+
+    public function cron($param = '') {
+        if (!empty($param)) {
+//            $datax = array(
+//                'delproduct' => 0
+//            );
+//            $this->db->set($datax);
+//            $this->db->update('product');
+//            exit;
+//            $data = $this->db->get_where('product', array('delproduct' => 1))->result();
+//            if (!empty($data)) {
+//                foreach ($data as $dt) {
+//                    $this->db->set('delproductditails', '1');
+//                    $this->db->where('idproduct', $dt->idproduct);
+//                    $this->db->update('product_ditails');
+//                }
+//            }
+//            exit;
+//            $param1 = $param*10;
+//            $param2 = $param*20;
+            $this->db->where('`idSkuProd` BETWEEN 32001 AND 33000');
+            $data = $this->db->get('product_sku')->result();
+//            print_r($data);
+            exit;
+            if (!empty($data)) {
+                foreach ($data as $dd) {
+//                    print_r($dd->skuDitails);
+//                    exit;
+                    $aut2 = $this->quantum->callAPi($dd->skuDitails, 3);
+                    print_r($aut2);
+//                    exit;
+                    if (!empty($aut2)) {
+                        $data = $this->db->get_where('product', array('skuProduct' => $dd->sku))->result();
+                        if (!empty($data)) {
+//                            $datax = array(
+//                                'skuProduct' => $dd->sku,
+//                                'productName' => $dd->productName,
+//                                'delproduct' => 1
+//                            );
+//                            $this->db->set($datax);
+//                            $this->db->where('skuProduct', $dd->sku);
+//                            $this->db->update('product');
+
+                            $dataPditail = $this->db->get_where('product_ditails', array('skuPditails' => $dd->skuDitails))->result();
+                            if (!empty($dataPditail)) {
+                                $datax = array(
+                                    'idproduct' => $data[0]->idproduct,
+                                    'skuPditails' => $dd->skuDitails,
+                                    'collor' => strtoupper($dd->collor),
+                                    'size' => $dd->size,
+                                    'price' => $dd->price,
+                                    'realprice' => $dd->price,
+                                    'stock' => $aut2[0]->s
+                                );
+                                $this->db->set($datax);
+                                $this->db->where('skuPditails', $dd->skuDitails);
+                                $this->db->update('product_ditails');
+                            } else {
+                                $datas = array(
+                                    'idproduct' => $data[0]->idproduct,
+                                    'skuPditails' => $dd->skuDitails,
+                                    'collor' => strtoupper($dd->collor),
+                                    'size' => $dd->size,
+                                    'price' => $dd->price,
+                                    'realprice' => $dd->price,
+                                    'stock' => $aut2[0]->s
+                                );
+
+                                $this->db->insert('product_ditails', $datas);
+                            }
+                        } else {
+                            $data = array(
+                                'skuProduct' => $dd->sku,
+                                'productName' => strtoupper($dd->productName),
+                                'delproduct' => 1
+                            );
+
+                            $this->db->insert('product', $data);
+                            $id = $this->db->insert_id();
+
+                            $data = $this->db->get_where('product_ditails', array('skuPditails' => $dd->skuDitails))->result();
+                            if (!empty($data)) {
+                                $data = array(
+                                    'idproduct' => $id,
+                                    'skuPditails' => $dd->skuDitails,
+                                    'collor' => strtoupper($dd->collor),
+                                    'size' => $dd->size,
+                                    'price' => $dd->price,
+                                    'realprice' => $dd->price,
+                                    'stock' => $aut2[0]->s
+                                );
+                                $this->db->set($data);
+                                $this->db->where('skuPditails', $dd->skuDitails);
+                                $this->db->update('product_ditails');
+                            } else {
+                                $data = array(
+                                    'idproduct' => $id,
+                                    'skuPditails' => $dd->skuDitails,
+                                    'collor' => strtoupper($dd->collor),
+                                    'size' => $dd->size,
+                                    'price' => $dd->price,
+                                    'realprice' => $dd->price,
+                                    'stock' => $aut2[0]->s
+                                );
+
+                                $this->db->insert('product_ditails', $data);
+                            }
+                        }
+                    }
+                }
+            }
+            exit();
+
+            $aut2 = $this->quantum->callAPi('BBA0DA19241A700', 3);
+//            $data = $this->db->get_where('product_ditails',array('delproductditails'=>0));
+            $data = $this->db->get_where('product_ditails', array('delproductditails' => 0))->result();
+//            print_r($data);
+            if (!empty($data)) {
+                foreach ($data as $dd) {
+//                    print_r($dd);
+                    $aut2 = $this->quantum->callAPi($dd->skuPditails, 2);
+                    $this->db->set('stock', $aut2->ts);
+                    $this->db->where('idpditails', $dd->idpditails);
+                    $this->db->update('product_ditails');
+                }
+            }
+            exit;
+            $aut2 = $this->quantum->callAPi($param, 2);
+            print_r($aut2->ts);
+            exit;
             if ($transactionData) {
                 $response['status'] = 200;
                 $response['error'] = false;

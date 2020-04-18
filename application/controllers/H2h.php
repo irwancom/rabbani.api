@@ -16,9 +16,18 @@ class H2h extends REST_Controller {
         $this->load->helper(array('form', 'url'));
     }
 
-    function index_get() {
-        $aut2 = $this->quantum->callAPi('BBA0DA19241A700',3);
-        print_r($aut2);
+    function index_get($id = '') {
+//        $aut2 = $this->quantum->callAPi('BAA0CE09241A42F',3);
+        if (empty($id)) {
+            $id = 1;
+        }
+        $idx = $id + 1;
+//        echo '<html>';
+//        echo '<meta http-equiv="refresh" content="10; url=https://api.rmall.id/h2h/' . $idx . '">';
+        $this->h2h_model->cron($idx);
+//        echo '</html>';
+//        $this->h2h_model->cron(12);
+//        print_r($aut2);
     }
 
     function store_post() {
@@ -138,6 +147,7 @@ class H2h extends REST_Controller {
             'skuDitails' => $this->input->post('barcode15'),
             'collor' => $this->input->post('collor'),
             'size' => $this->input->post('size'),
+            'price' => $this->input->post('price'),
             'weight' => $this->input->post('weight')
         );
         $data = $this->h2h_model->dataSku($data);
@@ -148,8 +158,8 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-    
-    function printOrder_get($param='') {
+
+    function printOrder_get($param = '') {
         $data = $this->h2h_model->dataPrint($param);
 //        print_r($data);
 //        exit;

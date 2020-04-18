@@ -11,7 +11,8 @@ class Main extends REST_Controller {
         header('Access-Control-Allow-Method: PUT, GET, POST, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, x-xsrf-token, X-API-KEY');
         $this->load->model('main_model');
-        $this->load->library('wa');
+        // $this->load->library('wa');
+        $this->load->library('sms');
 
         $this->load->helper(array('form', 'url'));
     }
@@ -23,6 +24,15 @@ class Main extends REST_Controller {
     function category_get() {
 
         $data = $this->main_model->category();
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	function banner_get() {
+        $data = $this->main_model->banner();
         if ($data) {
             $this->response($data, 200);
         } else {
@@ -86,6 +96,15 @@ class Main extends REST_Controller {
         }
     }
 
+    public function productDetailsV2_get($data = '') {
+        $data = $this->main_model->ditailsGetDataV2($data);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
     public function detailsSize_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
@@ -116,6 +135,12 @@ class Main extends REST_Controller {
                 $this->input->post('id')
             );
             $data = $this->main_model->orderStatus($data);
+        } elseif ($mp == 'detials') {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('idTransaction')
+            );
+            $data = $this->main_model->detailsOrders($data);
         } else {
             $data = array(
                 $this->input->post('keyCode'),
@@ -318,7 +343,7 @@ class Main extends REST_Controller {
         }
     }
 
-    public function banner_get($type = '') {
+    public function banner2_get($type = '') {
 
         $data = $this->main_model->dataBanner($type);
         if ($data) {

@@ -12,12 +12,13 @@ class Fulfillment extends REST_Controller {
         header('Access-Control-Allow-Headers: Content-Type, x-xsrf-token, X-API-KEY');
         $this->load->model('fulfillment_model');
         $this->load->library('wa');
+        $this->load->library('sms');
 
         $this->load->helper(array('form', 'url'));
     }
 
     function index_get() {
-        
+        $this->SendSms('08986002287', 'Ini sms notif');
     }
 
     function printBarcode_post($limit = '') {
