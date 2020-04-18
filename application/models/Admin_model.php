@@ -650,10 +650,13 @@ class Admin_model extends CI_Model {
 
             if (!empty($verify)) {
 
+                $this->db->select('a.*, c.*, d.weight');
                 $this->db->from('product as a');
 //                $this->db->where('delproduct', '0');
                 $this->db->join('category as c', 'c.idcategory = a.idcategory', 'left');
+                $this->db->join('product_ditails as d', 'd.idproduct = a.idproduct', 'left');
                 $this->db->order_by('a.productName', 'ASC');
+                $this->db->group_by("d.idproduct");
                 $this->db->where('a.idproduct', $data[2]);
                 $query = $this->db->get()->result();
 
@@ -708,6 +711,10 @@ class Admin_model extends CI_Model {
                 $this->db->set('idcategory', $data[9]);
                 $this->db->where('idproduct', $data[2]);
                 $query = $this->db->update('product');
+                
+                $this->db->set('weight', $data[10]);
+                $this->db->where('idproduct', $data[2]);
+                $query = $this->db->update('product_ditails');
             } else {
                 return $this->token_response();
             }

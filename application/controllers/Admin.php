@@ -218,7 +218,8 @@ class Admin extends REST_Controller {
                 $this->input->post('descrDitails'),
                 $this->input->post('descrDitails_en'),
                 $this->input->post('delproduct'),
-                $this->input->post('idcategory')
+                $this->input->post('idcategory'),
+                $this->input->post('weight')
             );
             $data = $this->admin_model->productUpdate_v2($data);
         } else {
