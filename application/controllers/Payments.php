@@ -18,26 +18,20 @@ class Payments extends CI_Controller
 	{
 		parent::__construct();
 		
+		$this->load->database('db2');
 		$this->load->model('payment_model');
-		
 		$this->load->helper(array('form', 'url'));
 	}
 	
 	public function get_tables()
 	{
-		$this->load->database('db2');
-		
-		$data = $this->db->get('transaction_details')->result_array();
+		//$data = $this->db->get('transaction')->result_array();
+		//$data = $this->db->list_tables();
+		$data = $this->db->get('store')->result_array();
 		print_r($data);
 	}
 	
-	/**
-	 * Payment Page
-	 * 
-	 * @access public
-	 * @return void
-	 */
-	public function index()
+	public function pay()
 	{
 		require_once(APPPATH.'libraries/doku/Doku.php');
 		
@@ -61,6 +55,23 @@ class Payments extends CI_Controller
 		$data['words'] = $words;
 		
 		$this->load->view('payment_form', $data);
+	}
+	
+	/**
+	 * Payment Page
+	 * 
+	 * @access public
+	 * @return void
+	 */
+	public function index()
+	{
+		$idtransaction = $this->input->get('idtransaction');
+		
+		if ($data = $this->payment_model->get_transaction($idtransaction)) {
+			$this->load->view('payment', $data);
+		} else {
+			show_404();	
+		}
 	}
 	
 	public function charge()

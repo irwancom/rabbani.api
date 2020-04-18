@@ -15,6 +15,33 @@ class Payment_model extends CI_Model
 	}
 	
 	/**
+	 * Get transactions
+	 * 
+	 * @access public
+	 * @param int $idtransaction
+	 * @return array
+	 */
+	public function get_transaction($idtransaction = null)
+	{
+		$transaction = $this->db
+		->select('t.*, au.firstname, au.lastname, s.namestore, s.addrstore')
+		->join('apiauth_user au', 'au.idauthuser = t.idauthuser', 'left')
+		->join('store s', 's.idstore = t.idstore', 'left')
+		->where('idtransaction', (int)$idtransaction)
+		->get('transaction t')
+		->row_array();
+		
+		if ($transaction) {
+			$transaction['details'] = $this->db
+			->where('idtransaction', (int)$transaction['idtransaction'])
+			->get('transaction_details')
+			->row_array();
+		}
+		
+		return $transaction;
+	}
+	
+	/**
 	 * Add transaction
 	 * 
 	 * @access public
