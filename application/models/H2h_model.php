@@ -98,7 +98,7 @@ class H2h_model extends CI_Model {
 
         if (!empty($dataAccount)) {
             $this->db->select('idtransaction, timeCreate, dateCreate, orderBy, noInvoice, shipping, shippingprice, trackingCode, subtotal, discount');
-            $checkDataStore = $this->db->get_where('transaction', array('readData' => 0, 'statuspay' => 1, 'status' => 2))->result();
+            $checkDataStore = $this->db->get_where('transaction', array('readData' => 0, 'statuspay' => 1, 'status' => 1))->result();
             if (!empty($checkDataStore)) {
                 foreach ($checkDataStore as $cDS) {
 //                    $data[] = $cDS;
@@ -274,8 +274,103 @@ class H2h_model extends CI_Model {
         }
     }
 
+    public function syncStock($data = '') {
+        if (!empty($data)) {
+            $pg = $data * 2;
+        } else {
+            $pg = 2;
+        }
+        $dataSku = $this->db->get_where('product_ditails', array('delproductditails' => 0), 2, $pg)->result();
+        if (!empty($dataSku)) {
+            foreach ($dataSku as $dS) {
+//                print_r($dS);
+                $data = $this->quantum->callAPi($dS->skuPditails, 3);
+                if (!empty($data[0]->s)) {
+                    //M001-O0001->DU
+                    //M001-O0004->KOPO
+                    //M001-O0006->JATINANGOR
+                    //M001-O0029->CIMAHI
+                    //M001-O0041->BUBAT
+                    //M001-O0043->BUBAT KEMKO
+                    $du = $this->quantum->callAPi($dS->skuPditails, 3, 'M001-O0001');
+                    if (!empty($du[0]->s)) {
+                        $du = $du[0]->s;
+                    } else {
+                        $du = 0;
+                    }
+//                    $kopo = $this->quantum->callAPi($dS->skuPditails, 3,'M001-O0004');
+                    if (!empty($kopo[0]->s)) {
+                        $kopo = $kopo[0]->s;
+                    } else {
+                        $kopo = 0;
+                    }
+//                    $nangor = $this->quantum->callAPi($dS->skuPditails, 3,'M001-O0006');
+                    if (!empty($nangor[0]->s)) {
+                        $nangor = $nangor[0]->s;
+                    } else {
+                        $nangor = 0;
+                    }
+                    $cimahi = $this->quantum->callAPi($dS->skuPditails, 3, 'M001-O0029');
+                    if (!empty($cimahi[0]->s)) {
+                        $cimahi = $cimahi[0]->s;
+                    } else {
+                        $cimahi = 0;
+                    }
+                    $bubat = $this->quantum->callAPi($dS->skuPditails, 3, 'M001-O0041');
+                    if (!empty($bubat[0]->s)) {
+                        $bubat = $bubat[0]->s;
+                    } else {
+                        $bubat = 0;
+                    }
+                    $bubat2 = $this->quantum->callAPi($dS->skuPditails, 3, 'M001-O0043');
+                    if (!empty($bubat2[0]->s)) {
+                        $bubat2 = $bubat2[0]->s;
+                    } else {
+                        $bubat2 = 0;
+                    }
+                    $stockAllBandung = $du + $kopo + $nangor + $cimahi + $bubat + $bubat2;
+//                    $stockAllBandung = 0;
+//                    print_r($stockAllBandung);
+//                    exit;
+                    $this->db->set('stock', $data[0]->s+$stockAllBandung);
+                    $this->db->set('stockRmall', $data[0]->s);
+                    $this->db->set('stockAllBandung', $stockAllBandung);
+                    $this->db->where('skuPditails', $dS->skuPditails);
+                    $this->db->update('product_ditails');
+                } else {
+                    $this->db->set('stock', 0);
+                    $this->db->set('delproductditails', 1);
+                    $this->db->where('skuPditails', $dS->skuPditails);
+                    $this->db->update('product_ditails');
+                }
+                $this->db->set('valuePrice', 'stock*price', FALSE);
+                $this->db->set('valuePriceAllBandung', 'stockAllBandung*price', FALSE);
+                $this->db->where('skuPditails', $dS->skuPditails);
+                $this->db->update('product_ditails');
+            }
+        }
+//        print_r($data);
+        if (!empty($dataSku)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['data'] = $data;
+            $response['message'] = 'Synce stock success.';
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
     public function cron($param = '') {
         if (!empty($param)) {
+//            $this->db->set('weight', 250);
+//            $this->db->where('delproductditails', 0);
+//            $this->db->where('weight', 1);
+//            $this->db->update('product_ditails');
+//            exit;
 //            $datax = array(
 //                'delproduct' => 0
 //            );
@@ -293,10 +388,11 @@ class H2h_model extends CI_Model {
 //            exit;
 //            $param1 = $param*10;
 //            $param2 = $param*20;
-            $this->db->where('`idSkuProd` BETWEEN 32001 AND 33000');
+            $this->db->where('`idSkuProd` BETWEEN 33001 AND 34000');
+//            $this->db->where('skuDitails', 'FBA0AA300QF1B22');
             $data = $this->db->get('product_sku')->result();
 //            print_r($data);
-            exit;
+//            exit;
             if (!empty($data)) {
                 foreach ($data as $dd) {
 //                    print_r($dd->skuDitails);
@@ -324,7 +420,7 @@ class H2h_model extends CI_Model {
                                     'collor' => strtoupper($dd->collor),
                                     'size' => $dd->size,
                                     'price' => $dd->price,
-                                    'realprice' => $dd->price,
+//                                    'realprice' => $dd->price,
                                     'stock' => $aut2[0]->s
                                 );
                                 $this->db->set($datax);
@@ -361,7 +457,7 @@ class H2h_model extends CI_Model {
                                     'collor' => strtoupper($dd->collor),
                                     'size' => $dd->size,
                                     'price' => $dd->price,
-                                    'realprice' => $dd->price,
+//                                    'realprice' => $dd->price,
                                     'stock' => $aut2[0]->s
                                 );
                                 $this->db->set($data);

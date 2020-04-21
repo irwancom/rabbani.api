@@ -426,6 +426,7 @@ class Admin_model extends CI_Model {
                 $this->db->like('noInvoice', $data[2]);
                 $this->db->or_like('firstname', $data[2]);
                 $this->db->or_like('name', $data[2]);
+                $this->db->or_like('totalpay', $data[2]);
                 $sql = $this->db->get()->result();
             } else {
                 return $this->empty_response();
@@ -622,6 +623,14 @@ class Admin_model extends CI_Model {
                 $this->db->group_by("a.skuProduct");
                 $query = $this->db->get()->result();
 //                print_r($query);
+
+                $dataPublish = $this->db->query('SELECT count(*) as data FROM main.product WHERE delproduct=0')->result();
+                $dataDraf = $this->db->query('SELECT count(*) as data FROM main.product WHERE delproduct=1')->result();
+                $skuPublish = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM main.product_ditails WHERE delproductditails=0')->result();
+                $skuDraf = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM main.product_ditails WHERE delproductditails=1')->result();
+                
+                $skuPublishAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM main.product_ditails WHERE delproductditails=0')->result();
+                $skuDrafAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM main.product_ditails WHERE delproductditails=1')->result();
             } else {
                 return $this->token_response();
             }
@@ -629,7 +638,13 @@ class Admin_model extends CI_Model {
                 $response['status'] = 200;
                 $response['error'] = false;
                 $response['message'] = 'Data successfully processed.';
+                $response['dataPublish'] = $dataPublish[0]->data;
+                $response['dataDraf'] = $dataDraf[0]->data;
                 $response['totalData'] = count($query);
+                $response['skuPublishRmall'] = $skuPublish[0];
+                $response['skuDrafRmall'] = $skuDraf[0];
+                $response['skuPublishAllBandung'] = $skuPublishAllBandung[0];
+                $response['skuDrafAllBandung'] = $skuDrafAllBandung[0];
                 $response['data'] = $query;
                 return $response;
             } else {
@@ -711,7 +726,7 @@ class Admin_model extends CI_Model {
                 $this->db->set('idcategory', $data[9]);
                 $this->db->where('idproduct', $data[2]);
                 $query = $this->db->update('product');
-                
+
                 $this->db->set('weight', $data[10]);
                 $this->db->where('idproduct', $data[2]);
                 $query = $this->db->update('product_ditails');
@@ -773,7 +788,7 @@ class Admin_model extends CI_Model {
                             );
 
                             $this->db->insert('product_images_ditails', $dataax);
-                            
+
                             $this->db->set('delproductditails', '0');
                             $this->db->where('idpditails', $dt->idpditails);
                             $this->db->update('product_ditails');
@@ -1978,18 +1993,20 @@ class Admin_model extends CI_Model {
 
                 $this->db->select('*');
                 $this->db->from('transaction');
+				$this->db->where('statusPay!=2');
+                $this->db->order_by('idtransaction', 'desc');
 
                 if (!empty($data[2])) {
 //                    $paging = $data[2] * 10;
-                    $paging = $data[2];
+                    $paging = 0;
                 } else {
                     $paging = 0;
                 }
                 $this->db->limit(10, $paging);
 
                 $queryx = $this->db->get()->result();
-                $this->db->order_by('dateCreate', 'DESC');
-                $this->db->order_by('timeCreate', 'DESC');
+
+
                 $this->db->select('count(*) as transaction');
                 $transaction = $this->db->get_where('transaction')->result();
                 if ($transaction[0]->transaction = 0) {
@@ -2159,18 +2176,72 @@ class Admin_model extends CI_Model {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
                 $data = json_decode($data[2]);
-                //print_r($data);
+                //$db2 = $this->load->database('db2', TRUE);
+                //$sql = $db2->query("SELECT statusPay FROM transaction where statusPay ='$data->statusPay'");
+                //$cek_pay = $sql->num_rows();
+                $tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                //print_r($tranfers[0]->statusPay);
                 //exit;
-//                $this->db->join('store as b', 'b.idstore = a.idstore', 'left');
-//                $dataWa = $this->db->get_where('transaction as a',array('a.idtransaction', $data->idtransaction))->result();
-//                if(!empty($dataWa)){
-//                    
-//                }
-                //               $this->wa->SendWa('08986002287', date('H:i:s d-m-Y') . ' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
-//                $this->wa->SendWa('088229343096', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
-//                $this->wa->SendWa('0811120444', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
-//                $this->wa->SendWa('0895347167160', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
-//                $this->wa->SendWa('088229343096', date('H:i:s d-m-Y').' : Assalamualaikum, tokomu ada pesanan, silahkan print di http://print.rmall.id/');
+
+                if ($tranfers[0]->statusPay == 1) {
+                    $tranfers = '';
+                } else if ($data->statusPay == 1) {
+                    $people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
+                    $tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                    // print_r($tranfers);
+                    //exit;  
+                    $message = 'rmall.id : Tranfers Berhasil, Senilai Rp ' . $tranfers[0]->totalpay . ' No Invoice ' . $tranfers[0]->noInvoice . ' Pesanan Sedang Di Proses Jazakallah';
+                    #$this->load->library('sms');
+                    $this->sms->SendSms($people[0]->phone, $message);
+                } else {
+                    $tranfers = '';
+                }
+
+                // $sql = $this->db->query("SELECT status FROM transaction where status ='$data->status'");
+                // $cek_resi = $sql->num_rows();
+                //print_r($cek_resi);
+                //exit;
+                $resi = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                //print_r($resi);
+                //exit;
+                if ($resi[0]->status == 1) {
+                    $tranfers = '';
+                } else if ($data->status == 1) {
+                    $people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
+                    $tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                    // print_r($tranfers);
+                    //exit;  
+                    $message = 'rmall.id : Pesanan Sudah Dikirm,  No Invoice ' . $tranfers[0]->noInvoice . ',  No Resi ' . $tranfers[0]->trackingCode . ', Jazakallah';
+                    #$this->load->library('sms');
+                    $this->sms->SendSms($people[0]->phone, $message);
+                } else {
+                    $tranfers = '';
+                }
+
+                //$tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                //print_r($tranfers);
+                //exit;
+                //if ($data->statusPay == 1) {
+                //$tranfers = '';
+                //} else if ($data->status == 1) {
+                // $people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
+                //$tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                //print_r($people);
+                //exit;  
+                //$message = 'rmall.id : Pesanan Sudah Dikirm,  No Invoice ' . $tranfers[0]->noInvoice . ',  No Resi ' . $tranfers[0]->trackingCode . ', Jazakallah';
+                #$this->load->library('sms');
+                //$this->sms->SendSms($people[0]->phone, $message);
+                //} else if ($data->statusPay == 1) {
+                // $people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
+                //$tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
+                //print_r($tranfers);
+                //exit;  
+                //$message = 'rmall.id : Tranfers Berhasil, Senilai Rp ' . $tranfers[0]->totalpay . ' No Invoice ' . $tranfers[0]->noInvoice . ' Pesanan Sedang Di Proses Jazakallah';
+                #$this->load->library('sms');
+                //  $this->sms->SendSms($people[0]->phone, $message);
+                //} else {
+                //$tranfers = '';
+                //}
                 $datac = array(
                     //'idauth' => $data->idauth,
                     //'idstore' => $verify[0]->idstore,
