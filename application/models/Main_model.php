@@ -130,22 +130,28 @@ class Main_model extends CI_Model {
 
     public function getData($page = '') {
         $db2 = $this->load->database('db2', TRUE);
-        $db2->select('a.*, c.urlImage');
+        $db2->select('a.*,c.urlImage');
         $db2->from('product as a');
 
-        $db2->where('delproduct', 0);
+       
+		
         $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
         $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+		//$db2->join('product_ditails as d', 'd.idproduct = a.idproduct', 'left');
+		$db2->where('delproduct', 0);
+		//$db2->where('stock>0');
         $db2->limit(10, $page);
         $db2->group_by('idproduct');
         $db2->order_by('dateCreate', 'DESC');
 		$db2->order_by('timeCreate', 'DESC');
+		
         $query = $db2->get()->result();
 
         foreach ($query as $q) {
             $db2->select('a.*,b.urlImage as imagesVariable');
             $db2->from('product_ditails as a');
             $db2->where('a.idproduct', $q->idproduct);
+			$db2->where('stock>0');
             $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
             $query = $db2->get()->result();
 
@@ -231,6 +237,7 @@ class Main_model extends CI_Model {
         $db2->from('product as a');
 
         $db2->where('delproduct', 0);
+		//$db2->where('stock>0');
         $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
         $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
         $db2->limit(10, $page);
@@ -286,6 +293,7 @@ class Main_model extends CI_Model {
             $db2->from('product as a');
             $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
             $db2->where('a.idcategory', $data[0]);
+			//$db2->where('stock>0');
             $db2->where('delproduct', 0);
             $query = $db2->get()->result();
             //print_r($query);
@@ -297,6 +305,7 @@ class Main_model extends CI_Model {
                 $db2->select('a.*,b.urlImage as imagesVariable');
                 $db2->from('product_ditails as a');
                 $db2->where('a.idproduct', $q->idproduct);
+				$db2->where('stock>0');
                 $db2->where('delproductditails', 0);
                 $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
                 $query = $db2->get()->result();
@@ -752,6 +761,7 @@ class Main_model extends CI_Model {
         $db2->join('product_images as b', 'b.idproduct = a.idproduct', 'left');
         $db2->like('productName', $data[0]);
         $db2->where('delproduct', 0);
+		//$db2->where('stock>0');
         $db2->group_by('a.idproduct');
         //$this->db->or_like('harga',$keyword);
         $sql = $db2->get()->result();
@@ -893,7 +903,7 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                 $db2->join('product as c', 'c.idproduct = b.idproduct', 'left');
                 $db2->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
                 $db2->where('idauthuser', $verify[0]->idauthuser);
-                $db2->group_by('d.idpditails');
+                //$db2->group_by('d.idpditails');
                 $dataCat = $db2->get_where('shop_cart as a')->result();
                 //print_r($dataCat);
                 //exit;
@@ -911,10 +921,10 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                         $subtotal[] = $voucher1;
                         $voucher2 = (array_sum($subtotal) * ($voucher[0]->voucherdisc) / 100);
                     } else {
-                        $voucher2 = 0;
+                        $voucher2 = '0';
                     }
                 } else {
-                    $voucher2 = 0;
+                    $voucher2 = '0';
                 }
             } else {
                 return $this->token_response();
@@ -939,43 +949,44 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
     }
 
     public function addcart($data = '') {
-        if (empty($data[0])) {
+        if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
 
-                $data = json_decode($data[1]);
-                //print_r($data);
+                $data1 = json_decode($data[1]);
+                //print_r($data1);
                 //exit;
-                foreach ($data->dataOrders as $dataOrders) {
+                foreach ($data1 as $dataOrders) {
                     $sql = $this->db->query("SELECT idpditails FROM shop_cart where idpditails ='$dataOrders->idpditails'");
                     $cek_id = $sql->num_rows();
-
-
-
+					$product = $this->db->get_where('product_ditails', array('idpditails' => $dataOrders->idpditails))->result();
+					if (!empty($product)) {
+					
                     if ($cek_id > 0) {
 
-                        //return $this->duplicate_response();
+                       // foreach ($data->dataOrders as $dataOrders) {
 
                         $this->db->set('qty', 'qty+' . $dataOrders->qty, FALSE);
                         $this->db->where('idpditails', $dataOrders->idpditails);
                         $query = $this->db->update('shop_cart');
-
-                        // $dataOrdersx = array(
-                        //     'idauthuser' => $verify[0]->idauthuser,
-                        //     'idpditails' => $dataOrders->idpditails,
-                        //     'qty' => $dataOrders->qty,
-                        // );
-                        // $query = $this->db->insert('shop_cart', $dataOrdersx); 
+						
                     } else {
+						//foreach ($data->dataOrders as $dataOrders) {
                         $dataOrdersx = array(
                             'idauthuser' => $verify[0]->idauthuser,
                             'idpditails' => $dataOrders->idpditails,
                             'qty' => $dataOrders->qty,
                         );
+						
+						//print_r($dataOrdersx);
                         $query = $this->db->insert('shop_cart', $dataOrdersx);
+						// }
                     }
+					}else {
+						 return $this->token_response();
+					}
                 }
             } else {
                 return $this->token_response();
@@ -1034,7 +1045,9 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
             if (!empty($verify)) {
                 $this->db->select('a.*, b.urlImage');
                 $this->db->join('product_images as b', 'b.idproduct = a.idproduct', 'left');
-                $query = $this->db->get_where('transaction_details as a', array('a.idtransaction' => $data[1]))->result();
+				$this->db->where('idtransaction', $data[1]);
+				$this->db->group_by('idtransaction');
+                $query = $this->db->get_where('transaction_details as a')->result();
             } else {
                 return $this->token_response();
             }
@@ -1098,6 +1111,8 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                         //print_r($dataProduct);
                         //exit;
                         $voucher = $this->db->get_where('voucher', array('vouchercode' => $data->voucher))->result();
+						//print_r($voucher);
+						//exit;
                         if (!empty($dataProduct)) {
                             $dataOrdersx = array(
                                 'idtransaction' => $insert_id,
@@ -1114,7 +1129,7 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                                 'weight' => ($dataProduct[0]->weight) * $dataProduct[0]->qty,
                                 'subtotal' => ($dataProduct[0]->price) * $dataProduct[0]->qty
                             );
-                            // print_r($dataOrdersx);
+                            
                             $subtotal[] = $dataOrdersx['subtotal'];
                             $subdisc[] = $dataOrdersx['disc'];
                             $totalweight[] = ($dataOrdersx['weight']);
@@ -1140,18 +1155,23 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                     } else {
                         $voucher1 = 0;
                     }
+					//$this->db->insert('transaction_details', array('discvoucher' => $voucher1));
                     $total = (array_sum($subtotal) + ($cost) - array_sum($subdisc) - ($voucher1) - $data->kodeunik);
-                    //print_r($total);
-                    //exit;
+                    $this->db->set('discvoucher',$voucher1);
                     $this->db->set('totalpay', array_sum($subtotal) + ($cost) - array_sum($subdisc) - ($voucher1) - $data->kodeunik, true);
                     $this->db->where('idtransaction', $insert_id);
                     $this->db->update('transaction');
 
-
+					$people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
 
                     $message = 'rmall.id : Pesanan Berhasil, Total Transfers Rp ' . $total . ', Rekening : BCA 7771503334, MANDIRI 1310012668739, BNI 308050850 AN Rabbani Asysa, Jazakallah';
-                    #$this->load->library('sms');
+                    $message1 = 'order ' .$people[0]->name.' ';
+					#$this->load->library('sms');
+					$notif = '081386118382';
                     $this->sms->SendSms($verify[0]->hp, $message);
+					$this->sms->SendSms($people[0]->phone, $message);
+					$this->sms->SendSms($notif, $message1);
+				
                 }
             } else {
                 return $this->token_response();
@@ -1234,9 +1254,9 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                 $db2 = $this->load->database('db2', TRUE);
                 $db2->select('*');
                 $db2->where('idauthuser', $verify[0]->idauthuser);
+				$db2->where('delpeople', 0);
                 $query = $db2->get_where('sensus_people')->result();
-                //print_r($query);
-                //exit;
+                
             } else {
                 return $this->empty_response();
             }
@@ -1285,9 +1305,14 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
                     'id_prov' => $data->id_prov,
                     'idauthuser' => $verify[0]->idauthuser
                 );
+				//print_r($data2);
+				//exit;
 
                 $xupdate = $this->db->insert('sensus_people', $data2);
+				
             }
+			//$this->db->where('idauthuser',$data2['phone']);
+			//$this->db->insert('apiauth_user', array('hp' => $data2['phone']));
 
 
             if ($xupdate) {
@@ -1365,8 +1390,9 @@ Selamat datang di WhatsApp *Rabbani!* Melalui kanal ini, Anda akan menerima info
             if (!empty($verify)) {
 
 
-                $this->db->where('idpeople', $data[1]);
-                $xupdate = $this->db->delete('sensus_people');
+                $this->db->set('delpeople', 1);
+				$this->db->where('idpeople', $data[1]);
+                $xupdate = $this->db->update('sensus_people');
             } else {
                 return $this->token_response();
             }

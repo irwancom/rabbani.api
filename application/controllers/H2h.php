@@ -17,17 +17,37 @@ class H2h extends REST_Controller {
     }
 
     function index_get($id = '') {
+//        $this->h2h_model->cron(122);
+//        exit;
+        //M001-O0001->DU
+        //M001-O0004->KOPO
+        //M001-O0006->JATINANGOR
+        //M001-O0029->CIMAHI
+        //M001-O0041->BUBAT
+        //M001-O0043->BUBAT KEMKO
+//        $data = $this->quantum->callAPi('FBA0AA300QF1B22', 3,'M001-O0001');
+//        print_r($data);
+//        exit;
 //        $aut2 = $this->quantum->callAPi('BAA0CE09241A42F',3);
-        if (empty($id)) {
-            $id = 1;
-        }
-        $idx = $id + 1;
+//        if (empty($id)) {
+//            $id = 1;
+//        }
+//        $idx = $id + 1;
 //        echo '<html>';
 //        echo '<meta http-equiv="refresh" content="10; url=https://api.rmall.id/h2h/' . $idx . '">';
-        $this->h2h_model->cron($idx);
+        $this->h2h_model->cron(123);
 //        echo '</html>';
 //        $this->h2h_model->cron(12);
 //        print_r($aut2);
+    }
+
+    function syncStock_get($pg = '') {
+        $data = $this->h2h_model->syncStock($pg);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
     }
 
     function store_post() {
