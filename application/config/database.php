@@ -76,10 +76,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => '45.77.46.226',
+    'hostname' => '178.128.82.94',
     'port' => 3306,
     'username' => 'main',
-    'password' => 'YF5PHNERfMAjFdSu',
+    'password' => 'uTh[}2)geX;b',
     'database' => 'main',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
@@ -99,10 +99,10 @@ $db['default'] = array(
 
 $db['db2'] = array(
     'dsn' => '',
-    'hostname' => '139.180.130.41',
+    'hostname' => '178.128.82.94',
     'port' => 3306,
     'username' => 'main', //username database kedua
-    'password' => 'YF5PHNERfMAjFdSu', //password database kedua
+    'password' => 'uTh[}2)geX;b', //password database kedua
     'database' => 'main', //nama database kedua
     'dbdriver' => 'mysqli',
     'dbprefix' => '',

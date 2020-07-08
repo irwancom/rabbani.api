@@ -270,7 +270,9 @@ class Admin extends REST_Controller {
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
                 $this->input->post('name'),
-                $this->input->post('password')
+                $this->input->post('password'),
+				$this->input->post('phone'),
+                $this->input->post('staffemail')
             );
             $data = $this->admin_model->profile($data);
         } else {
@@ -761,8 +763,8 @@ class Admin extends REST_Controller {
             }
         }
     }
-	
-	 public function imagecat2_post() {
+
+    public function imagecat2_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $config['upload_path'] = 'img';
@@ -1128,6 +1130,150 @@ class Admin extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
+	
+	 function discount_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('discount'),
+				$this->input->post('start'),
+				$this->input->post('end')
+            );
+            $data = $this->admin_model->adddiscount($data);
+        } elseif ($pg == 'product') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idproduct'),
+				 $this->input->post('discount')
+            );
+            $data = $this->admin_model->productdiscount($data);
+		 } elseif ($pg == 'ditails') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idpditails'),
+				 $this->input->post('discount')
+            );
+            $data = $this->admin_model->ditailsdiscount($data);
+        } elseif ($pg == 'category') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idcategory'),
+				 $this->input->post('discount')
+            );
+            $data = $this->admin_model->categorydiscount($data);
+		 } elseif ($pg == 'flashsale') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('start'),
+				$this->input->post('end'),
+                $this->input->post('idproduct'),
+				$this->input->post('discount'),
+				$this->input->post('limit')
+            );
+            $data = $this->admin_model->flashsale($data);
+		 } elseif ($pg == 'delflashsale') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('idflashsale')
+			
+            );
+            $data = $this->admin_model->delflashsale($data);
+		 } elseif ($pg == 'getflashsale') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('start'),
+				$this->input->post('end'),
+                $this->input->post('idproduct'),
+				$this->input->post('discount')
+            );
+            $data = $this->admin_model->getflashsale($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->discount($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	 function terms_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('sk'),
+               
+            );
+            $data = $this->admin_model->addterms($data);
+        } elseif ($pg == 'draft') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idterms')
+                
+            );
+            $data = $this->admin_model->termsdraft($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->dataterms($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+ function shorturl_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('urlname'),
+				$this->input->post('urltarget')
+               
+            );
+            $data = $this->admin_model->addshorturl($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idshort')
+                
+            );
+            $data = $this->admin_model->delshorturl($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->shorturl($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
 
     //END CRUD PRODUCT
 }

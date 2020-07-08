@@ -427,6 +427,10 @@ class Admin_model extends CI_Model {
                 $this->db->or_like('firstname', $data[2]);
                 $this->db->or_like('name', $data[2]);
                 $this->db->or_like('totalpay', $data[2]);
+                $this->db->or_like('address', $data[2]);
+                $this->db->or_like('phone', $data[2]);
+                $this->db->or_like('hp', $data[2]);
+                $this->db->or_like('username', $data[2]);
                 $sql = $this->db->get()->result();
             } else {
                 return $this->empty_response();
@@ -624,13 +628,13 @@ class Admin_model extends CI_Model {
                 $query = $this->db->get()->result();
 //                print_r($query);
 
-                $dataPublish = $this->db->query('SELECT count(*) as data FROM main.product WHERE delproduct=0')->result();
-                $dataDraf = $this->db->query('SELECT count(*) as data FROM main.product WHERE delproduct=1')->result();
-                $skuPublish = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM main.product_ditails WHERE delproductditails=0')->result();
-                $skuDraf = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM main.product_ditails WHERE delproductditails=1')->result();
-                
-                $skuPublishAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM main.product_ditails WHERE delproductditails=0')->result();
-                $skuDrafAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM main.product_ditails WHERE delproductditails=1')->result();
+                $dataPublish = $this->db->query('SELECT count(*) as data FROM product WHERE delproduct=0')->result();
+                $dataDraf = $this->db->query('SELECT count(*) as data FROM product WHERE delproduct=1')->result();
+                $skuPublish = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM product_ditails WHERE delproductditails=0')->result();
+                $skuDraf = $this->db->query('SELECT count(*) as data, sum(stock) as stock, sum(valuePrice) as valuePrice FROM product_ditails WHERE delproductditails=1')->result();
+
+                $skuPublishAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM product_ditails WHERE delproductditails=0')->result();
+                $skuDrafAllBandung = $this->db->query('SELECT count(*) as data, sum(stockAllBandung) as stock, sum(valuePriceAllBandung) as valuePrice FROM product_ditails WHERE delproductditails=1')->result();
             } else {
                 return $this->token_response();
             }
@@ -675,7 +679,7 @@ class Admin_model extends CI_Model {
                 $this->db->where('a.idproduct', $data[2]);
                 $query = $this->db->get()->result();
 
-                $this->db->select('idpditails, idproduct, skuPditails, collor, size, price, stock');
+                $this->db->select('*');
                 $query2 = $this->db->get_where('product_ditails', array('idproduct' => $query[0]->idproduct))->result();
                 $this->db->select('idpimages, idproduct, urlImage, imageFile');
                 $query3 = $this->db->get_where('product_images', array('idproduct' => $query[0]->idproduct))->result();
@@ -1181,8 +1185,8 @@ class Admin_model extends CI_Model {
     public function StaffupdateData($data = '') {
         // $sql = $this->db->query("SELECT username FROM apiauth_staff where username='$data[5]'");
         // $cek_username = $sql->num_rows();
-        // print_r($data);
-        // exit;
+         print_r($data);
+         exit;
         if (empty($data[0]) || empty($data[1]) || empty($data)) {
             return $this->empty_response();
         } else {
@@ -1204,7 +1208,7 @@ class Admin_model extends CI_Model {
                     'name' => ($data[4]),
                     'phone' => ($data[5]),
                     'username' => ($data[6]),
-                    'password' => ($data[7])
+                    'password' => md5($data[7])
                 );
                 $this->db->where('idauthstaff', $data[9]);
                 //$this->db->where('idauthstaff', $verify[0]->idauthstaff);
@@ -1253,8 +1257,8 @@ class Admin_model extends CI_Model {
     public function profile($data = '') {
         // $sql = $this->db->query("SELECT username FROM apiauth_staff where username='$data[5]'");
         // $cek_username = $sql->num_rows();
-        // print_r($data);
-        // exit;
+         //print_r($data);
+         //exit;
         if (empty($data[0]) || empty($data[1]) || empty($data)) {
             return $this->empty_response();
         } else {
@@ -1263,31 +1267,31 @@ class Admin_model extends CI_Model {
 
                 $datac = array(
                     'name' => ($data[2]),
-                    'password' => ($data[3])
+                    'password' => md5($data[3]),
+					'phone' => ($data[4]),
+					'staffemail' => ($data[5])
                 );
 
-                $dataCat = $this->db->get_where('apiauth_staff', $data)->result();
+              // print_r($datac);
+			   //exit;
 
-
-
-
-                if (empty($dataCat)) {
-                    $this->db->set('name', ($data[2]));
-                    $this->db->set('password', md5($data[3]));
+                    //$this->db->set('name', ($data[2]));
+                    //$this->db->set('password', md5($data[3]));
+				//	$this->db-set('$datac');
                     $this->db->where('idauthstaff', $verify[0]->idauthstaff);
-                    $this->db->where('idstore', $verify[0]->idstore);
-                    $this->db->update('apiauth_staff');
+                    //$this->db->where('idstore', $verify[0]->idstore);
+                    $supdate = $this->db->update('apiauth_staff',$datac);
 
-                    $supdate = 1;
+                  
                 } else {
-                    $supdate = 'verify';
+                   return $this->empty_response();
                 }
 
                 if ($supdate) {
                     $response['status'] = 200;
                     $response['error'] = false;
                     $response['message'] = 'Data received successfully.';
-                    $response['data'] = $supdate;
+                    $response['data'] = $datac;
                     return $response;
                 } else {
                     $response['status'] = 502;
@@ -1295,7 +1299,7 @@ class Admin_model extends CI_Model {
                     $response['message'] = 'Data failed to receive or data empty.';
                     return $response;
                 }
-            }
+            
         }
     }
 
@@ -1369,13 +1373,13 @@ class Admin_model extends CI_Model {
                 $this->db->from('apiauth_user as a');
                 $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
                 $this->db->join('apiauth_user_ktp as c', 'c.idauthuser = a.idauthuser', 'left');
-                $this->db->order_by('idauthuser', 'DESC');
+                $this->db->order_by('idauthuser', 'desc');
                 if (!empty($data[2])) {
-                    $paging = $data[2] * 10;
+                  $paging = $data[2] * 10;
                 } else {
-                    $paging = 0;
+                   $paging = 0;
                 }
-                $this->db->limit(10, $paging);
+                $this->db->limit(10, 0, $paging);
 
                 $queryx = $this->db->get()->result();
                 $this->db->select('count(*) as user');
@@ -1745,24 +1749,26 @@ class Admin_model extends CI_Model {
     }
 
     public function ditailsGetData($data = '') {
-        // print_r($data);
+         //print_r($data);
         // exit;
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();
         } else {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
-
+			
 
                 $this->db->select('a.*');
                 $this->db->from('product as a');
                 $this->db->join('category as b', 'b.idcategory = a.idcategory', 'left');
                 $this->db->where('delproduct', '0');
                 $this->db->where('a.idstore', $verify[0]->idstore);
-                $this->db->where('a.idproduct', $data[2]);
+                $this->db->where('idproduct', $data[2]);
 
 
                 $query = $this->db->get()->result();
+				//print_r($query);
+				//exit;
 
 
                 foreach ($query as $q) {
@@ -1909,14 +1915,11 @@ class Admin_model extends CI_Model {
 
 
                 foreach ($data->productDitails as $ddt) {
-                    //$sql = $this->db->query("SELECT skuPditails FROM product_ditails where skuPditails='$ddt->sku'");
-                    //$cek_sku = $sql->num_rows();
-                    //if ($cek_sku > 0) {
-                    //  return $this->duplicate_response();
-                    //} else { 
+                  
                     $datax = array(
                         'skuPditails' => $ddt->sku,
                         'collor' => strtoupper($ddt->collor),
+						'collorcode' => strtoupper($ddt->collorcode),
                         'size' => strtoupper($ddt->size),
                         'priceQuantum' => $ddt->priceQuantum,
                         'priceQuantumReport' => $ddt->priceQuantumReport,
@@ -1925,7 +1928,7 @@ class Admin_model extends CI_Model {
                         'stock' => $ddt->stock,
                         'weight' => $ddt->berat
                     );
-                    //}
+                    
 
                     $this->db->set($datax);
                     $this->db->where('idpditails', $idpditails);
@@ -1993,22 +1996,24 @@ class Admin_model extends CI_Model {
 
                 $this->db->select('*');
                 $this->db->from('transaction');
-				$this->db->where('statusPay!=2');
+                $this->db->where('statusPay!=2');
                 $this->db->order_by('idtransaction', 'desc');
 
-                if (!empty($data[2])) {
+                // if (!empty($data[2])) {
 //                    $paging = $data[2] * 10;
-                    $paging = 0;
-                } else {
-                    $paging = 0;
-                }
-                $this->db->limit(10, $paging);
+                //   $paging = 0;
+                //} else {
+                //  $paging = 0;
+                //}
+                //$this->db->limit(10, $paging);
 
                 $queryx = $this->db->get()->result();
-
+				//print_r($queryx);
+				//exit;
 
                 $this->db->select('count(*) as transaction');
                 $transaction = $this->db->get_where('transaction')->result();
+				
                 if ($transaction[0]->transaction = 0) {
                     $queryx = $this->db->get()->result();
                 } else {
@@ -2036,9 +2041,13 @@ class Admin_model extends CI_Model {
                     $queryy = $this->db->get()->result();
                     //print_r($queryy);
                     //exit;
-                    $this->db->select('count(*) as transaction_details');
-                    $transaction_details = $this->db->get_where('transaction_details')->result();
-                    $jlh = $transaction_details[0]->transaction_details;
+                    //$this->db->select('count(*) as transaction_details');
+                    //$transaction_details = $this->db->get_where('transaction_details')->result();
+                    //$jlh = $transaction_details[0]->transaction_details;
+                    //$hal = ceil($jlh / 10) - 1;
+					$this->db->select('count(*) as transaction');
+					$transaction = $this->db->get_where('transaction')->result();
+					$jlh = $transaction[0]->transaction;
                     $hal = ceil($jlh / 10) - 1;
 
                     $datax[] = array(
@@ -2228,7 +2237,7 @@ class Admin_model extends CI_Model {
                 //$tranfers = $this->db->get_where('transaction', array('idtransaction' => $data->idtransaction))->result();
                 //print_r($people);
                 //exit;  
-                //$message = 'rmall.id : Pesanan Sudah Dikirm,  No Invoice ' . $tranfers[0]->noInvoice . ',  No Resi ' . $tranfers[0]->trackingCode . ', Jazakallah';
+                //$message = 'rmall.id : Pesanan Sudah Dikirm,  No Invoice ' . $tranfers[0]->noInvoice . ',  No Resi JNE ' . $tranfers[0]->trackingCode . ', Jazakallah';
                 #$this->load->library('sms');
                 //$this->sms->SendSms($people[0]->phone, $message);
                 //} else if ($data->statusPay == 1) {
@@ -3370,8 +3379,11 @@ class Admin_model extends CI_Model {
             if (!empty($verify)) {
                 $this->db->select('*');
                 $this->db->where('delbanner', '0');
+				$this->db->order_by('idbanner', 'DESC');
                 $supdate = $this->db->get_where('banner')->result();
-            }
+            } else {
+				return $this->token_response();
+			}
 
 
             if ($supdate) {
@@ -3437,7 +3449,7 @@ class Admin_model extends CI_Model {
 
                 $this->db->insert('banner', $datay);
             } else {
-                return $this->ukuran_response();
+                return $this->token_response();
             }
 
 
@@ -3472,11 +3484,13 @@ class Admin_model extends CI_Model {
             if (!empty($verify)) {
 
 
-                $this->db->set('delbanner', 1);
+                //$this->db->set('delbanner', 1);
                 $this->db->where('idbanner', $data[2]);
 
-                $supdate = $this->db->update('banner');
-            }
+                $supdate = $this->db->delete('banner');
+            } else {
+				  return $this->token_response();
+			}
 
 
             if ($supdate) {
@@ -4008,6 +4022,584 @@ class Admin_model extends CI_Model {
                 $response['message'] = 'Data failed to receive or data empty.';
                 return $response;
             }
+        }
+    }
+	
+	 public function discount($data = '') {
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            // print_r($verify);
+            // exit;
+            if (!empty($verify)) {
+                $this->db->select('*');
+                
+
+              
+                $dataCatx = $this->db->get_where('discount')->result();
+            } else {
+                return $this->token_response();
+            }
+
+            if ($dataCatx) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCatx);
+                $response['data'] = $dataCatx;
+                
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+	
+	public function adddiscount($data = '') {
+	    // print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+                    $data = array(
+                        'discount' => strtoupper($data[2]),
+                        'start' => ($data[3]),
+                        'end' => ($data[4])
+                    );
+               // print_r($data['discount']);
+               // exit;
+                    $supdate = $this->db->update('discount', $data);
+            $x= $data['discount']/100;
+             $y= (100-$data['discount'])/100;
+
+// print_r($y);
+// exit;
+                $this->db->set('realprice', 'price*'.$y,FALSE);
+                $this->db->set('priceDiscount','price*'.$x,FALSE);
+//        $this->db->where('idproduct', '1507');
+//        $this->db->where('idproduct', '1505');
+//        $this->db->where('idproduct', '130');
+               $supdate = $this->db->update('product_ditails');
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            }
+        }
+    }
+	
+	public function flashsale($data = '') {
+	   //  print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+				$product = json_decode($data[4]);
+				 
+               
+                    $data = array(
+                       
+                        'startdate' => ($data[2]),
+                        'enddate' => ($data[3]),
+						'idproduct' => ($data[4]),
+						'flashsale' => ($data[5]),
+						'limit' => ($data[6])
+                    );
+               // print_r($data['discount']);
+               // exit;
+                    $supdate = $this->db->insert('flashsale', $data);
+           // $x= $data['discount']/100;
+            // $y= (100-$data['discount'])/100;
+
+// print_r($y);
+// exit;
+               // $this->db->set('realprice', 'price*'.$y,FALSE);
+               // $this->db->set('priceDiscount','price*'.$x,FALSE);
+//        $this->db->where('idproduct', '1507');
+//        $this->db->where('idproduct', '1505');
+//        $this->db->where('idproduct', '130');
+             //  $supdate = $this->db->update('product_ditails');
+			} else {
+				 return $this->token_response();
+			}
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+		public function delflashsale($data = '') {
+	  //  print_r($data);
+         //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+				 $this->db->where('idflashsale', $data[2]);
+                $query = $this->db->delete('flashsale');
+			} else {
+				 return $this->token_response();
+			}
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function getflashsale($data = '') {
+	   //  print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+                $this->db->select('*');  
+				
+                $dataCatx = $this->db->get_where('flashsale')->result();
+				//$this->db->where('idproduct', $ddt->idproduct);
+				
+				 $data = json_decode($dataCatx[0]->idproduct);
+			  foreach ($data as $ddt) {
+				 $datax = array(
+                            'idproduct' => $ddt->idproduct,
+							
+                          
+                        );
+						//print_r($datax);
+						
+					                 
+            $x= $dataCatx[0]->flashsale/100;
+            $y= $dataCatx[0]->flashsale/100;
+             
+
+            $this->db->set('realprice', 'price*'.$y,FALSE);
+			$this->db->set('priceDiscount','price*'.$x,FALSE);
+			$this->db->where('idproduct', $datax['idproduct']);
+            $supdate = $this->db->update('product_ditails');
+			
+			//$this->db->select('*');
+			//$this->db->where('idproduct', $ddt->idproduct);
+			//$datay = $this->db->get_where('discount')->result();	
+				//$datay[] = $datax ;
+			  }
+				
+				
+            } else {
+                return $this->token_response();
+            }
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $dataCatx;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function productdiscount($data = '') {
+	    // print_r($data);
+         //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+              
+            $x= $data[3]/100;
+            $y= (100-$data[3])/100;
+
+
+            $this->db->set('realprice', 'price*'.$y,FALSE);
+			$this->db->set('priceDiscount','price*'.$x,FALSE);
+			$this->db->where('idproduct', $data[2]);
+            $supdate = $this->db->update('product_ditails');
+			} else {
+				return $this->token_response();
+			}
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function categorydiscount($data = '') {
+	     //print_r($data);
+         //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+            
+			
+            $x= $data[3]/100;
+            $y= (100-$data[3])/100;
+
+
+            $this->db->set('realprice', 'price*'.$y,FALSE);
+			$this->db->set('priceDiscount','price*'.$x,FALSE);
+			
+            $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');  
+			$this->db->where('a.idcategory', $data[2]);
+			$dataCat = $this->db->get_where('product as a')->result();
+            $supdate = $this->db->update('product_ditails as b');
+			} else {
+				return $this->token_response();
+			}
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function ditailsdiscount($data = '') {
+	    // print_r($data);
+         //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+              
+            $x= $data[3]/100;
+            $y= (100-$data[3])/100;
+
+
+            $this->db->set('realprice', 'price*'.$y,FALSE);
+			$this->db->set('priceDiscount','price*'.$x,FALSE);
+			$this->db->where('idpditails', $data[2]);
+            $supdate = $this->db->update('product_ditails');
+			} else {
+				return $this->token_response();
+			}
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function dataterms($data = '') {
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            // print_r($verify);
+            // exit;
+            if (!empty($verify)) {
+                $this->db->select('*');
+                
+
+              $this->db->where('statusterms', '0');
+               $dataCatx = $this->db->get_where('terms')->result();
+            } else {
+                return $this->token_response();
+            }
+
+            if ($dataCatx) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCatx);
+                $response['data'] = $dataCatx;
+                
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+	
+	public function addterms($data = '') {
+	    // print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+                    $data = array(
+                        'sk' => ($data[2]),
+                        
+                    );
+               // print_r($data['discount']);
+               // exit;
+                  $supdate = $this->db->insert('terms', $data);
+          
+              
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            }
+        }
+    }
+	
+	 public function termsdraft($data = '') {
+
+        // $sql = $this->db->query("SELECT statusdel FROM category where statusdel='1'");
+        // $cek_cat = $sql->num_rows();
+        //  print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+
+				$cekterms = $this->db->get_where('terms', array('idterms' =>  $data[2]))->result();
+				//print_r($cekterms[0]->statusterms);
+				//exit;
+				
+				 if ($cekterms[0]->statusterms = 0) {
+					 $this->db->set('statusterms', 1);
+                $this->db->where('idterms', $data[2]);
+
+                $supdate = $this->db->update('terms');
+					 
+				 } else {
+                $this->db->set('statusterms', 0);
+                $this->db->where('idterms', $data[2]);
+
+                $supdate = $this->db->update('terms');
+				 }
+            } else {
+				  return $this->token_response();
+			}
+
+
+            if ($supdate) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data received successfully.';
+                $response['data'] = $supdate;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+	
+	public function shorturl($data = '') {
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            // print_r($verify);
+            // exit;
+            if (!empty($verify)) {
+                $this->db->select('*');
+                
+
+             
+               $dataCatx = $this->db->get_where('short_url')->result();
+            } else {
+                return $this->token_response();
+            }
+
+            if ($dataCatx) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCatx);
+                $response['data'] = $dataCatx;
+                
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+	
+	public function addshorturl($data = '') {
+	     //print_r($data);
+        //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+                    $data = array(
+						'datecreate' =>  date('Y-m-d'),
+						'urlname' => ($data[2]),
+                        'urltarget' => ($data[3])
+                        
+                    );
+               // print_r($data['discount']);
+               // exit;
+                  $supdate = $this->db->insert('short_url', $data);
+          
+               } else {
+                return $this->token_response();
+				}
+
+        
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
+        }
+    }
+	
+	public function delshorturl($data = '') {
+	     //print_r($data);
+        //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data)) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+               
+                   
+				  $this->db->where('idshort',$data[2]);
+                  $supdate = $this->db->delete('short_url');
+          
+              
+			} else {
+                return $this->token_response();
+            }
+
+                
+                if ($supdate) {
+                    $response['status'] = 200;
+                    $response['error'] = false;
+                    $response['message'] = 'Data received successfully.';
+                    $response['data'] = $supdate;
+                    return $response;
+                } else {
+                    $response['status'] = 502;
+                    $response['error'] = true;
+                    $response['message'] = 'Data already exists.';
+                    $response['data'] = $dataCat;
+                    return $response;
+                }
+            
         }
     }
 

@@ -139,7 +139,7 @@ class Authapi_model extends CI_Model {
             $this->db->where($data);
             $this->db->update('apiauth_user');
 
-            $this->db->select('a.*, b.urlimage');
+            $this->db->select('a.idauthuser, a.firstname,a.lastname,a.username,a.email,a.hp,a.keyCode,a.otp, b.urlimage');
             $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
             $query = $this->db->get_where('apiauth_user as a', $data)->result();
             if (!empty($query)) {
@@ -183,9 +183,9 @@ class Authapi_model extends CI_Model {
                 $response['error'] = false;
                 $response['data'] = $query;
                 $response['dataApps'] = array(
-                    'iconApps'=>'http://bangun.rmall.id/asset/main/image/pavicon.png',
-                    'nameApps'=> 'Fullfilment Online System',
-                    'logoApps'=> 'https://i1.wp.com/www.rabbanimallonline.com/wp-content/uploads/2018/11/ic_default_image.png?resize=150%2C150'
+                    'iconApps' => 'http://bangun.rmall.id/asset/main/image/pavicon.png',
+                    'nameApps' => 'Fullfilment Online System',
+                    'logoApps' => 'https://i1.wp.com/www.rabbanimallonline.com/wp-content/uploads/2018/11/ic_default_image.png?resize=150%2C150'
                 );
                 return $response;
             } else {

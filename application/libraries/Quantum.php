@@ -5,12 +5,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Quantum {
 
     function callAPi($skuDitails = '', $type = '', $idStore = '') {
-        if(!empty($idStore)){
+        if (!empty($idStore)) {
             $idStore = $idStore;
-        }else{
+        } else {
             $idStore = 'M001-O0042';
         }
-        $key = '1dac4c079bb9a4528efa5d1014675092';
+        $key = '68a780149f6c4d5eaca5573ac10ad4f3';
         if ($type == 1) {
             $arrayData = array(
                 'p' => 'rabbani',
@@ -30,13 +30,22 @@ class Quantum {
                 'w' => $idStore
             );
             $url_api = 'https://103.14.21.57/back_end/quantum/stock_api.php';
-        } else {
+        } elseif ($type == 3) {
             $arrayData = array(
                 'u' => 'userrmo',
                 'j' => 'gs',
                 'b' => $skuDitails,
                 'c' => $key,
 //                'w' => 'M001-O0042'
+                'w' => $idStore
+            );
+            $url_api = 'https://103.14.21.57/back_end/quantum/stock_api.php';
+        } elseif ($type == 4) {
+            $arrayData = array(
+                'u' => 'userrmo',
+                'j' => 'gsw',
+                'b' => $skuDitails,
+                'c' => $key,
                 'w' => $idStore
             );
             $url_api = 'https://103.14.21.57/back_end/quantum/stock_api.php';

@@ -12,11 +12,28 @@ class H2h extends REST_Controller {
         header('Access-Control-Allow-Headers: Content-Type, x-xsrf-token, X-API-KEY');
         $this->load->model('h2h_model');
         $this->load->library('quantum');
+        $this->load->library('courir');
 
         $this->load->helper(array('form', 'url'));
     }
 
     function index_get($id = '') {
+        $file = fopen("file/list_dest_02.csv", "r");
+        while (!feof($file)) {
+            $data = fgetcsv($file);
+            $datax = array(
+                'PROVINCE_NAME' => $data[0],
+                'CITY_NAME' => $data[1],
+                'DISTRICT_NAME' => $data[2],
+                'SUBDISTRICT_NAME' => $data[3],
+                'ZIP_CODE' => $data[4],
+                'CITY_CODE' => $data[5]
+            );
+//            $this->h2h_model->inputJne($datax);
+            print_r($data);
+        }
+        fclose($file);
+        exit;
 //        $this->h2h_model->cron(122);
 //        exit;
         //M001-O0001->DU
@@ -35,10 +52,23 @@ class H2h extends REST_Controller {
 //        $idx = $id + 1;
 //        echo '<html>';
 //        echo '<meta http-equiv="refresh" content="10; url=https://api.rmall.id/h2h/' . $idx . '">';
-        $this->h2h_model->cron(123);
 //        echo '</html>';
 //        $this->h2h_model->cron(12);
 //        print_r($aut2);
+    }
+
+    function cron_get() {
+        $this->h2h_model->cron();
+    }
+    
+    function index_post(){
+        $url = $this->input->post('url');
+        $data = $this->h2h_model->short($url);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
     }
 
     function syncStock_get($pg = '') {

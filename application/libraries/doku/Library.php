@@ -1,80 +1,69 @@
 <?php
+
 /**
  * Doku's Global Function
  */
 class Doku_Library {
 
-	public static function doCreateWords($data){
+    public static function doCreateWords($data) {
 
-		if(!empty($data['device_id'])){
+        if (!empty($data['device_id'])) {
 
-			if(!empty($data['pairing_code'])){
+            if (!empty($data['pairing_code'])) {
 
-				return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'] . $data['device_id']);
+                return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'] . $data['device_id']);
+            } else {
 
-			}else{
+                return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['device_id']);
+            }
+        } else if (!empty($data['pairing_code'])) {
 
-				return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['device_id']);
+            return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code']);
+        } else if (!empty($data['currency'])) {
 
-			}
+            return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency']);
+        } else {
 
-		}else if(!empty($data['pairing_code'])){
+            return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice']);
+        }
+    }
 
-			return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code']);
+    public static function doCreateWordsRaw($data) {
 
-		}else if(!empty($data['currency'])){
+        if (!empty($data['device_id'])) {
 
-			return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency']);
+            if (!empty($data['pairing_code'])) {
 
-		}else{
+                return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'] . $data['device_id'];
+            } else {
 
-			return sha1($data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice']);
+                return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['device_id'];
+            }
+        } else if (!empty($data['pairing_code'])) {
 
-		}
-	}
+            return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'];
+        } else if (!empty($data['currency'])) {
 
-	public static function doCreateWordsRaw($data){
+            return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'];
+        } else {
 
-		if(!empty($data['device_id'])){
+            return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'];
+        }
+    }
 
-			if(!empty($data['pairing_code'])){
+    public static function formatBasket($data) {
 
-				return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'] . $data['device_id'];
+        if (is_array($data)) {
+            foreach ($data as $basket) {
+                $parseBasket = $parseBasket . $basket['name'] . ',' . $basket['amount'] . ',' . $basket['quantity'] . ',' . $basket['subtotal'] . ';';
+            }
+        } else if (is_object($data)) {
+            foreach ($data as $basket) {
+                $parseBasket = $parseBasket . $basket->name . ',' . $basket->amount . ',' . $basket->quantity . ',' . $basket->subtotal . ';';
+            }
+        }
 
-			}else{
-
-				return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['device_id'];
-
-			}
-
-		}else if(!empty($data['pairing_code'])){
-
-			return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'] . $data['token'] . $data['pairing_code'];
-
-		}else if(!empty($data['currency'])){
-
-			return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'] . $data['currency'];
-
-		}else{
-
-			return $data['amount'] . Doku_Initiate::$mallId . Doku_Initiate::$sharedKey . $data['invoice'];
-
-		}
-	}
-
-	public static function formatBasket($data){
-
-		if(is_array($data)){
-			foreach($data as $basket){
-				$parseBasket = $parseBasket . $basket['name'] .','. $basket['amount'] .','. $basket['quantity'] .','. $basket['subtotal'] .';';
-			}
-		}else if(is_object($data)){
-			foreach($data as $basket){
-				$parseBasket = $parseBasket . $basket->name .','. $basket->amount .','. $basket->quantity .','. $basket->subtotal .';';
-			}
-		}
-
-		return $parseBasket;
-	}
+        return $parseBasket;
+    }
 
 }

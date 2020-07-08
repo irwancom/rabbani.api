@@ -18,7 +18,33 @@ class Fulfillment extends REST_Controller {
     }
 
     function index_get() {
-        $this->SendSms('08986002287', 'Ini sms notif');
+        $data = $this->fulfillment_model->check();
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    function stock_post() {
+        $data = array(
+            'keyCodeStaff' => $this->input->post('keyCodeStaff'),
+            'secret' => $this->input->post('secret'),
+            'rack' => $this->input->post('rack'),
+            'sku' => $this->input->post('sku'),
+            'type' => $this->input->post('type')
+        );
+        $data = $this->fulfillment_model->stock($data);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    function updateProcess_post() {
+
+        $this->fulfillment_model->updateProcess($this->input->post('noInvoice'));
     }
 
     function printBarcode_post($limit = '') {
@@ -189,24 +215,100 @@ class Fulfillment extends REST_Controller {
         }
     }
 
+    public function outProduct_post() {
+        $data = $this->input->post('awb');
+        $data = $this->fulfillment_model->debitStock($data);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
     public function importData_get() {
-        $file = fopen("file/data.csv", "r");
+        $file = fopen("file/Dt_Stok-_1_.csv", "r");
         while (!feof($file)) {
             $data = fgetcsv($file);
-//            $this->fulfillment_model->importData($data);
+            $this->fulfillment_model->importData2($data);
             print_r($data);
         }
         fclose($file);
     }
 
+    public function updateEmpty_get($id = '') {
+        $this->fulfillment_model->updateEmpty($id);
+        header('Location: https://print.rmall.id/recheck.php');
+        exit;
+    }
+
     public function importTransaksi_get() {
-        $file = fopen("file/import.csv", "r");
+        $this->fulfillment_model->sync();
+        exit;
+        $file = fopen("file/transaksi_shopeex.csv", "r");
         while (!feof($file)) {
             $data = fgetcsv($file);
-            $this->fulfillment_model->importDataimportDataExel($data);
+//            $this->fulfillment_model->importData3($data,'2020-05-07');
             print_r($data);
         }
         fclose($file);
+    }
+
+    public function handOver_post() {
+        $data = $this->fulfillment_model->handOver($this->input->post('awb'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    public function sendTransaction_post() {
+        $data = $this->fulfillment_model->sendTransaction($this->input->post('awb'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    public function trx_post() {
+        $data = $this->fulfillment_model->trx($this->input->post('awb'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    public function restore_post() {
+        $data = $this->fulfillment_model->restore($this->input->post('awb'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    public function checkTransaction_post() {
+        $data = $this->fulfillment_model->checkTransaction($this->input->post('awb'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+    public function handOverDownload_get() {
+        $this->fulfillment_model->handOverDownload();
+    }
+
+    public function notifDownload_get($id = '') {
+        $data = $this->fulfillment_model->notifDownload($id);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
     }
 
     function sendWa($phone = '', $msg = '') {
@@ -261,7 +363,7 @@ class Fulfillment extends REST_Controller {
                 $hp = $dt->phone;
 //                echo $hp;
 //                exit;
-                $msg = 'Assalamualaikum _'.$dt->name.'_, mohon untuk melakukan *BLOCK WA* secara serentak pada no http://wa.me/628112370111, untuk tutorial melakukan bock no tersebut sebagai berikut https://youtu.be/2uyOWLNL2AY , karena no tersebut telah di retas dan merugikan banyak konsumen dengan modus mengatas namakan rabbani, mohon kerjasamanya dan lakukan sekarang, terimakasih.';
+                $msg = 'Assalamualaikum _' . $dt->name . '_, mohon untuk melakukan *BLOCK WA* secara serentak pada no http://wa.me/628112370111, untuk tutorial melakukan bock no tersebut sebagai berikut https://youtu.be/2uyOWLNL2AY , karena no tersebut telah di retas dan merugikan banyak konsumen dengan modus mengatas namakan rabbani, mohon kerjasamanya dan lakukan sekarang, terimakasih.';
 //                $msg2 = 'Pembaharuan data di buka dari jam 11:30 WIB - 14:00 WIB.';
 //                echo $hp . ' - ' . $msg . ' - ' . $msg2;
 //                $this->sendWa($hp, $msg);

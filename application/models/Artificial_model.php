@@ -18,6 +18,132 @@ class Artificial_model extends CI_Model {
         return $query[0];
     }
 
+    public function getCode($idCity = '') {
+        $data = array(
+            "CITY_ID" => $idCity
+        );
+        $query = $this->db->get_where('sensus', $data)->result();
+        if (!empty($query)) {
+            $query = $query[0];
+        } else {
+            $query = 0;
+        }
+        return $query;
+    }
+
+    public function getPrintData($type = '') {
+        if ($type == 1) {
+            $data = array(
+                "status" => 0,
+                "statusPay" => 1,
+            );
+            $query = $this->db->get_where('transaction', $data, 100)->result();
+            return $query;
+        } else {
+            $data = array(
+                "a.status" => 0,
+                "a.statusPay" => 1,
+            );
+            $this->db->select(
+                    'a.idtransaction, a.noInvoice, a.status, a.statusPay, a.trackingCode, a.dateCreate,
+                b.idpeople, b.id_city, b.address, b.pos, b.name, b.phone,
+                c.PROVINCE_NAME as province_name, c.CITY_NAME as nameCity, c.ZIP_CODE as postcode, c.CITY_CODE as JNEcode'
+            );
+            $this->db->where('a.trackingCode!=""');
+            $this->db->join('sensus_people as b', 'b.idpeople = a.idpeople', 'left');
+            $this->db->join('sensus as c', 'c.CITY_ID = b.id_city', 'left');
+            $this->db->group_by('a.idtransaction');
+            $query = $this->db->get_where('transaction as a', $data)->result();
+            // print_r($query);
+            // exit;
+            $dataTrx = 0;
+            if (!empty($query)) {
+                $dataTrx = array();
+                foreach ($query as $qr) {
+                    // print_r($qr);
+                    $datax = array(
+                        "idtransaction" => $qr->idtransaction
+                    );
+                    $queryx = $this->db->get_where('transaction_details', $datax)->result();
+                    // print_r($queryx);
+                    if (!empty($queryx)) {
+                        $dataTrx[] = array('dataTransaction' => $qr, 'ditailsTransaction' => $queryx);
+                    }
+                }
+            }
+            // print_r($dataTrx);
+            // exit;
+
+            return $dataTrx;
+        }
+    }
+
+    public function getInfoTracking($keyCode = '', $awb = '') {
+        $data = array(
+            "a.keyCode" => $keyCode,
+            'b.trackingCode' => $awb
+        );
+        $this->db->join('transaction as b', 'b.idauthuser = a.idauthuser');
+        $query = $this->db->get_where('apiauth_user as a', $data)->result();
+        //print_r($query);
+        if (!empty($query)) {
+            $query = $query[0];
+        } else {
+            $query = 0;
+        }
+        return $query;
+    }
+
+    public function getInfoAwb($keyCodeStaff = '', $secret = '', $noInvoice = '') {
+        $data = array(
+            "keyCodeStaff" => $keyCodeStaff,
+            'secret' => $secret
+        );
+        $query = $this->db->get_where('apiauth_staff', $data)->result();
+
+        $datax = array(
+            "a.noInvoice" => $noInvoice,
+            "a.status" => 0,
+            "a.statusPay" => 1,
+//            "c.IDSENSUS" => "b.id_dis"
+        );
+        $this->db->select(
+                'a.idtransaction, a.noInvoice, a.status, a.statusPay, a.shipping,
+            b.idpeople, b.id_dis, b.id_city, b.address, b.pos, b.name, b.phone,
+            c.PROVINCE_NAME as province_name, c.CITY_NAME as nameCity, c.ZIP_CODE as postcode, c.CITY_CODE as JNEcode'
+        );
+        $this->db->join('sensus_people as b', 'b.idpeople = a.idpeople', 'left');
+        $this->db->join('sensus as c', 'c.CITY_ID = b.id_city AND c.IDSENSUS = b.id_dis', 'left');
+        // $this->db->join('transaction_details as d', 'd.idtransaction = a.idtransaction', 'left');
+        // $this->db->group_by("a.idtransaction");
+//        $this->db->or_where();
+        $queryx = $this->db->get_where('transaction as a', $datax)->result();
+
+        if (!empty($queryx)) {
+            $dataz = array(
+                "idtransaction" => $queryx[0]->idtransaction
+            );
+            $this->db->select('sum(weight) as weight, sum(qty) as qty');
+            $this->db->group_by("idtransaction");
+            $queryz = $this->db->get_where('transaction_details', $dataz)->result();
+
+            $query = array('dataOrder' => $queryx[0], 'dataProduct' => $queryz[0]);
+
+            return $query;
+        } else {
+            return array();
+        }
+    }
+
+    public function updateAwbToInvoice($awb = '', $noInvoice = '') {
+        // echo $awb.'-'.$noInvoice;
+        // exit;
+        $this->db->set('trackingCode', $awb);
+        // $this->db->set('status', 1);
+        $this->db->where('noInvoice', $noInvoice);
+        $this->db->update('transaction');
+    }
+
     public function artorder($data = '') {
         $dataAccount = $this->verfyAccount($data['keyCode']);
         if (!empty($dataAccount)) {

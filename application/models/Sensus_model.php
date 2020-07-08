@@ -204,66 +204,65 @@ class Sensus_model extends CI_Model {
         } else {
 
             $data = json_decode($data[0]);
-           
+
 
             //$sql = $this->db->query("SELECT hp FROM apiauth_user where hp='" . $data->wa . "'");
-           // $cek_cat = $sql->num_rows();
-			
+            // $cek_cat = $sql->num_rows();
             //if ($cek_cat > 0) {
-              //  return $this->duplicate_response();
-           // } else if ($cek_cat = 1) {
-				
+            //  return $this->duplicate_response();
+            // } else if ($cek_cat = 1) {
 
-                $data2 = array(
-                    'timeCreate' => date('H:i:s'),
-                    'dateCreate' => date('Y-m-d '),
-                    'firstname' => $data->nama,
-                    //'hp' => $data->wa,
-                    'username' => $data->wa,
-                    'password' => md5($data->password),
-                    'email' => $data->email
-                );
-                $xupdate = $this->db->insert('apiauth_user', $data2);
-                $insert_id = $this->db->insert_id();
-				 
-                $data3 = array(
-                    'name' => $data->nama,
-                    'address' => $data->datapenerima[0]->alamat,
-                    'rt' => $data->datapenerima[0]->rt,
-                    'rw' => $data->datapenerima[0]->rw,
-                    'pos' => $data->datapenerima[0]->pos,
-                    'id_vill' => $data->datapenerima[0]->id_vill,
-                    'id_dis' => $data->datapenerima[0]->id_dis,
-                    'id_city' => $data->datapenerima[0]->id_city,
-                    'id_prov' => $data->datapenerima[0]->id_prov,
-                    'email' => $data->email,
-                    'phone' => $data->wa,
-                    'idauthuser' => $insert_id
-                );
-				
-                $yupdate = $this->db->insert('sensus_people', $data3);
-				$sql = $this->db->query("SELECT wa FROM reseller where wa='" . $data->wa . "'");
-				$cek_wa = $sql->num_rows();
-				
-               if ($cek_wa > 0) {
-				return $this->duplicate_response();
-				} else {
+
+            $data2 = array(
+                'timeCreate' => date('H:i:s'),
+                'dateCreate' => date('Y-m-d '),
+                'firstname' => $data->nama,
+                //'hp' => $data->wa,
+                'username' => $data->wa,
+                'password' => md5($data->password),
+                'email' => $data->email
+            );
+            $xupdate = $this->db->insert('apiauth_user', $data2);
+            $insert_id = $this->db->insert_id();
+
+            $data3 = array(
+                'name' => $data->nama,
+                'address' => $data->datapenerima[0]->alamat,
+                'rt' => $data->datapenerima[0]->rt,
+                'rw' => $data->datapenerima[0]->rw,
+                'pos' => $data->datapenerima[0]->pos,
+                'id_vill' => $data->datapenerima[0]->id_vill,
+                'id_dis' => $data->datapenerima[0]->id_dis,
+                'id_city' => $data->datapenerima[0]->id_city,
+                'id_prov' => $data->datapenerima[0]->id_prov,
+                'email' => $data->email,
+                'phone' => $data->wa,
+                'idauthuser' => $insert_id
+            );
+
+            $yupdate = $this->db->insert('sensus_people', $data3);
+            $sql = $this->db->query("SELECT wa FROM reseller where wa='" . $data->wa . "'");
+            $cek_wa = $sql->num_rows();
+
+            if ($cek_wa > 0) {
+                return $this->duplicate_response();
+            } else {
                 $data4 = array(
                     'ktp' => $data->ktp,
-					'wa' => $data->wa,
+                    'wa' => $data->wa,
                     'idauthuser' => $insert_id
                 );
                 $zupdate = $this->db->insert('reseller', $data4);
                 $wa = '08112346165';
                 $message1 = '*Reseller Baru* 
-WA : https://wa.me/+62' . substr($data->wa,1) . ', 
+WA : https://wa.me/+62' . substr($data->wa, 1) . ', 
 Nama : _' . ($data->nama) . '_,
 Email : _' . ($data->email) . '_,
 KTP : _' . ($data->ktp) . '_,
 Alamat : _' . ($data->datapenerima[0]->alamat) . '_,
 Kode Pos : _' . ($data->datapenerima[0]->pos) . '_,
 Tolong Di FU';
-					
+
                 $message = '*Reseller Rabbani Rumahan*
 
 Terima Kasih Kak _' . strtoupper($data->nama) . '_, 
@@ -272,9 +271,7 @@ Team Kami Akan Segera Menghubungi Anda,
 Untuk Info Lanjut Juga Bisa Wa *https://wa.me/628112346165* ';
                 $this->wa->SendWa($data->wa, $message);
                 $this->wa->SendWa($wa, $message1);
-				} 
-		
-        
+            }
         }
 
 
@@ -334,9 +331,14 @@ Untuk Info Lanjut Juga Bisa Wa *https://wa.me/628112346165* ';
                     'username' => $data[1]
                 );
 
+                $message1 = 'Alhamdulillah, Anda mendapatkan potongan *DISKON 30% ALL ITEM*
+Kode Voucher:
+_*RABBANI30*_ (Untuk Rabbani)
+_*BANIDIS30*_ (Untuk Bani Batuta)';
+
                 $message = '*Rabbani Bagi2 Voucher*
 
-Alhamdulillah _' . $data[0] . '_, Anda mendapatkan potongan *DISKON 30% ALL ITEM*
+Alhamdulillah, Anda mendapatkan potongan *DISKON 30% ALL ITEM*
 Kode Voucher:
 _*RABBANI30*_ (Untuk Rabbani)
 _*BANIDIS30*_ (Untuk Bani Batuta)
@@ -365,7 +367,10 @@ https://www.bukalapak.com/u/banibatuta15
 Buruan kode vouchernya aktif hingga 23 April 2020 dan terbatas loh untuk 1.000 pelanggan pertama :).
 
 Info lebih lanjut WA https://wa.me/62811248838';
-                $this->wa->SendWa($data[1], $message);
+                // $this->wa->SendWa($data[1], $message);
+                #$this->load->library('sms');
+
+                $this->sms->SendSms($data[1], $message1);
 
                 $xupdate = $this->db->insert('apiauth_user', $data2);
             }

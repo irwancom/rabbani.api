@@ -12,6 +12,7 @@ class Sensus extends REST_Controller {
         header('Access-Control-Allow-Headers: Content-Type, x-xsrf-token, X-API-KEY');
         $this->load->model('sensus_model');
         $this->load->library('wa');
+        $this->load->library('sms');
 
         $this->load->helper(array('form', 'url'));
     }
