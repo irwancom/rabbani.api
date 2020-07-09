@@ -455,9 +455,6 @@ class Main_model extends CI_Model {
         $db2 = $this->load->database('db2', TRUE);
         $db2->select('a.*,c.urlImage');
         $db2->from('product as a');
-
-
-
         $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
         $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
         $db2->where('delproduct', 0);
