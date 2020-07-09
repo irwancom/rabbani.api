@@ -427,9 +427,44 @@ class Main_model extends CI_Model {
         $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
         $db2->where('delproduct', 0);
         $db2->limit(10, $page);
-        $db2->group_by('idproduct');
-        $db2->order_by('dateCreate', 'DESC');
-        $db2->order_by('timeCreate', 'DESC');
+        //$db2->group_by('idproduct');
+        //$db2->order_by('dateCreate', 'DESC');
+        $db2->order_by('idproduct', 'DESC');
+
+        $query = $db2->get()->result();
+		//print_r($query);
+		//exit;
+       
+        if (!empty($query)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($query);
+            $response['data'] = $query;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+    
+        public function getDataproductrandom($page = '') {
+        $this->db->cache_on();
+        $db2 = $this->load->database('db2', TRUE);
+        $db2->select('a.*,c.urlImage');
+        $db2->from('product as a');
+
+
+
+        $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
+        $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $db2->where('delproduct', 0);
+        $db2->limit(10, $page);
+        //$db2->group_by('idproduct');
+        $db2->order_by('idproduct', 'RANDOM');
+       
 
         $query = $db2->get()->result();
 		//print_r($query);

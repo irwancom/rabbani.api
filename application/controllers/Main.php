@@ -133,6 +133,15 @@ class Main extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
+    
+     public function product5_get($page = '') {
+        $data = $this->main_model->getDataproductrandom($page);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
 
     public function productByCat_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
