@@ -4292,7 +4292,7 @@ class Admin_model extends CI_Model {
 	
 	public function categorydiscount($data = '') {
 	     //print_r($data);
-         //exit;
+        // exit;
         if (empty($data[0]) || empty($data[1]) || empty($data)) {
             return $this->empty_response();
         } else {
@@ -4301,21 +4301,18 @@ class Admin_model extends CI_Model {
                
             
 			
-            $x= $data[3]/100;
+         
+			$product = $this->db->get_where('product', array('idcategory' => $data[2]))->result();
+			 foreach ($product as $q) {
+			//print_r($q->idproduct);
+			//exit;
+			$x= $data[3]/100;
             $y= (100-$data[3])/100;
-
-
             $this->db->set('realprice', 'price*'.$y,FALSE);
 			$this->db->set('priceDiscount','price*'.$x,FALSE);
-			
-            $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');  
-			$this->db->where('a.idcategory', $data[2]);
-			$dataCat = $this->db->get_where('product as a')->result();
-            $supdate = $this->db->update('product_ditails as b');
-			} else {
-				return $this->token_response();
-			}
-        
+			$this->db->where('idproduct', $q->idproduct);
+			$this->db->update('product_ditails');
+			 }
                 
                 if ($supdate) {
                     $response['status'] = 200;
