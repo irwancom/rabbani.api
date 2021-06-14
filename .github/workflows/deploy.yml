@@ -1,0 +1,30 @@
+name: Deployment
+
+on:
+  push:
+    branches: [ master ]
+jobs:
+  laravel-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: ssh deploy
+      uses: easingthemes/ssh-deploy@v2.1.4
+      with:
+        # Private Key
+        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        # Remote host
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        # Remote user
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        # Remote port
+        REMOTE_PORT: 22
+        # Source directory
+        SOURCE: /
+        # optional, default is
+        # Target directory
+        TARGET: /var/www/rabbani/api-rabbani
+        # Arguments to pass to rsync
+        ARGS: "-rltgoDzvO --exclude '.env'"
