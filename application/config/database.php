@@ -76,10 +76,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => '178.128.82.94',
+    'hostname' => 'db.rabbani.id',
     'port' => 3306,
-    'username' => 'main',
-    'password' => 'uTh[}2)geX;b',
+    'username' => 'rabbani',
+    'password' => 'bC7ph2tZrRDqsZpc',
     'database' => 'main',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
