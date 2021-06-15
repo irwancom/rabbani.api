@@ -91,7 +91,7 @@ class Pay_model extends CI_Model {
             } else {
                 $hp = '08986002287';
             }
-            
+
 //            $massage = 'rmall.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
 //            $this->sms->SendSms($hp, $massage);
 
@@ -115,7 +115,7 @@ class Pay_model extends CI_Model {
         if (!empty($queryx)) {
             $massage = 'rmall.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
             $this->sms->SendSms($hp, $massage);
-            
+
             $response['status'] = 200;
             $response['error'] = false;
             return $response;
@@ -177,7 +177,35 @@ class Pay_model extends CI_Model {
         if (!empty($query)) {
             $massage = 'rmall.id : Pembayaran Sebesar Rp ' . $dataCallBack->amount . ' Dari Tagihan Rp ' . $totalpay . ' Melalui ' . $dataCallBack->bank_code . ' Virtual Account Telah Di Terima, Info Pengiriman Slahkan Cek Di Menu Transaksi.';
             $this->sms->SendSms($hp, $massage);
-            
+
+            $response['status'] = 200;
+            $response['error'] = false;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            return $response;
+        }
+    }
+
+    public function payPaidHistoriesMoota($totalpay = '', $rawData = '') {
+//        $dataCallBack = json_decode($datax);
+//        print_r($dataCallBack);
+//        exit;
+        $this->db->join('apiauth_user as b', 'b.idauthuser = a.idauthuser', 'left');
+        $queryx = $this->db->get_where('transaction as a', array('a.totalpay' => $totalpay, 'a.statusPay' => 0))->result();
+//        print_r($queryx[0]->hp);
+//        exit;
+        if (!empty($queryx)) {
+
+            $this->db->set('statusPay', 1);
+            $this->db->where('totalpay', $totalpay);
+            $this->db->update('transaction');
+        }
+        if (!empty($queryx)) {
+            $massage = 'rmall.id : Pembayaran Sebesar Rp ' . $totalpay . ' Dari Tagihan Rp ' . $totalpay . ' Melalui Transfer Bank Manual Telah Di Terima, Info Pengiriman Slahkan Cek Di Menu Transaksi.';
+            $this->sms->SendSms($queryx[0]->hp, $massage);
+
             $response['status'] = 200;
             $response['error'] = false;
             return $response;

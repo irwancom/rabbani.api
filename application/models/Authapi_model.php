@@ -16,14 +16,20 @@ class Authapi_model extends CI_Model {
     }
 
     public function apiauth($username = '', $password = '') {
+		
         if (empty($username) || empty($password)) {
             return $this->empty_response();
         } else {
+			//print_r($password);exit;
             $data = array(
                 "username" => $username,
-                "password" => md5($password)
+                "password" => md5($password),
+                //"idstore" => 1,
+                //"status" => 0
             );
+			
             $checkAuth = $this->db->get_where('apiauth', $data)->result();
+			//print_r($checkAuth);exit;
             $dataCode = array(
                 'keyCode' => md5(time()),
                 'secret' => md5($username . time()) . md5(time() . $password)
@@ -49,6 +55,7 @@ class Authapi_model extends CI_Model {
     }
 
     public function apiauth_admin($username = '', $password = '') {
+		//print_r($username);exit;
         if (empty($username) || empty($password)) {
             return $this->empty_response();
         } else {
@@ -58,6 +65,7 @@ class Authapi_model extends CI_Model {
                 "idstore" => 1,
                 "status" => 0
             );
+			//print_r($data);exit;
             $checkAuth = $this->db->get_where('apiauth_staff', $data)->result();
             $dataCode = array(
                 'keyCodeStaff' => md5(time()),
@@ -120,17 +128,21 @@ class Authapi_model extends CI_Model {
     }
 
     public function apiauth_main($username = '', $password = '') {
+		//print_r($username);
+		//exit;
 
         if (empty($username) || empty($password)) {
             return $this->empty_response();
         } else {
             $data = array(
-                "username" => $username,
+                "username" => strtolower($username),
                 "password" => md5($password),
                 "status" => 0
             );
 
             $checkAuth = $this->db->get_where('apiauth_user', $data)->result();
+			//print_r($checkAuth);
+			//exit;
 
             $dataCode = array(
                 'keyCode' => md5($username . $password)
@@ -142,6 +154,8 @@ class Authapi_model extends CI_Model {
             $this->db->select('a.idauthuser, a.firstname,a.lastname,a.username,a.email,a.hp,a.keyCode,a.otp, b.urlimage');
             $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
             $query = $this->db->get_where('apiauth_user as a', $data)->result();
+			//print_r($query);
+			//exit;
             if (!empty($query)) {
                 $response['status'] = 200;
                 $response['error'] = false;
@@ -187,6 +201,50 @@ class Authapi_model extends CI_Model {
                     'nameApps' => 'Fullfilment Online System',
                     'logoApps' => 'https://i1.wp.com/www.rabbanimallonline.com/wp-content/uploads/2018/11/ic_default_image.png?resize=150%2C150'
                 );
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'fail';
+                return $response;
+            }
+        }
+    }
+
+
+    public function apiauth_digitaltailor($username = '', $password = '') {
+        //print_r($username);
+        //exit;
+
+        if (empty($username) || empty($password)) {
+            return $this->empty_response();
+        } else {
+            $data = array(
+                "username" => strtolower($username),
+                "password" => md5($password),
+                "status" => 0
+            );
+
+            $checkAuth = $this->db->get_where('apiauth_user', $data)->result();
+            //print_r($checkAuth);
+            //exit;
+
+            $dataCode = array(
+                'keyCode' => md5($username . $password)
+            );
+            $this->db->set($dataCode);
+            $this->db->where($data);
+            $this->db->update('apiauth_user');
+
+            $this->db->select('a.idauthuser, a.firstname,a.lastname,a.username,a.email,a.hp,a.keyCode,a.otp, b.urlimage');
+            $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
+            $query = $this->db->get_where('apiauth_user as a', $data)->result();
+            //print_r($query);
+            //exit;
+            if (!empty($query)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['data'] = $query;
                 return $response;
             } else {
                 $response['status'] = 502;

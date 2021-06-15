@@ -16,8 +16,12 @@ class MY_Upload extends CI_Upload {
      * @access private
      */
     private $sizes = array(
-        'small' => 250,
-        'medium' => 450,
+        //oldsize
+        // 'small' => 250,
+        // 'medium' => 450,
+        // 'large' => 750
+        'small' => 150,
+        'medium' => 350,
         'large' => 750
     );
 

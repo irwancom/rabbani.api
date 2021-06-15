@@ -545,10 +545,29 @@ class Admin extends REST_Controller {
             $data = array(
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
-                $this->input->post('data')
+                $this->input->post('data'),
+				//$this->input->post('time')
             );
 //            $this->wa->SendWa('08986002287', 'haloooo 1');
             $data = $this->admin_model->transactionupdateData($data);
+		    
+        } elseif ($pg == 'report') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('date')
+            );
+
+            $data = $this->admin_model->reporttransaction($data);
+		 } elseif ($pg == 'fu') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('date')
+                
+            );
+
+            $data = $this->admin_model->futransaction($data);
         } else {
             $data = array(
                 $this->input->post('keyCodeStaff'),
@@ -639,6 +658,13 @@ class Admin extends REST_Controller {
                 $this->input->post('data')
             );
             $data = $this->admin_model->transactiondetailsUpdateData($data);
+		 } elseif ($pg == 'details') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('nomer')
+            );
+            $data = $this->admin_model->transactiondetails($data);
         } else {
             $data = array(
                 $this->input->post('keyCodeStaff'),
@@ -1273,6 +1299,608 @@ class Admin extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
+	
+	 function cod_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+			$this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('kecamatan'),
+                
+            );
+            $data = $this->admin_model->addcod($data);
+        } elseif ($pg == 'update') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('idcod'),
+				$this->input->post('kecamatan'),
+                
+            );
+            $data = $this->admin_model->updatecod($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idcod')
+            );
+            $data = $this->admin_model->delcod($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->datacod($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	public function po_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+            $data = $this->admin_model->po($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+	
+	
+	
+	
+	 function jualcepat_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('start'),
+				$this->input->post('end'),
+                $this->input->post('idproduct'),
+				$this->input->post('discount'),
+				$this->input->post('limit'),
+               
+            );
+            $data = $this->admin_model->jualcepat($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idshort')
+                
+            );
+            $data = $this->admin_model->delshorturl($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getflashsale($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	function voucher_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('startdate'),
+				$this->input->post('enddate'),
+                $this->input->post('vouchercode'),
+				$this->input->post('voucherdisc'),
+				$this->input->post('minorder'),
+               
+            );
+            $data = $this->admin_model->addvoucher($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idvoucher')
+                
+            );
+            $data = $this->admin_model->delvoucher($data);
+		 } elseif ($pg == 'ditails') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('vouchercode')
+                
+            );
+            $data = $this->admin_model->ditailsvoucher($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getvoucher($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	function promo_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('start'),
+				$this->input->post('end'),
+                $this->input->post('idproduct'),
+				//$this->input->post('discount'),
+				$this->input->post('limit')
+               
+            );
+            $data = $this->admin_model->addpromo($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idpromo')
+                
+            );
+            $data = $this->admin_model->delpromo($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getpromo($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	function blog_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('data')
+				
+               
+            );
+            $data = $this->admin_model->addblog($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idblog')
+                
+            );
+            $data = $this->admin_model->delblog($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getblog($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	 public function uploadPicblog_post() {
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $config['upload_path'] = 'img';
+            $config['encrypt_name'] = true;
+            $config['use_storage_service'] = true;
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            // $config['max_size'] = 100;
+            // $config['max_width'] = 1024;
+            // $config['max_height'] = 768;
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('filePic')) {
+                $error = array('error' => $this->upload->display_errors());
+
+                $data = array(
+                    $error
+                );
+                // dd($data);
+                $data = $this->admin_model->uploadPicblog($data);
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+
+                $data = array(
+                    $this->input->post('keyCodeStaff'),
+                    $this->input->post('secret'),
+                    $this->input->post('idblog'),
+                    $data,
+                    $config['upload_path']
+                );
+                $data = $this->admin_model->uploadPicblog($data);
+            }
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+	
+	
+
+	
+	function comment_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('data')
+				
+               
+            );
+            $data = $this->admin_model->addblog($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idcomment')
+                
+            );
+            $data = $this->admin_model->delcomment($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getcomment($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	function freegift_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('data')
+				
+               
+            );
+            $data = $this->admin_model->addfreegift($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idfreegift')
+                
+            );
+            $data = $this->admin_model->delfreegift($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getfreegift($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	
+	function reseller_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('data')
+				
+               
+            );
+            $data = $this->admin_model->addreseller($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idreseller')
+                
+            );
+            $data = $this->admin_model->delreseller($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->getreseller($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	
+    function allorder_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                
+				$this->input->post('no_pesanan'),
+				$this->input->post('tanggal'),
+				$this->input->post('pelanggan'),
+				$this->input->post('sumber'),
+				$this->input->post('detailproduk')
+				
+               
+            );
+            $data = $this->admin_model->addallorder($data);
+        } elseif ($pg == 'update') {
+            $data = array(
+                $this->input->post('noresi')
+                
+                
+            );
+            $data = $this->admin_model->updateallorder($data);
+		 } elseif ($pg == 'sku') {
+            $data = array(
+                $this->input->post('noresi'),
+				$this->input->post('sku')
+              
+                
+            );
+            $data = $this->admin_model->skuallorder($data);
+        } else {
+            $data = array(
+                $this->input->post('noresi')
+                
+            );
+            $data = $this->admin_model->allorder($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	 function qcorder_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                
+				$this->input->post('data'),
+				$this->input->post('detailorder')
+               
+            );
+            $data = $this->admin_model->addqcorder($data);
+        } elseif ($pg == 'resi') {
+            $data = array(
+              $this->input->post('noresi')
+                
+                
+            );
+            $data = $this->admin_model->resiqcorder($data);
+		 } elseif ($pg == 'pos') {
+            $data = array(
+                $this->input->post('noresi'),
+				$this->input->post('sku')
+              
+                
+            );
+            $data = $this->admin_model->skuallorder($data);
+        } else {
+            $data = array(
+                $this->input->post('day')
+                
+            );
+            $data = $this->admin_model->qcorder($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	 function posview_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                
+				$this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('idorder'),
+				//$this->input->post('time')
+                 
+            );
+            $data = $this->admin_model->addposview($data);
+        } elseif ($pg == 'pos') {
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('date'),
+		      $this->input->post('time')
+                
+                
+            );
+            $data = $this->admin_model->insertposview($data);
+		 } elseif ($pg == 'update') {
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('idorder')
+              
+                
+            );
+            $data = $this->admin_model->updateposview($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('date'),
+				$this->input->post('time')
+                
+            );
+            $data = $this->admin_model->posview($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	
+	 function feemp_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                
+				$this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('mp'),
+				$this->input->post('feemp')
+                 
+            );
+            $data = $this->admin_model->addfeemp($data);
+        } elseif ($pg == 'update') {
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('mp'),
+			  $this->input->post('feemp'),
+			  $this->input->post('idfeemp')
+                
+                
+            );
+            $data = $this->admin_model->updatefeemp($data);
+		 } elseif ($pg == 'delete') {
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('idfeemp')
+              
+                
+            );
+            $data = $this->admin_model->deletefeemp($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+                
+            );
+            $data = $this->admin_model->feemp($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+
+
+	 function video_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                
+				$this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				$this->input->post('name'),
+				$this->input->post('link')
+                 
+            );
+            $data = $this->admin_model->addvideo($data);
+        } elseif ($pg == 'update') { 
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('mp'),
+			  $this->input->post('feemp'),
+			  $this->input->post('idfeemp')
+                
+                
+            );
+            $data = $this->admin_model->updatevideo($data);
+		 } elseif ($pg == 'delete') {
+            $data = array(
+              $this->input->post('keyCodeStaff'),
+              $this->input->post('secret'),
+			  $this->input->post('idvideo')
+              
+                
+            );
+            $data = $this->admin_model->deletevideo($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+				
+                
+            );
+            $data = $this->admin_model->video($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
+
+ public function dataimage_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+              
+            );
+            $data = $this->admin_model->dataimage($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+	
+	
+	 
+	
+	
+
 
 
     //END CRUD PRODUCT

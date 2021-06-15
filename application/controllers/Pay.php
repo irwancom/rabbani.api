@@ -65,4 +65,19 @@ class Pay extends REST_Controller {
         exit;
     }
 
+    function Moota_post() {
+        //2TgI1Eki
+        $rawData1 = file_get_contents("php://input");
+        $rawData = json_decode($rawData1);
+//        print_r($rawData[0]->amount);
+//        exit;
+        $data = $this->pay_model->payPaidHistoriesMoota($rawData[0]->amount, $rawData);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+        exit;
+    }
+
 }

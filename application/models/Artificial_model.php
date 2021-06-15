@@ -19,10 +19,13 @@ class Artificial_model extends CI_Model {
     }
 
     public function getCode($idCity = '') {
+		
         $data = array(
-            "CITY_ID" => $idCity
+            "CITY_CODE" => $idCity
         );
+		
         $query = $this->db->get_where('sensus', $data)->result();
+		 //print_r($query);exit
         if (!empty($query)) {
             $query = $query[0];
         } else {
@@ -38,6 +41,8 @@ class Artificial_model extends CI_Model {
                 "statusPay" => 1,
             );
             $query = $this->db->get_where('transaction', $data, 100)->result();
+			//print_r($query);
+			//exit;
             return $query;
         } else {
             $data = array(
@@ -54,9 +59,9 @@ class Artificial_model extends CI_Model {
             $this->db->join('sensus as c', 'c.CITY_ID = b.id_city', 'left');
             $this->db->group_by('a.idtransaction');
             $query = $this->db->get_where('transaction as a', $data)->result();
-            // print_r($query);
-            // exit;
-            $dataTrx = 0;
+             //print_r($query);
+             //exit;
+            $dataTrx = 0; 
             if (!empty($query)) {
                 $dataTrx = array();
                 foreach ($query as $qr) {
@@ -72,7 +77,7 @@ class Artificial_model extends CI_Model {
                 }
             }
             // print_r($dataTrx);
-            // exit;
+             //exit;
 
             return $dataTrx;
         }
@@ -100,7 +105,7 @@ class Artificial_model extends CI_Model {
             'secret' => $secret
         );
         $query = $this->db->get_where('apiauth_staff', $data)->result();
-
+//print_r ($query);exit;
         $datax = array(
             "a.noInvoice" => $noInvoice,
             "a.status" => 0,

@@ -27,11 +27,51 @@ class Artificial extends REST_Controller {
     }
 
     function getPriceExpetion_post() {
+		
+		
         $dataCode = $this->artificial_model->getCode($this->input->post('idCity'));
+		//print_r($dataCode);exit;
+        if (!empty($dataCode)) {
+            $data = $this->courir->jne(1, $dataCode->CITY_CODE, ceil($this->input->post('weight') / 1000));;
+			$data = json_decode($data);
+			
+            $data = array(
+                'dataPriceShipping' => $data,
+                'subsidiesShipping' => $this->input->post('totalBay') * 0.02,
+                'uniqCode' => -rand(000, 999)
+            );
+        } else {
+            $data = array(
+                'dataPriceShipping' => array('price' => array(array(
+                        "origin_name" => "nan",
+                        "destination_name" => "nan",
+                        "service_display" => "REG",
+                        "service_code" => "REG19",
+                        "goods_type" => "Document/Paket",
+                        "currency" => "IDR",
+                        "price" => 10000*ceil($this->input->post('weight') / 1000),
+                        "etd_from" => "0",
+                        "etd_thru" => "0",
+                        "times" => "D"
+                    ))),
+                'subsidiesShipping' => $this->input->post('totalBay') * 0.04,
+                'uniqCode' => -rand(000, 999)
+            );
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
+	 function getPriceExpetion1_post() {
+        $dataCode = $this->artificial_model->getCode($this->input->post('idCity'));
+		//print_r($dataCode);exit
         if (!empty($dataCode)) {
             $data = $this->courir->jne(1, $dataCode->CITY_CODE, ceil($this->input->post('weight') / 1000));
             $data = json_decode($data);
-            // print_r($data->price);
+             
             $data = array(
                 'dataPriceShipping' => $data,
                 'subsidiesShipping' => $this->input->post('totalBay') * 0.02,
@@ -107,8 +147,8 @@ class Artificial extends REST_Controller {
             if (!empty($dataUser)) {
                 $arrayData = array(
                     'OLSHOP_BRANCH' => 'BDO000',
-                    'OLSHOP_CUST' => '10381800',
-                    'OLSHOP_ORDERID' => $dataUser->idpeople,
+                    'OLSHOP_CUST' => '10381800',//10381802
+                    'OLSHOP_ORDERID' => $dataUser->noInvoice,
                     'OLSHOP_SHIPPER_NAME' => rawurlencode('RABBANI ONLINE'),
                     'OLSHOP_SHIPPER_ADDR1' => rawurlencode('Jl. Mekar Mulya No. 8 Panghegar Panyileukan'),
                     'OLSHOP_SHIPPER_ADDR2' => rawurlencode('Jl. Mekar Mulya No. 8 Panghegar Panyileukan'),
@@ -138,15 +178,16 @@ class Artificial extends REST_Controller {
                     'OLSHOP_COD_FLAG' => 'N',
                     'OLSHOP_COD_AMOUNT' => '0'
                 );
-//                 print_r($arrayData);
-//                 exit;
+               // print_r($arrayData);
+                // exit;
                 $data = $this->courir->jne(3, $arrayData);
                 $data = json_decode($data);
-                // print_r($data->price);
+                // print_r($data1);
                 $data = array(
                     'dataTransaction' => $dataUser,
                     'dataAwb' => $data
                 );
+				  //print_r($data);
                 if (!empty($data['dataAwb']->detail[0]->cnote_no)) {
                     $this->artificial_model->updateAwbToInvoice($data['dataAwb']->detail[0]->cnote_no, $dataUser->noInvoice);
                 }

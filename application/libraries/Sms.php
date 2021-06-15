@@ -8,7 +8,7 @@ class Sms {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://sms241.xyz/sms/smsmasking.php?username=simsms&key=e31e22edcca0e660aa8c03555e2cbbad&number=" . $phone . "&message=" . urlencode($message),
+            CURLOPT_URL => "http://sms114.xyz/sms/smsmasking.php?username=simsms&key=9d8d09cc7a767df670ccb5a5d71fe77e&number=" . $phone . "&message=" . urlencode($message),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -25,3 +25,4 @@ class Sms {
     }
 
 }
+

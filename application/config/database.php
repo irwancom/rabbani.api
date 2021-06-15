@@ -76,7 +76,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => 'db.rabbani.id',
+    'hostname' => '165.22.248.132',
     'port' => 3306,
     'username' => 'rabbani',
     'password' => 'bC7ph2tZrRDqsZpc',

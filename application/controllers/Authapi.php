@@ -60,4 +60,13 @@ class Authapi extends REST_Controller {
         }
     }
 
+     function digitaltailor_post() {
+        $data = $this->authapi_model->apiauth_promo($this->input->post('username'), $this->input->post('password'));
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
 }

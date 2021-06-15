@@ -111,8 +111,8 @@ class Courir {
         $response = curl_exec($curl);
 
         curl_close($curl);
-        // echo $response;
-        // exit;
+         //echo $response;
+         //exit;
         return $response;
     }
 

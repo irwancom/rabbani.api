@@ -205,7 +205,7 @@ class Sensus_model extends CI_Model {
 
             $data = json_decode($data[0]);
 
-
+	
             //$sql = $this->db->query("SELECT hp FROM apiauth_user where hp='" . $data->wa . "'");
             // $cek_cat = $sql->num_rows();
             //if ($cek_cat > 0) {
@@ -214,10 +214,9 @@ class Sensus_model extends CI_Model {
 
 
             $data2 = array(
-                'timeCreate' => date('H:i:s'),
+                
                 'dateCreate' => date('Y-m-d '),
                 'firstname' => $data->nama,
-                //'hp' => $data->wa,
                 'username' => $data->wa,
                 'password' => md5($data->password),
                 'email' => $data->email
@@ -248,6 +247,7 @@ class Sensus_model extends CI_Model {
                 return $this->duplicate_response();
             } else {
                 $data4 = array(
+					'resellerdate' => date('Y-m-d '),
                     'ktp' => $data->ktp,
                     'wa' => $data->wa,
                     'idauthuser' => $insert_id

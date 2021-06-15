@@ -29,8 +29,40 @@ class H2h_model extends CI_Model {
         }
     }
 
+    public function empty_response() {
+        $response['status'] = 502;
+        $response['error'] = true;
+        $response['message'] = 'Field tidak boleh kosong';
+        return $response;
+    }
+
+    public function field_response() {
+        $response['status'] = 502;
+        $response['error'] = true;
+        $response['message'] = 'Data Tidak Ada';
+        return $response;
+    }
+
+    public function duplicate_response() {
+        $response['status'] = 502;
+        $response['error'] = true;
+        $response['message'] = 'Field Sudah Terdaftar';
+        return $response;
+    }
+
+    public function token_response() {
+        $response['status'] = 502;
+        $response['error'] = true;
+        $response['message'] = 'Token tidak boleh salah';
+        return $response;
+    }
+
     public function store($data = '') {
+        //print_r($data);exit;
+
         $dataAccount = $this->verfyAccount($data['keyCode'], $data['secret']);
+        //print_r($dataAccount);exit;
+
 
         if (!empty($dataAccount)) {
             $checkDataStore = $this->db->get_where('store', array('idquantum' => $data['idquantum']))->result();
@@ -66,11 +98,13 @@ class H2h_model extends CI_Model {
     }
 
     public function product($data = '') {
+		
         $dataAccount = $this->verfyAccount($data['keyCode'], $data['secret']);
 
         if (!empty($dataAccount)) {
             $checkDataStore = $this->db->get_where('product_stockStore', array('idstorequantum' => $data['idstorequantum'], 'skuProduct' => $data['skuProduct']))->result();
-            $data = array(
+            //print_r($checkDataStore);exit;
+			$data = array(
                 'idstorequantum' => $data['idstorequantum'],
                 'skuProduct' => $data['skuProduct'],
                 'nameProduct' => $data['nameProduct'],
@@ -198,10 +232,13 @@ class H2h_model extends CI_Model {
     }
 
     public function dataSku($data = '') {
+			//print_r($data);exit;
+		
         $dataAccount = $this->verfyAccount($data['keyCode'], $data['secret']);
-
+		
         if (!empty($dataAccount)) {
             $checkDataSku = $this->db->get_where('product_sku', array('skuDitails' => $data['skuDitails']))->result();
+			//print_r($checkDataSku);exit;
             $dataQuery = array(
                 'yearSku' => $data['yearSku'],
                 'sku' => $data['sku'],
@@ -304,16 +341,20 @@ class H2h_model extends CI_Model {
     }
 
     public function syncStock($data = '') {
+
         if (!empty($data)) {
             $pg = $data * 20;
         } else {
             $pg = 20;
         }
         $dataSku = $this->db->get_where('product_ditails', array('delproductditails' => 0), 20, $pg)->result();
+        //print_r($dataSku);
+        //exit;
         if (!empty($dataSku)) {
             foreach ($dataSku as $dS) {
-//                print_r($dS);
+                //print_r($dS);
                 $data = $this->quantum->callAPi($dS->skuPditails, 3);
+                //f print_r($data);
                 if (!empty($data[0]->s)) {
 //                    $du = $this->quantum->callAPi($dS->skuPditails, 3, 'M001-O0001');
 //                    if (!empty($du[0]->s)) {
@@ -392,6 +433,11 @@ class H2h_model extends CI_Model {
     }
 
     public function cron() {
+
+        $this->db->where('stock > 0');
+        $this->db->set('delproductditails', 0);
+        $product = $this->db->update('product_ditails');
+        //exit;
 //        $dataOrders = $this->db->get_where('transaction', array('statusPay' => 1, 'trackingCode' => ''), 1)->result();
 //        if (!empty($dataOrders)) {
 //            foreach ($dataOrders as $dO) {
@@ -429,26 +475,34 @@ class H2h_model extends CI_Model {
 //        $this->db->update('transaction');
 //        exit;
         /* CHECK TRANSACTION AUTO CANCLE */
-        $dataOrders = $this->db->get_where('transaction', array('statusPay' => 0), 100)->result();
+        $dataOrders = $this->db->get_where('transaction', array('statusPay' => 0), 500)->result();
+         //print_r ($dataOrders);
+       // exit;
         if (!empty($dataOrders)) {
             foreach ($dataOrders as $dO) {
+                //print_r ($dO);
+                //exit;
                 echo $dO->dateCreate . ' ' . $dO->timeCreate . '<br>';
                 $awal = date_create($dO->dateCreate . ' ' . $dO->timeCreate);
                 $akhir = date_create();
                 $diff = date_diff($awal, $akhir);
-				//print_r($dataOrders[0]->noInvoice);
-				//exit;
-				//if ($diff->d = 0 && $diff->h = 4) {
-                   // $massage = 'rmall.id : Assalamualaikum Rabbaners belanja anda belum di tranfers lho no invoice' . $dataOrders[0]->noInvoice . Batas Pembayaran 1x24 Jam, Jazakallah';
-					//$this->sms->SendSms($hp, $massage);
-					
-                //}
-                if ($diff->d >= 2) {
+
+                //$now = date('Y-m-d');
+                //$old = $dO->dateCreate;
+                //$diff2 = $now->diff($old);
+                ///print_r($diff->d);
+                //exit;
+                // }  
+                if ($diff->d >= 1) {
                     $this->db->set('statusPay', 2);
                     $this->db->where('idtransaction', $dO->idtransaction);
                     $this->db->update('transaction');
-					
                 }
+
+                //if ($diff->d = 0 && $diff->h = 3) {
+                //$massage = 'rmall.id : Assalamualaikum Rabbaners belanja anda belum di tranfers lho no invoice' . $dataOrders[0]->noInvoice . 'Batas Pembayaran 1x24 Jam, Jazakallah';
+                //$this->sms->SendSms($hp, $massage);
+                // }  
             }
         }
         /* END CHECK */
@@ -465,7 +519,8 @@ class H2h_model extends CI_Model {
                 echo $dT->trackingCode . '<br>';
                 $data = $this->courir->jne(2, $dT->trackingCode);
                 $data = json_decode($data);
-//                print_r($data);
+                //print_r($data);
+				//exit;
                 if ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'DELIVERED')) {
                     $this->db->set('status', 2);
                     $this->db->where('idtransaction', $dT->idtransaction);
@@ -479,38 +534,54 @@ class H2h_model extends CI_Model {
         }
         /* END TRACKING */
         /* SYNCE DATA STOCK QUANTUM */
-//        $last_min = date('Y-m-d H:i:s', strtotime('-15 minutes'));
-//        $this->db->order_by('rand()');
-//        $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min), 50)->result();
-//
-//        if (!empty($dataSync)) {
-//            foreach ($dataSync as $dS) {
-//                echo $dS->skuPditails . '<br>';
-//                $sync = $this->quantum->callAPi($dS->skuPditails, 2);
-//                $this->db->set('stock', $sync->ts);
-//                $this->db->set('stockRmall', $sync->ts);
-//                $this->db->set('valuePrice', $dS->price * $sync->ts);
-//                $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
-//                if (empty($sync->ts)) {
-//                    $this->db->set('delproductditails', 1);
-//                }
-//                $this->db->set('stockAllBandung', 0);
-//                $this->db->set('valuePriceAllBandung', 0);
-//                $this->db->set('stockAllJabar', 0);
-//                $this->db->set('valuePriceAllJabar', 0);
-//                $this->db->where('skuPditails', $dS->skuPditails);
-//                $this->db->update('product_ditails');
-//            }
-//        }
+		//$skuPditails = 'KAN0HA09141A200' ;
+		 //echo $skuPditails;
+           //     exit;
+	//	echo $dS->skuPditails . '<br>';
+		
+		//$sync = $this->quantum->callAPi($skuPditails, 2);
+		//print_r($sync);
+          //      exit;
+		
+        $last_min = date('Y-m-d H:i:s', strtotime('-15 minutes'));
+        $this->db->order_by('rand()');
+        $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min),50)->result();
+			//print_r($dataSync);
+              //  exit;
+        if (!empty($dataSync)) {
+            foreach ($dataSync as $dS) {
+                echo $dS->skuPditails . '<br>';
+                $sync = $this->quantum->callAPi($dS->skuPditails, 2);
+                //print_r($sync);
+               // exit;
+                $this->db->set('stock', $sync->ts);
+                $this->db->set('stockRmall', $sync->ts);
+                $this->db->set('valuePrice', $dS->price * $sync->ts);
+                $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
+                // //if (empty($sync->ts)) {
+                //  //  $this->db->set('delproductditails', 1);
+                //  //}
+                $this->db->set('stockAllBandung', 0);
+                $this->db->set('valuePriceAllBandung', 0);
+                $this->db->set('stockAllJabar', 0);
+                $this->db->set('valuePriceAllJabar', 0);
+                $this->db->where('skuPditails', $dS->skuPditails);
+                $this->db->update('product_ditails');
+				 // print_r($sync);
+                //exit;
+            }
+        }
         /* END SYNCE STOCK */
         /* ADD NEW PRODUCT BY QUANTUM */
-//        exit;
+       // exit;
+		//$newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
         $newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
+		//print_r($newProduct);
         if (!empty($newProduct)) {
             foreach ($newProduct as $nP) {
-                print_r($nP);
+//                print_r($nP);
                 $dataQuantum = $this->quantum->callAPi($nP->skuDitails, 3);
-                print_r($dataQuantum);
+              
                 if (!empty($dataQuantum)) {
                     $checkProduct = $this->db->get_where('product', array('skuProduct' => $nP->sku))->result();
                     $insert_id = $checkProduct[0]->idproduct;
@@ -529,11 +600,12 @@ class H2h_model extends CI_Model {
                     $checkProductDetails = $this->db->get_where('product_ditails', array('skuPditails' => $nP->skuDitails))->result();
                     if (!empty($checkProductDetails)) {
                         $data = array(
-                            'idproduct' => $insert_id,
-                            'skuPditails' => $nP->skuDitails,
-                            'collor' => $nP->collor,
-                            'size' => $nP->size,
-                            'price' => $nP->price,
+//                            'idproduct' => $insert_id,
+//                            'skuPditails' => $nP->skuDitails,
+//                            'collor' => $nP->collor,
+//                            'size' => $nP->size,
+//                            'price' => $nP->price,
+//                            'realprice' => $nP->price,
                             'stock' => $dataQuantum[0]->s
                         );
                         $this->db->set($data);
@@ -546,6 +618,7 @@ class H2h_model extends CI_Model {
                             'collor' => $nP->collor,
                             'size' => $nP->size,
                             'price' => $nP->price,
+                            'realprice' => $nP->price,
                             'stock' => $dataQuantum[0]->s
                         );
 
@@ -562,5 +635,750 @@ class H2h_model extends CI_Model {
         }
         /* END NEW PRODUCT BY QUANTUM */
     }
+
+    public function po($data = '') {
+        //print_r($data);
+// exit;
+        $data1 = json_decode($data[0]);
+
+        //print_r($data1);
+        //exit;
+        $datapo = array(
+            'name' => $data1[0]->name,
+            'datepo' => date('Y-m-d'),
+            'handphone' => $data1[0]->handphone,
+            // 'email' => $data1[0]->email,
+            'productname' => $data1[0]->product,
+                // 'collor' => $data1[0]->collor,
+                // 'size' => $data1[0]->size,
+                // 'quantity' => $data1[0]->qty
+        );
+        //print_r($datapo);
+        //exit;
+
+
+
+        $query = $this->db->insert('order_po', $datapo);
+
+
+        if ($query) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            // $response['totalData'] = count($query);
+            $response['data'] = $query;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function posub($data = '') {
+        //print_r($data);
+// exit;
+        $data1 = json_decode($data[0]);
+
+        //print_r($data1);
+        //exit;
+        $datapo = array(
+            'name' => $data1[0]->name,
+            'handphone' => $data1[0]->handphone,
+            'datepo' => date('Y-m-d')
+        );
+
+
+
+
+        $query = $this->db->insert('order_po', $datapo);
+
+
+        if ($query) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            // $response['totalData'] = count($query);
+            $response['data'] = $query;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function cod() {
+
+        $this->db->select('*');
+        $this->db->from('sensus_cod');
+
+
+        $query = $this->db->get()->result();
+
+
+        if ($query) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            //$response['totalData'] = count($query);
+            $response['data'] = $query;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function category() {
+
+
+        $this->db->select('a.idcategory,a.parentidcategory,a.categoryName,b.urlImage');
+        $this->db->where('delcat', '0');
+        $this->db->join('category_images as b', 'b.idcategory = a.idcategory', 'left');
+        $this->db->order_by('categoryName ASC');
+        $dataCat = $this->db->get_where('category as a', array('a.parentidcategory' => 0))->result();
+        // print_r($dataCat);
+        // exit;
+        foreach ($dataCat as $dC) {
+            // print_r($dC);
+            // exit;
+            $this->db->order_by('categoryName ASC');
+            $dataSubCat = $this->db->get_where('category', array('parentidcategory' => $dC->idcategory, 'delcat' => 0))->result();
+            // print_r($dataSubCat);
+            // exit;
+            $dataCatx[] = array(
+                'idcategory' => $dC->idcategory,
+                'categoryName' => $dC->categoryName,
+                'imagecategory' => $dC->urlImage,
+                'dataSubCat' => $dataSubCat
+            );
+        }
+        $supdate = $dataCatx;
+        $this->db->select('a.idcategory,a.parentidcategory,a.categoryName,b.urlImage');
+        $this->db->join('category_images_icon as b', 'b.idcategory = a.idcategory', 'left');
+        $data1 = $this->db->get_where('category as a')->result();
+
+        if ($supdate) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($dataCat);
+            $response['data'] = $dataCatx;
+            $response['icon'] = $data1;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function getDataByCat($data = '') {
+        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,b.realprice,c.urlImage');
+        $this->db->where('a.delproduct', 0);
+        $this->db->where('b.delproductditails', 0);
+        $this->db->where('b.stock>0');
+        $this->db->where('delproduct', 0);
+        $this->db->where('a.idcategory', $data[0]);
+
+        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+        $this->db->group_by('a.idproduct');
+        $this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product as a')->result();
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function realproduct($data = '') {
+
+        // print_r($data);
+        //exit;
+        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.urlImage');
+        $this->db->where('a.delproduct', 0);
+        // $this->db->where('a.stock>0');
+
+        $this->db->where('a.idproduct', $data[0]);
+
+        $this->db->join('product_images as b', 'b.idproduct = a.idproduct');
+        // $this->db->group_by('a.idpditails');
+        //$this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product as a')->result();
+
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function productditails($data = '') {
+
+        //print_r($data);
+        //exit;
+        $this->db->select('a.idpditails,a.skuPditails,a.collor,a.weight,a.size,a.stock,a.price,a.realprice,b.urlImage');
+        $this->db->where('a.delproductditails', 0);
+        $this->db->where('a.stock>0');
+
+        $this->db->where('a.idproduct', $data[0]);
+
+        $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+        $this->db->group_by('a.idpditails');
+        //$this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product_ditails as a')->result();
+
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function productditailssku($data = '') {
+
+
+
+        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,b.realprice,d.urlImage');
+        //$this->db->where('a.delproduct', 0);
+        //$this->db->where('b.delproductditails', 0);
+        //$this->db->where('b.stock>0');
+        $this->db->where('b.skuPditails', strtoupper($data[0]));
+
+        $this->db->join('product_images_ditails as d', 'd.idproduct = a.idproduct', 'left');
+        //$this->db->join('product_images as c', 'c.idproduct = a.idproduct','left');
+        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+        $this->db->group_by('a.idproduct');
+        //$this->db->order_by('a.idproduct', 'RANDOM');
+        $datax = $this->db->get_where('product as a')->result();
+
+        // print_r($data);
+        //exit;
+        //$this->db->select('a.idpditails,a.skuPditails,a.collor,a.weight,a.size,a.stock,a.price,b.urlImage');
+        //$this->db->where('a.delproductditails', 0);
+        //$this->db->where('a.stock>0');
+        //$this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+        // $this->db->group_by('a.idpditails');
+        //$this->db->order_by('a.idproduct', 'DESC');
+        // $datax= $this->db->get_where('product_ditails as a')->result();
+
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function getmember($data = '') {
+
+        $this->db->select('*');
+        $datax = $this->db->get_where('member')->result();
+
+
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count(datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function addmember($data = '') {
+
+
+        $datax = json_decode($data[0]);
+        //print_r($datax);
+        //exit;
+        $sql = $this->db->query("SELECT wa FROM member where wa ='$datax->wa'");
+        $cek_id = $sql->num_rows();
+
+        $this->db->select('RIGHT(member.kodemember,4) as kode', FALSE);
+        $this->db->order_by('kodemember', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get('member');
+        //print_r($query);
+        // exit;		  //cek dulu apakah ada sudah ada kode di tabel.    
+        if ($query->num_rows() <> 0) {
+            //jika kode ternyata sudah ada.      
+            $data = $query->row();
+            $kode = intval($data->kode) + 1;
+        } else {
+            //jika kode belum ada      
+            $kode = 1;
+        }
+
+        $kodemax = str_pad($kode, 4, "0", STR_PAD_LEFT); // angka 4 menunjukkan jumlah digit angka 0
+        $kodejadi = "FM" . $kodemax;    // hasilnya ODJ-9921-0001 dst.
+
+
+        if ($cek_id > 0) {
+
+            return $this->duplicate_response();
+        } else {
+
+            $datay = array(
+                'date' => date('Y-m-d'),
+                'nama' => $datax->nama,
+                'wa' => $datax->wa,
+                'email' => $datax->email,
+                'kodemember' => $kodejadi,
+                'address' => $datax->alamat,
+                'province' => $datax->propinsi,
+                'city' => $datax->kota,
+                'district' => $datax->kecamatan,
+                //'village' => $datax->kecamatan,
+                'rt' => $datax->rt,
+                'rw' => $datax->rw,
+                'kodepos' => $datax->kodepos
+            );
+
+
+            $updatey = $this->db->insert('member', $datay);
+
+
+            $message = 'RABBANI : Tunjukan Kode Aktivasi  ' . $datay[kodemember] . ', di Outlet Rabbani, Dapatkan Member Card & Diskon 10%-15% All Item, Jazakallah Katsiron';
+            // $message1 = 'order ' . $people[0]->name . ' ';
+            // $this->load->library('wa');
+
+            $this->sms->SendSms($datax->wa, $message);
+            //$this->wa->SendWa($datax->wa, $message);
+        }
+
+
+        if (!empty($datay)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count(datay);
+            $response['data'] = $datay;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function autoview($data = '') {
+
+
+
+        $this->db->where('stock > 0');
+        $this->db->set('delproductditails', 0);
+        $product = $this->db->update('product_ditails');
+
+
+
+
+        if (!empty($product)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($product);
+            $response['data'] = $product;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+
+    public function autodraft($data = '') {
+
+        $id = $this->db->get_where('product')->result();
+        foreach ($id[0]->idproduct as $x) {
+
+            $this->db->where('stock > 0');
+            //$this->db->where('a.delproduct', 0);
+            $this->db->where('delproductditails', 0);
+            $this->db->where('b.urlImage!=""');
+            $this->db->where('a.idproduct', $x);
+            $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+            //$this->db->join('product_images as b', 'b.idproduct = a.idproduct');
+            $this->db->group_by('a.idpditails');
+            $product = $this->db->get_where('product_ditails as a')->result();
+        }
+
+        if (empty($product)) {
+
+            $response['data'] = $x;
+        }
+
+
+
+
+
+        if (!empty($product)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($product);
+            $response['data'] = $product;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            $response['data'] = $id;
+            return $response;
+        }
+    }
+
+    public function insertposview($data = '') {
+        //print_r($data[0]);exit;
+        $dataAccount = $this->verfyAccount($data[0], $data[1]);
+
+        if (!empty($dataAccount)) {
+            $this->db->select('idall_order,no_order,source_order,user_name,HPJ,total_order as HNJ,total_voucher,id_quantum,rekening,kasir,detail_order');
+            $this->db->order_by('cek_date', 'ASC');
+            //$this->db->where('cek_date', $data[2]);
+            //$this->db->where('cek_time <=',$data[3]);
+            $this->db->where('status', 1);
+            $dataCat = $this->db->get_where('all_order')->result();
+
+            //print_r($dataCat[0]->source_order);
+            //exit;
+        } else {
+            return $this->token_response();
+        }
+        if ($dataCat) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['count'] = count($dataCat);
+            $response['data'] = $dataCat;
+            //$response['data1'] = $a;
+            return $response;
+        } else {//
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function updateposview($data = '') {
+        //print_r($data);exit;
+        $dataAccount = $this->verfyAccount($data[0], $data[1]);
+        $sql = $this->db->query("SELECT id_quantum FROM all_order where id_quantum='$data[2]'");
+        $cek_id = $sql->num_rows();
+        //print_r($cek_id);
+        //exit;
+        if (!empty($dataAccount)) {
+			//print_r($dataAccount);exit;
+            if ($cek_id > 0) {
+                $this->db->set('status', 2);
+				//$a = '2020-12-22';
+                $this->db->where('id_quantum', $data[2]);
+                //$this->db->where('cek_date <', '2020-12-22');
+                $dataCat = $this->db->update('all_order');
+            } else {
+                return $this->field_response();
+            }
+		   //print_r($dataCat);exit;
+        } else {
+            return $this->token_response();
+        }
+        if (!empty($dataCat)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['msg'] = 'Berhasil Update';
+            $response['data'] = $dataCat;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function getDataProduct() {
+        $this->db->select('a.idproduct, b.idpditails, a.skuProduct, a.productName, a.descrDitails, b.skuPditails, b.collor, b.size, b.price');
+        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct');
+        $query = $this->db->get_where('product as a', array('b.statusSend' => 0),100)->result();
+        if (!empty($query)) {
+            foreach ($query as $q) {
+//                print_r($q);
+                $data = array(
+                    'sku' => $q->skuProduct,
+                    'product_name' => $q->productName,
+                    'desc' => $q->descrDitails,
+                    'sku_code' => $q->skuPditails,
+                    'variable' => '{"COLOR":"' . $q->collor . '","SIZE":"' . $q->size . '"}',
+                    'price' => $q->price
+                );
+                $respound = $this->sim->addUpdate($data);
+                
+                $this->db->set('statusSend', 1);
+                $this->db->where('idpditails', $q->idpditails);
+                $this->db->update('product_ditails');
+                
+                $return[] = array(
+                    $q, 'respound' => $respound
+                );
+            }
+        }
+        return $return;
+    }
+	
+	
+	 public function productact($data = '') {
+		 $dataAccount = $this->verfyAccount($data[0], $data[1]);
+		 
+		 if (!empty($dataAccount)){
+        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
+        $this->db->where('a.delproduct', 0);
+        $this->db->where('b.delproductditails', 0);
+        $this->db->where('b.stock>5');
+        //$this->db->where('delproduct', 0);
+       // $this->db->where('a.idcategory', $data[0]);
+
+        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+        $this->db->group_by('a.idproduct');
+        $this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product as a')->result();
+		 } else {
+			 return $this->token_response();
+		 }
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+	
+	 public function productcatact($data = '') {
+		 $dataAccount = $this->verfyAccount($data[0], $data[1]);
+		 
+		 if (!empty($dataAccount)){
+        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
+        $this->db->where('a.delproduct', 0);
+        $this->db->where('b.delproductditails', 0);
+        $this->db->where('b.stock>5');
+        //$this->db->where('delproduct', 0);
+        $this->db->where('a.idcategory', $data[2]);
+
+        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+        $this->db->group_by('a.idproduct');
+        $this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product as a')->result();
+		 } else {
+			 return $this->token_response();
+		 }
+		 $this->db->select('idcategory,categoryName');
+		 $cat = $this->db->get_where('category')->result();
+
+        if (!empty($cat)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+			$response['idcat'] = $cat;
+            $response['databycat'] = $datax;
+			
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+	
+	public function productditailsact($data = '') {
+
+
+        //print_r($data);
+        //exit;
+        $this->db->select('a.idpditails,a.skuPditails,a.collor,a.weight,a.size,a.stock,a.price,a.realprice,b.urlImage');
+        $this->db->where('a.delproductditails', 0);
+        $this->db->where('a.stock>5');
+
+        $this->db->where('a.idproduct', $data[2]);
+
+        $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+        $this->db->group_by('a.idpditails');
+        //$this->db->order_by('a.idproduct', 'DESC');
+        $datax = $this->db->get_where('product_ditails as a')->result();
+
+
+        if (!empty($datax)) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['message'] = 'Data successfully processed.';
+            $response['totalData'] = count($datax);
+            $response['data'] = $datax;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive.';
+            return $response;
+        }
+    }
+	
+	public function tailor($data = '') {
+	//print_r($data[0]);exit;	  
+        if (empty($data[0])) {
+            return $this->empty_response();
+        } else {
+            $datax = json_decode($data[0]);
+			$cek = $this->db->get_where('tailor', array('email' => $datax->email))->result();
+			//print_r($cek);exit;	
+			if (!empty($cek)) {
+				return $this->duplicate_response();
+				} else {
+					$datay = array(
+						'date' =>  date('Y-m-d'),
+						'time' => date('H:i:s'),
+                        'name' => $datax->nama,
+						'email' => $datax->email
+                    );
+					$supdate = $this->db->insert('tailor', $datay);
+				}
+			
+
+            if ($datay) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($datay);
+                $response['data'] = $datay;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+
+    public function viewtailor($data = '') {
+    //print_r($data[0]);exit;     
+       
+			$this->db->order_by('idtailor', 'DESC');
+            $datay = $this->db->get_where('tailor')->result();
+            if ($datay) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($datay);
+                $response['data'] = $datay;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        
+    }
+	
+	public function rumahjahit($data = '') {
+	//print_r($data[0]);exit;	   
+        if (empty($data[0])) {
+            return $this->empty_response();
+        } else {
+            $datax = json_decode($data[0]);
+			$cek = $this->db->get_where('rumahjahit', array('wa' => $datax->wa))->result();
+			//print_r($cek);exit;	
+			if (!empty($cek)) {
+				return $this->duplicate_response();
+				} else {
+					$datay = array(
+						'date' =>  date('Y-m-d'),
+						'time' => date('H:i:s'),
+                        'name' => $datax->nama,
+						'email' => $datax->email,
+						'wa' => $datax->wa
+                    );
+					$supdate = $this->db->insert('rumahjahit', $datay);
+				}
+			
+
+            if ($datay) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($datay);
+                $response['data'] = $datay;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+	
+	
+	
+	
+	
+
 
 }
