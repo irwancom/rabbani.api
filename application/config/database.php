@@ -99,10 +99,10 @@ $db['default'] = array(
 
 $db['db2'] = array(
     'dsn' => '',
-    'hostname' => '178.128.82.94',
+    'hostname' => '165.22.248.132',
     'port' => 3306,
-    'username' => 'main', //username database kedua
-    'password' => 'uTh[}2)geX;b', //password database kedua
+    'username' => 'rabbani', //username database kedua
+    'password' => 'bC7ph2tZrRDqsZpc', //password database kedua
     'database' => 'main', //nama database kedua
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
