@@ -4581,6 +4581,7 @@ class Main_model extends CI_Model {
          
          foreach ($datax as $q){
              $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
+             $this->db->order_by('e.idpditails', 'DESC');
              $this->db->group_by('b.idproduct');
              $this->db->where('e.stock>4');
              $this->db->where('e.delproductditails', 0);
