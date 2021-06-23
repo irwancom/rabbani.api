@@ -554,7 +554,7 @@ class H2h_model extends CI_Model {
                 $sync = $this->quantum->callAPi($dS->skuPditails, 2);
                 //print_r($sync);
                // exit;
-                $this->db->set('stock', $sync->ts);
+                //$this->db->set('stock', $sync->ts);
                 $this->db->set('stockRmall', $sync->ts);
                 $this->db->set('valuePrice', $dS->price * $sync->ts);
                 $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
