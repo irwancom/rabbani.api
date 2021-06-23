@@ -548,29 +548,29 @@ class H2h_model extends CI_Model {
         $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min),50)->result();
 			//print_r($dataSync);
               //  exit;
-        if (!empty($dataSync)) {
-            foreach ($dataSync as $dS) {
-                echo $dS->skuPditails . '<br>';
-                $sync = $this->quantum->callAPi($dS->skuPditails, 2);
-                //print_r($sync);
-               // exit;
-                //$this->db->set('stock', $sync->ts);
-                $this->db->set('stockRmall', $sync->ts);
-                $this->db->set('valuePrice', $dS->price * $sync->ts);
-                $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
-                // //if (empty($sync->ts)) {
-                //  //  $this->db->set('delproductditails', 1);
-                //  //}
-                $this->db->set('stockAllBandung', 0);
-                $this->db->set('valuePriceAllBandung', 0);
-                $this->db->set('stockAllJabar', 0);
-                $this->db->set('valuePriceAllJabar', 0);
-                $this->db->where('skuPditails', $dS->skuPditails);
-                $this->db->update('product_ditails');
-				 // print_r($sync);
-                //exit;
-            }
-        }
+//        if (!empty($dataSync)) {
+//            foreach ($dataSync as $dS) {
+//                echo $dS->skuPditails . '<br>';
+//                $sync = $this->quantum->callAPi($dS->skuPditails, 2);
+//                //print_r($sync);
+//               // exit;
+//                //$this->db->set('stock', $sync->ts);
+//                $this->db->set('stockRmall', $sync->ts);
+//                $this->db->set('valuePrice', $dS->price * $sync->ts);
+//                $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
+//                // //if (empty($sync->ts)) {
+//                //  //  $this->db->set('delproductditails', 1);
+//                //  //}
+//                $this->db->set('stockAllBandung', 0);
+//                $this->db->set('valuePriceAllBandung', 0);
+//                $this->db->set('stockAllJabar', 0);
+//                $this->db->set('valuePriceAllJabar', 0);
+//                $this->db->where('skuPditails', $dS->skuPditails);
+//                $this->db->update('product_ditails');
+//				 // print_r($sync);
+//                //exit;
+//            }
+//        }
         /* END SYNCE STOCK */
         /* ADD NEW PRODUCT BY QUANTUM */
        // exit;
