@@ -859,15 +859,15 @@ public function addorder($data = '') {
                 $this->db->Join('product_images as c', 'c.idproduct = a.idproduct', 'left' );
                 $update = $this->db->get_where('product as a')->result();
 
-                foreach ($update as $product) {
+                //foreach ($update as $product) {
                     // print_r($product->idproduct);exit;
                    $this->db->select('a.*,b.urlImage');
-                   $this->db->where('a.idproduct',$product->idproduct);
+                   $this->db->where('a.idproduct',$update->idproduct);
                    //$this->db->group_by('a.idpditails');
                    $this->db->Join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left' );
                    $query = $this->db->get_where('product_ditails as a')->result();
 
-                }
+               // }
 
                  $datax[] = array(
                         'product' => $product,
