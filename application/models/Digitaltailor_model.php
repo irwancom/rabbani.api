@@ -444,7 +444,8 @@ class Digitaltailor_model extends CI_Model {
             if (!empty($verify)) {
 
                 $datax = json_decode($data[1]);
-                 // print_r($datax);exit;
+                $this->db->limit(1);
+                $this->db->order_by('idpeople', 'desc');
                 $cek = $this->db->get_where('sensus_people', array('idauthuser' =>$verify[0]->idauthuser))->result();
                     
                 if(!empty($cek)){
