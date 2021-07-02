@@ -2289,12 +2289,12 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
-                $db2 = $this->load->database('db2', TRUE);
-                $db2->select('a.*,b.idproduct,b.productName,b.qty');
-                $db2->where('idauthuser', $verify[0]->idauthuser);
-                $db2->order_by('a.idtransaction', 'DESC');
-				$db2->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
-                $dataCat = $db2->get_where('transaction as a')->result();
+                //$db2 = $this->load->database('db2', TRUE);
+                $this->db->select('a.*,b.idproduct,b.productName,b.qty');
+                $this->db->where('idauthuser', $verify[0]->idauthuser);
+                $this->db->order_by('a.idtransaction', 'DESC');
+		$this->db->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
+                $dataCat = $this->db->get_where('transaction as a')->result();
             } else {
                 return $this->token_response();
             }
