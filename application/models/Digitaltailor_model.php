@@ -870,7 +870,7 @@ public function addorder($data = '') {
                //// }
 
                  $datax[] = array(
-                        'product' => $product,
+                        'product' => $update,
                         'totalvar' => count($query),
                         'variasiProduct' => $query,
                         // 'imageProduct' => $queryq
