@@ -867,7 +867,7 @@ public function addorder($data = '') {
                    $this->db->Join('product_images_ditails as b', 'b.idpditails = a.idpditails' );
                    $query = $this->db->get_where('product_ditails as a')->result();
                    //print_r($query);exit;
-               // }
+               //// }
 
                  $datax[] = array(
                         'product' => $product,
