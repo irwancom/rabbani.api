@@ -858,11 +858,11 @@ public function addorder($data = '') {
                 $this->db->where('a.idproduct',$data[0]);
                 $this->db->Join('product_images as c', 'c.idproduct = a.idproduct', 'left' );
                 $update = $this->db->get_where('product as a')->result();
-                 print_r($update[0]->idproduct);exit;
+                 //print_r($update[0]->idproduct);exit;
                 //foreach ($update as $product) {
                     // print_r($product->idproduct);exit;
                    $this->db->select('a.*,b.urlImage');
-                   $this->db->where('a.idproduct',$update->idproduct);
+                   $this->db->where('a.idproduct',$update[0]->idproduct);
                    //$this->db->group_by('a.idpditails');
                    $this->db->Join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left' );
                    $query = $this->db->get_where('product_ditails as a')->result();
