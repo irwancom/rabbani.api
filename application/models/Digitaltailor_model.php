@@ -862,6 +862,7 @@ public function addorder($data = '') {
                 foreach ($update as $product) {
                     // print_r($product->idproduct);exit;
                    $this->db->where('a.idproduct',$product->idproduct);
+                   $this->db->group_by('a.idpditails');
                    $this->db->Join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left' );
                    $query = $this->db->get_where('product_ditails as a')->result();
 
