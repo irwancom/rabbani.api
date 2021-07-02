@@ -858,7 +858,7 @@ public function addorder($data = '') {
                 $this->db->where('a.idproduct',$data[0]);
                 $this->db->Join('product_images as c', 'c.idproduct = a.idproduct', 'left' );
                 $update = $this->db->get_where('product as a')->result();
-                 print_r($update);exit;
+                 print_r($update[0]->idproduct);exit;
                 //foreach ($update as $product) {
                     // print_r($product->idproduct);exit;
                    $this->db->select('a.*,b.urlImage');
