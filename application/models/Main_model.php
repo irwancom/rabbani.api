@@ -328,10 +328,10 @@ class Main_model extends CI_Model {
 			// print_r($verify);
 			//exit;
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
                 //$this->db->where('idstore', $data[1]);
-                $dataCat = $this->db->get_where('comment')->result();
+                $dataCat = $db2->get_where('comment')->result();
             } else {
                 return $this->token_response();
             }
@@ -357,36 +357,36 @@ class Main_model extends CI_Model {
 		//print_r($data);
 		//exit;
         $this->db->cache_on();
-        //$this->db = $this->load->database('db2', TRUE);
-        $this->db->select('a.*,c.urlImage');
-        $this->db->from('product as a');
-        //$this->db->join('category as b', 'b.idcategory = a.idcategory', 'left');
-        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
-        $this->db->where('delproduct', 0);
-        $this->db->where('status', 0);
-        $this->db->limit(10, $page);
-        $this->db->group_by('idproduct');
-        $this->db->order_by('idproduct', 'DESC');
-        $query = $this->db->get()->result();
+        $db2 = $this->load->database('db2', TRUE);
+        $db2->select('a.*,c.urlImage');
+        $db2->from('product as a');
+        //$db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
+        $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $db2->where('delproduct', 0);
+        $db2->where('status', 0);
+        $db2->limit(10, $page);
+        $db2->group_by('idproduct');
+        $db2->order_by('idproduct', 'DESC');
+        $query = $db2->get()->result();
 		
         foreach ($query as $q) {
 		   
-            $this->db->select('a.*,b.urlImage as imagesVariable');
-            $this->db->from('product_ditails as a');
-            $this->db->where('a.idproduct', $q->idproduct);
-            $this->db->where('stock>0');
-			$this->db->order_by('idproduct', 'DESC');
-			$this->db->group_by('idpditails');
-			$this->db->where('delproductditails', 0);
-            $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+            $db2->select('a.*,b.urlImage as imagesVariable');
+            $db2->from('product_ditails as a');
+            $db2->where('a.idproduct', $q->idproduct);
+            $db2->where('stock>0');
+			$db2->order_by('idproduct', 'DESC');
+			$db2->group_by('idpditails');
+			$db2->where('delproductditails', 0);
+            $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
 			
-            $query1 = $this->db->get()->result();
+            $query1 = $db2->get()->result();
 
             $dataq = array(
                 'idproduct' => $q->idproduct
             );
-            $this->db->select('*');
-            $queryq = $this->db->get_where('product_images', $dataq)->result();
+            $db2->select('*');
+            $queryq = $db2->get_where('product_images', $dataq)->result();
 		$datax[] = array(
                 'product' => $q,
                 'totalsku' => count($query),
@@ -515,38 +515,38 @@ class Main_model extends CI_Model {
 
     public function getDatarandom($page = '') {
        $this->db->cache_on();
-        //$this->db = $this->load->database('db2', TRUE);
-        $this->db->select('a.*,c.urlImage');
-        $this->db->from('product as a');
+        $db2 = $this->load->database('db2', TRUE);
+        $db2->select('a.*,c.urlImage');
+        $db2->from('product as a');
 
 
 
-        $this->db->join('category as b', 'b.idcategory = a.idcategory', 'left');
-        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
-        $this->db->where('delproduct', 0);
-        $this->db->limit(10, $page);
-        //$this->db->group_by('idproduct');
-        $this->db->order_by('idproduct', 'random');
-        //$this->db->order_by('timeCreate', 'DESC');
+        $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
+        $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $db2->where('delproduct', 0);
+        $db2->limit(10, $page);
+        //$db2->group_by('idproduct');
+        $db2->order_by('idproduct', 'random');
+        //$db2->order_by('timeCreate', 'DESC');
 
-        $query = $this->db->get()->result();
+        $query = $db2->get()->result();
 		//print_r($query);
 		//exit;
         foreach ($query as $q) {
-            $this->db->select('a.*,b.urlImage as imagesVariable');
-            $this->db->from('product_ditails as a');
-            $this->db->where('a.idproduct', $q->idproduct);
-            $this->db->where('stock>0');
-			$this->db->where('delproductditails', 0);
-			$this->db->group_by('idpditails');
-            $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
-            $query1 = $this->db->get()->result();
+            $db2->select('a.*,b.urlImage as imagesVariable');
+            $db2->from('product_ditails as a');
+            $db2->where('a.idproduct', $q->idproduct);
+            $db2->where('stock>0');
+			$db2->where('delproductditails', 0);
+			$db2->group_by('idpditails');
+            $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails', 'left');
+            $query1 = $db2->get()->result();
 
             $dataq = array(
                 'idproduct' => $q->idproduct
             );
-            $this->db->select('*');
-            $queryq = $this->db->get_where('product_images', $dataq)->result();
+            $db2->select('*');
+            $queryq = $db2->get_where('product_images', $dataq)->result();
 
             $datax[] = array(
                 'product' => $q,
@@ -572,18 +572,18 @@ class Main_model extends CI_Model {
 
     public function getDatasimiliar($page = '') {
         $this->db->cache_on();
-        //$this->db = $this->load->database('db2', TRUE);
-        $this->db->select('a.*, c.urlImage');
-        $this->db->from('product as a');
+        $db2 = $this->load->database('db2', TRUE);
+        $db2->select('a.*, c.urlImage');
+        $db2->from('product as a');
 
-        $this->db->where('delproduct', 0);
-        //$this->db->where('stock>0');
-        $this->db->join('category as b', 'b.idcategory = a.idcategory', 'left');
-        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
-        $this->db->limit(10, $page);
-        $this->db->group_by('idproduct');
-        $this->db->order_by('idproduct', 'RANDOM');
-        $query = this->db->get()->result();
+        $db2->where('delproduct', 0);
+        //$db2->where('stock>0');
+        $db2->join('category as b', 'b.idcategory = a.idcategory', 'left');
+        $db2->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+        $db2->limit(10, $page);
+        $db2->group_by('idproduct');
+        $db2->order_by('idproduct', 'RANDOM');
+        $query = $db2->get()->result();
         //print_r($query);
         //exit;
 
@@ -597,8 +597,8 @@ class Main_model extends CI_Model {
             $dataq = array(
                 'idproduct' => $q->idproduct
             );
-            $this->db->select('*');
-            $queryq = $this->db->get_where('product_images', $dataq)->result();
+            $db2->select('*');
+            $queryq = $db2->get_where('product_images', $dataq)->result();
 
             $datax[] = array(
                 'total' => $q,
@@ -894,25 +894,25 @@ class Main_model extends CI_Model {
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
-            //$this->db = $this->load->database('db2', TRUE);
-            $this->db->select('a.*,b.*');
-            $this->db->from('product as a');
-            $this->db->join('category as b', 'b.idcategory = a.idcategory');
+            $db2 = $this->load->database('db2', TRUE);
+            $db2->select('a.*,b.*');
+            $db2->from('product as a');
+            $db2->join('category as b', 'b.idcategory = a.idcategory');
 
-            $this->db->where('a.idproduct', $data[0]);
+            $db2->where('a.idproduct', $data[0]);
 
-            $query = $this->db->get()->result();
+            $query = $db2->get()->result();
 			//print_r($query);
 			//exit;
 
             foreach ($query as $x) {
-                $this->db->select('size');
-                //$this->db->from('product_ditails');
-                $this->db->where('idproduct', $x->idproduct);
-                $this->db->where('delproductditails', 0);
-                $this->db->where('stock>4');
-                $this->db->group_by('size');
-                $query1 = $this->db->get_where(product_ditails)->result();
+                $db2->select('size');
+                //$db2->from('product_ditails');
+                $db2->where('idproduct', $x->idproduct);
+                $db2->where('delproductditails', 0);
+                $db2->where('stock>4');
+                $db2->group_by('size');
+                $query1 = $db2->get_where(product_ditails)->result();
 				
 				
             }
@@ -920,52 +920,52 @@ class Main_model extends CI_Model {
 
 
             foreach ($query as $x) {
-                $this->db->select('a.collor');
-                $this->db->from('product_images_ditails as a');
-				$this->db->join('product_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('a.idproduct', $x->idproduct);
-                $this->db->where('b.delproductditails', 0);
-                $this->db->where('b.stock>4');
-                $this->db->group_by('collor');
-                $query2 = $this->db->get()->result();
+                $db2->select('a.collor');
+                $db2->from('product_images_ditails as a');
+				$db2->join('product_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('a.idproduct', $x->idproduct);
+                $db2->where('b.delproductditails', 0);
+                $db2->where('b.stock>4');
+                $db2->group_by('collor');
+                $query2 = $db2->get()->result();
 				
 			
             }
 
             foreach ($query as $x) {
-                $this->db->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
-                $this->db->from('product_ditails as a');
-				$this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('a.delproductditails', 0);
-                $this->db->where('a.stock>4');
-                $this->db->where('b.idproduct', $x->idproduct);
-				$this->db->group_by('a.idpditails');
-                $query3 = $this->db->get()->result();
+                $db2->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
+                $db2->from('product_ditails as a');
+				$db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('a.delproductditails', 0);
+                $db2->where('a.stock>4');
+                $db2->where('b.idproduct', $x->idproduct);
+				$db2->group_by('a.idpditails');
+                $query3 = $db2->get()->result();
 					//print_r($query3);
 				//exit;
             }
 
             foreach ($query as $q) {
-                $this->db->select('a.*,b.urlImage as imagesVariable ,c.productName');
-                $this->db->from('product_ditails as a');
+                $db2->select('a.*,b.urlImage as imagesVariable ,c.productName');
+                $db2->from('product_ditails as a');
                 //$this->db->group_by('a.size');
-                $this->db->where('a.idproduct', $q->idproduct);
-                $this->db->where('delproductditails', 0);
+                $db2->where('a.idproduct', $q->idproduct);
+                $db2->where('delproductditails', 0);
 				
-				$this->db->where('a.stock>4');
-                $this->db->group_by('a.collor');
+				$db2->where('a.stock>4');
+                $db2->group_by('a.collor');
 
-				$this->db->join('product as c', 'c.idproduct = a.idproduct');	
-                $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('b.urlImage!=""');
-                $query = $this->db->get()->result();
+				$db2->join('product as c', 'c.idproduct = a.idproduct');	
+                $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('b.urlImage!=""');
+                $query = $db2->get()->result();
 
                 $dataq = array(
                     'idproduct' => $q->idproduct
                 );
-                $this->db->select('urlImage, imageFile');
-				//$this->db->group_by('idProducts');
-                $queryq = $this->db->get_where('product_images', $dataq)->result();
+                $db2->select('urlImage, imageFile');
+				//$db2->group_by('idProducts');
+                $queryq = $db2->get_where('product_images', $dataq)->result();
                 //print_r($queryq);
 				//exit;
                 $datax[] = array(
@@ -1010,25 +1010,25 @@ class Main_model extends CI_Model {
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
-            //$this->db = $this->load->database('db2', TRUE);
-            $this->db->select('a.*,b.*');
-            $this->db->from('product as a');
-            $this->db->join('category as b', 'b.idcategory = a.idcategory');
+            $db2 = $this->load->database('db2', TRUE);
+            $db2->select('a.*,b.*');
+            $db2->from('product as a');
+            $db2->join('category as b', 'b.idcategory = a.idcategory');
 
-            $this->db->where('a.idproduct', $data[0]);
+            $db2->where('a.idproduct', $data[0]);
 
-            $query = $this->db->get()->result();
+            $query = $db2->get()->result();
 			//print_r($query);
 			//exit;
 
             foreach ($query as $x) {
-                $this->db->select('size');
-                //$this->db->from('product_ditails');
-                $this->db->where('idproduct', $x->idproduct);
-                $this->db->where('delproductditails', 0);
-                $this->db->where('stock>4');
-                $this->db->group_by('size');
-                $query1 = $this->db->get_where(product_ditails)->result();
+                $db2->select('size');
+                //$db2->from('product_ditails');
+                $db2->where('idproduct', $x->idproduct);
+                $db2->where('delproductditails', 0);
+                $db2->where('stock>4');
+                $db2->group_by('size');
+                $query1 = $db2->get_where(product_ditails)->result();
 				
 				
             }
@@ -1036,52 +1036,52 @@ class Main_model extends CI_Model {
 
 
             foreach ($query as $x) {
-                $this->db->select('a.collor');
-                $this->db->from('product_images_ditails as a');
-				$this->db->join('product_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('a.idproduct', $x->idproduct);
-                $this->db->where('b.delproductditails', 0);
-                $this->db->where('b.stock>4');
-                $this->db->group_by('collor');
-                $query2 = $this->db->get()->result();
+                $db2->select('a.collor');
+                $db2->from('product_images_ditails as a');
+				$db2->join('product_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('a.idproduct', $x->idproduct);
+                $db2->where('b.delproductditails', 0);
+                $db2->where('b.stock>4');
+                $db2->group_by('collor');
+                $query2 = $db2->get()->result();
 				
 			
             }
 
             foreach ($query as $x) {
-                $this->db->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
-                $this->db->from('product_ditails as a');
-				$this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('a.delproductditails', 0);
-                $this->db->where('a.stock>4');
-                $this->db->where('b.idproduct', $x->idproduct);
-				$this->db->group_by('a.idpditails');
-                $query3 = $this->db->get()->result();
+                $db2->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
+                $db2->from('product_ditails as a');
+				$db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('a.delproductditails', 0);
+                $db2->where('a.stock>4');
+                $db2->where('b.idproduct', $x->idproduct);
+				$db2->group_by('a.idpditails');
+                $query3 = $db2->get()->result();
 					//print_r($query3);
 				//exit;
             }
 
             foreach ($query as $q) {
-                $this->db->select('a.*,b.urlImage,c.productName');
-                $this->db->from('product_ditails as a');
+                $db2->select('a.*,b.urlImage,c.productName');
+                $db2->from('product_ditails as a');
                 //$this->db->group_by('a.size');
-                $this->db->where('a.idproduct', $q->idproduct);
-                $this->db->where('delproductditails', 0);
+                $db2->where('a.idproduct', $q->idproduct);
+                $db2->where('delproductditails', 0);
 				
-				$this->db->where('a.stock>4');
-                $this->db->group_by('a.collor');
+				$db2->where('a.stock>4');
+                $db2->group_by('a.collor');
 
-				$this->db->join('product as c', 'c.idproduct = a.idproduct');	
-                $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $this->db->where('b.urlImage!=""');
-                $query = $this->db->get()->result();
+				$db2->join('product as c', 'c.idproduct = a.idproduct');	
+                $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+                $db2->where('b.urlImage!=""');
+                $query = $db2->get()->result();
 
                 $dataq = array(
                     'idproduct' => $q->idproduct
                 );
-                $this->db->select('urlImage, imageFile');
-				//$this->db->group_by('idProducts');
-                $queryq = $this->db->get_where('product_images', $dataq)->result();
+                $db2->select('urlImage, imageFile');
+				//$db2->group_by('idProducts');
+                $queryq = $db2->get_where('product_images', $dataq)->result();
                 //print_r($queryq);
 				//exit;
                 $datax[] = array(
@@ -1827,9 +1827,9 @@ class Main_model extends CI_Model {
             $verify = $this->verfyAccount($data[0], $data[1]);
 			//print_r($verify); exit;
             if (!empty($verify)) {
-               // $this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
-                $this->db->where('idauthuser', $verify[0]->idauthuser);
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
+                $db2->where('idauthuser', $verify[0]->idauthuser);
                 $dataCat = $db->get_where('apiauth_user')->result();
             } else {
                 $supdate = $verify;
@@ -2289,7 +2289,7 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
+                //$db2 = $this->load->database('db2', TRUE);
                 $this->db->select('a.*,b.idproduct,b.productName,b.qty');
                 $this->db->where('idauthuser', $verify[0]->idauthuser);
                 $this->db->order_by('a.idtransaction', 'DESC');
@@ -2328,7 +2328,7 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
+                //$db2 = $this->load->database('db2', TRUE);
                 $this->db->select('a.*,b.skuPditails,b.price,b.stock,b.collor,b.size,b.realprice,b.priceDiscount,c.idproduct,c.productName,d.urlImage');
                 $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
                 $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
@@ -2398,7 +2398,7 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
+                //$db2 = $this->load->database('db2', TRUE);
                 $this->db->select('a.*,b.skuPditails,b.price,b.stock,b.collor,b.size,b.realprice,b.priceDiscount,c.idproduct,c.productName,d.urlImage');
                 $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
                 $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
@@ -2788,8 +2788,8 @@ class Main_model extends CI_Model {
 
 
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                //$this->db->select('*');
+                //$db2 = $this->load->database('db2', TRUE);
+                //$db2->select('*');
                 $this->db->where('idauthuser', $verify[0]->idauthuser);
                 $this->db->where('idpeople', $data[1]);
 				$this->db->join('sensus as b', 'b.idsensus = a.id_dis', 'left');
@@ -2827,12 +2827,12 @@ class Main_model extends CI_Model {
 
 
             if (!empty($verify)) {
-               // $this->db = $this->load->database('db2', TRUE);
-                //$this->db->select('*');
-                $this->db->where('idauthuser', $verify[0]->idauthuser);
-                $this->db->where('delpeople', 0);
-				$this->db->join('sensus as b', 'b.idsensus = a.id_dis', 'left');
-                $query = $this->db->get_where('sensus_people as a')->result();
+                $db2 = $this->load->database('db2', TRUE);
+                //$db2->select('*');
+                $db2->where('idauthuser', $verify[0]->idauthuser);
+                $db2->where('delpeople', 0);
+				$db2->join('sensus as b', 'b.idsensus = a.id_dis', 'left');
+                $query = $db2->get_where('sensus_people as a')->result();
             } else {
                 return $this->empty_response();
             }
@@ -3437,14 +3437,14 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('c.productName,a.*,b.realprice,b.idproduct,b.stock,b.collor,b.size,d.urlImage');
-                $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
-                $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
-                $this->db->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
-                $this->db->group_by('idpditails');
-                $this->db->where('idauthuser', $verify[0]->idauthuser);
-                $dataCat = $this->db->get_where('whishlist as a')->result();
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('c.productName,a.*,b.realprice,b.idproduct,b.stock,b.collor,b.size,d.urlImage');
+                $db2->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
+                $db2->join('product as c', 'c.idproduct = b.idproduct', 'left');
+                $db2->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
+                $db2->group_by('idpditails');
+                $db2->where('idauthuser', $verify[0]->idauthuser);
+                $dataCat = $db2->get_where('whishlist as a')->result();
             } else {
                 return $this->token_response();
             }
@@ -3472,10 +3472,10 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
-                $this->db->where('idauthuser', $verify[0]->idauthuser);
-                $dataCat = $this->db->get_where('whishlist')->result();
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
+                $db2->where('idauthuser', $verify[0]->idauthuser);
+                $dataCat = $db2->get_where('whishlist')->result();
 
                 if (!empty($dataCat)) {
                     foreach ($dataCat as $details) {
@@ -3572,10 +3572,10 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
                 //$this->db->where('idstore', $data[1]);
-                $dataCat = $this->db->get_where('store')->result();
+                $dataCat = $db2->get_where('store')->result();
             } else {
                 return $this->token_response();
             }
@@ -3603,10 +3603,10 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
-                $this->db->where('id_city', $data[1]);
-                $dataCat = $this->db->get_where('store')->result();
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
+                $db2->where('id_city', $data[1]);
+                $dataCat = $db2->get_where('store')->result();
             } else {
                 return $this->token_response();
             }
@@ -3634,10 +3634,10 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                //$this->db = $this->load->database('db2', TRUE);
-                $this->db->select('*');
+                $db2 = $this->load->database('db2', TRUE);
+                $db2->select('*');
                 //$this->db->where('idstore', $data[1]);
-                $dataCat = $this->db->get_where('faq')->result();
+                $dataCat = $db2->get_where('faq')->result();
             } else {
                 return $this->token_response();
             }
