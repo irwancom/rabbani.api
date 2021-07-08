@@ -621,7 +621,7 @@ public function addorder($data = '') {
                 $dataTrx = array(
                     // 'idauth' => $verify[0]->idauthstaff,
                     'idauthuser' => $user[0]->idauthuser,
-                    'reknumber' => $datax->reknumber,
+                    //'reknumber' => $datax->reknumber,
                     'timeCreate' => date('H:i:s'),
                     'dateCreate' => date('Y-m-d'),
                     'orderBy' => 'tailordigital',
@@ -697,7 +697,7 @@ public function addorder($data = '') {
                     'corp' => $dataTrx['orderBy'],
                     'noInvoice' => $dataTrx['noInvoice'],
                     'shipping' => $dataTrx['shipping'],
-                    'reknumber' => $dataTrx['reknumber'],
+                    //'reknumber' => $dataTrx['reknumber'],
                     'shippingprice' => $cost,
                 );
                 return $response;
