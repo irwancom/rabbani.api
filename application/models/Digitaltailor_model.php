@@ -697,7 +697,7 @@ public function addorder($data = '') {
                     'corp' => $dataTrx['orderBy'],
                     'noInvoice' => $dataTrx['noInvoice'],
                     'shipping' => $dataTrx['shipping'],
-                    // 'addressSender' => $dataTrx['addressSender'],
+                    'reknumber' => $dataTrx['reknumber'],
                     'shippingprice' => $cost,
                 );
                 return $response;
