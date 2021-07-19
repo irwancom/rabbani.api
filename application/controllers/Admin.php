@@ -1895,6 +1895,45 @@ class Admin extends REST_Controller {
             }
         }
     }
+    
+    function vouchernew_post($pg = '') {
+        if ($pg == 'add') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('data')
+            );
+            $data = $this->admin_model->voucheradd($data);
+        } elseif ($pg == 'update') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('catName'),
+                $this->input->post('idCat')
+            );
+            $data = $this->admin_model->CatupdateData($data);
+        } elseif ($pg == 'del') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idvoucher')
+            );
+            $data = $this->admin_model->voucherdel($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret')
+            );
+
+            $data = $this->admin_model->vouchernew($data);
+        }
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+	
 	
 	
 	 
