@@ -6828,6 +6828,133 @@ class Admin_model extends CI_Model {
             }
         }
     }
+    
+     public function voucheradd($data = '') {
+       // print_r($data); exit;
+        if (empty($data[0]) || empty($data[1])|| empty($data[2])) {
+            // print_r($data);
+            // exit;
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+             // print_r($verify);exit;
+            if (!empty($verify)) {
+
+                $datax = json_decode($data[2]);
+                // print_r($datax);exit;
+                 $cekcode = $this->db->get_where('voucher_new', array('voucher_code' => strtoupper($datax->v_code)))->result();
+                // print_r($cekcode);exit;
+            if (empty($cekcode)) {
+
+                $datay = array(
+                        'voucher_name' => $datax->v_name,
+                        'voucher_desc' => $datax->v_desc,
+                        'voucher_code' => strtoupper($datax->v_code),
+                        'date_start' => $datax->d_start,
+                        'date_end' => $datax->d_end,
+                        'voucher_type' => $datax->v_type,
+                        'voucher_value' => $datax->v_value,
+                        'voucher_status' => $datax->v_status,
+                        'discount' =>$datax->disc,
+                        'max_discount' => $datax->max_disc,
+                        'minimal_order' => $datax->min_order,
+                        'voucher_amount' => $datax->v_amount
+                        
+                    );
+                     // print_r($datay);exit;
+                     $supdate = $this->db->insert('voucher_new', $datay);
+                } else {
+                 return $this->duplicate_response();
+            }
+
+            } else {
+                 return $this->token_response();
+            }
+
+            if (!empty($supdate)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['totalData'] = count($datay);
+                $response['data'] = $datay;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+    public function voucherdel($data = '') {
+        //print_r($data);
+        //exit;
+        if (empty($data[0]) || empty($data[1]) || empty($data[2])) {
+            // print_r($data);
+            // exit;
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+             //print_r($verify);
+            //exit;
+            if (!empty($verify)) {
+
+             
+                     $this->db->where('idvoucher_new',$data[2]);
+                     $supdate = $this->db->delete('voucher_new');
+            } else {
+                 return $this->token_response();
+            }
+
+            if (!empty($supdate)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['totalData'] = count($supdate);
+                $response['data'] = $supdate;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
+
+
+      public function vouchernew($data = '') {
+        // print_r($data);exit;
+        if (empty($data[0]) || empty($data[1])) {
+            // print_r($data);
+            // exit;
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+             //print_r($verify);
+            //exit;
+            if (!empty($verify)) {
+                     $supdate = $this->db->get_where('voucher_new')->result();
+            } else {
+                 return $this->token_response();
+            }
+
+            if (!empty($supdate)) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['message'] = 'Data successfully processed.';
+                $response['totalData'] = count($supdate);
+                $response['data'] = $supdate;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive.';
+                return $response;
+            }
+        }
+    }
 	
 		
 	
