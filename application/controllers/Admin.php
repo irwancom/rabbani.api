@@ -1426,7 +1426,7 @@ class Admin extends REST_Controller {
         } else {
             $data = array(
                 $this->input->post('keyCodeStaff'),
-                $this->input->post('secret')
+                $this->input->post('secret'),
             );
 
             $data = $this->admin_model->getvoucher($data);
