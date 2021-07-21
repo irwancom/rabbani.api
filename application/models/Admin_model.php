@@ -5006,8 +5006,7 @@ class Admin_model extends CI_Model {
     }
 	
 	public function getvoucher($data = '') {
-        // print_r($data);
-        //exit;
+        // print_r($data);exit;
         if (empty($data[0]) || empty($data[1])) {
             // print_r($data);
             // exit;
