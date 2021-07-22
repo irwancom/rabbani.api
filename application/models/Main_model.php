@@ -3565,8 +3565,7 @@ class Main_model extends CI_Model {
     }
 
     public function store($data = '') {
-// print_r($data);
-// exit;
+ print_r($data); exit;
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
