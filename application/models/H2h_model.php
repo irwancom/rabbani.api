@@ -1382,9 +1382,22 @@ class H2h_model extends CI_Model {
             return $this->empty_response();
         } else {
             $datax = json_decode($data[0]);
-            // print_r($datax);exit;
-            $cek = $this->db->get_where('store', array('namestore' => $datax->nama))->result();
-            // print_r($cek);exit;   
+           $this->db->limit('1');
+            $this->db->like('nameProv',$datax->id_prov);
+            $cekprov = $this->db->get_where('sensus_province')->result();
+            
+            if (empty($cekprov)) {
+                $cekprov[0]->id_prov = 0;
+            }
+            $this->db->limit('1');
+            $this->db->like('nameCity',$datax->id_city);
+            $cekkota = $this->db->get_where('sensus_city')->result();
+            // print_r($cekkota);exit;
+            if (empty($cekkota)) {
+                $cekkota[0]->id_city = 0;
+            }
+
+             $cek = $this->db->get_where('store', array('namestore' => $datax->nama))->result(); 
             if (!empty($cek)) {
                 
                 $dataz = array(
