@@ -1385,7 +1385,7 @@ class H2h_model extends CI_Model {
            $this->db->limit('1');
             $this->db->like('nameProv',$datax->id_prov);
             $cekprov = $this->db->get_where('sensus_province')->result();
-            print_r($cekprov);exit;
+            //print_r($cekprov);exit;
             if (empty($cekprov)) {
                 $cekprov[0]->id_prov = 0;
             }
