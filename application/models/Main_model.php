@@ -3574,8 +3574,8 @@ class Main_model extends CI_Model {
                // $db2 = $this->load->database('db2', TRUE);
                 //$this->db->select('a.*');
                 //$this->db->where('idstore', $data[1]);
-                $this->db->Join('sensus_province as b', 'b.id_prov = a.idprov');
-                $dataCat = $this->db->get_where('store as a')->result();
+                //$this->db->Join('sensus_province as b', 'b.id_prov = a.idprov', 'left');
+                $dataCat = $this->db->get_where('store')->result();
             } else {
                 return $this->token_response();
             }
