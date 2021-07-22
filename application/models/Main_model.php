@@ -2036,7 +2036,7 @@ class Main_model extends CI_Model {
             $this->db->update('apiauth_user');
 			
 			
-			$massage = ' Kode OTP dari https://rmall.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
+			$massage = ' Kode OTP dari https://rabbani.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
             //$this->sms->SendSms($data[0], $massage);
 			$this->otp->SendOtp($data[0], $massage);
 			//$cek_otp = $this->db->get_where('apiauth_user', array('hp' => $data[0]))->result();
