@@ -2036,7 +2036,7 @@ class Main_model extends CI_Model {
             $this->db->update('apiauth_user');
 			
 			
-			$massage = ' Kode OTP dari https://rabbani.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
+			$massage = ' Kode OTP dari https://rmall.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
             //$this->sms->SendSms($data[0], $massage);
 			$this->otp->SendOtp($data[0], $massage);
 			//$cek_otp = $this->db->get_where('apiauth_user', array('hp' => $data[0]))->result();
@@ -3572,10 +3572,11 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                $db2 = $this->load->database('db2', TRUE);
-                $db2->select('*');
+               // $db2 = $this->load->database('db2', TRUE);
+                //$this->db->select('a.*');
                 //$this->db->where('idstore', $data[1]);
-                $dataCat = $db2->get_where('store')->result();
+                //$this->db->Join('sensus_people as c', 'c.idstore = a.idstore', 'left');
+                $dataCat = $this->db->get_where('store')->result();
             } else {
                 return $this->token_response();
             }
