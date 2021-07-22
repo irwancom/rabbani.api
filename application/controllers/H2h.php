@@ -558,5 +558,20 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-
+    
+     public function inputstore_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('data'),
+                    //$this->input->post('idstore')
+            );
+            $data = $this->h2h_model->inputstore($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+//end
 }
