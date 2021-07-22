@@ -1927,6 +1927,7 @@ class Admin extends REST_Controller {
             
         );
         $data = $this->admin_model->vouchernew($data);
+        }
         if ($data) {
             $this->response($data, 200);
         } else {
