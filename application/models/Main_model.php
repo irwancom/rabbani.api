@@ -3571,11 +3571,9 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-               // $db2 = $this->load->database('db2', TRUE);
-                //$this->db->select('a.*');
-                //$this->db->where('idstore', $data[1]);
-                //$this->db->Join('sensus_province as b', 'b.id_prov = a.idprov', 'left');
-                $dataCat = $this->db->get_where('store')->result();
+               $this->db->join('sensus_city as c', 'c.id_prov = a.id_prov');
+                $this->db->join('sensus_province as b', 'b.id_prov = a.id_prov');
+                $dataCat = $this->db->get_where('store as a')->result();
             } else {
                 return $this->token_response();
             }
