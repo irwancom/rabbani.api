@@ -1376,6 +1376,55 @@ class H2h_model extends CI_Model {
     }
 	
 	
+     public function inputstore($data = '') {
+    // print_r($data[0]);exit;      
+        if (empty($data[0])) {
+            return $this->empty_response();
+        } else {
+            $datax = json_decode($data[0]);
+            // print_r($datax);exit;
+            $cek = $this->db->get_where('store', array('namestore' => $datax->nama))->result();
+            // print_r($cek);exit;   
+            if (!empty($cek)) {
+                
+                $dataz = array(
+                        'namestore' => $datax->nama,
+                        'addrstore' => $datax->alamat,
+                        'phonestore' => $datax->tlp,
+                        'wa' => $datax->wa,
+                        'id_prov' => $datax->id_prov,
+                        'id_city' => $datax->id_city
+                    );
+                               $this->db->where('namestore', $datax->nama);
+                    $supdate = $this->db->update('store', $dataz);
+                } else {
+                    $datay = array(
+                        'namestore' => $datax->nama,
+                        'addrstore' => $datax->alamat,
+                        'phonestore' => $datax->tlp,
+                        'wa' => $datax->wa,
+                        'id_prov' => $datax->id_prov,
+                        'id_city' => $datax->id_city
+                    );
+                    $supdate = $this->db->insert('store', $datay);
+                }
+            
+
+            if ($datax) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($datax);
+                $response['data'] = $datax;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+
 	
 	
 	
