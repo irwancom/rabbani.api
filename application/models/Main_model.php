@@ -3565,7 +3565,7 @@ class Main_model extends CI_Model {
     }
 
     public function store($data = '') {
- print_r($data); exit;
+ //print_r($data); exit;
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
@@ -3574,8 +3574,8 @@ class Main_model extends CI_Model {
                // $db2 = $this->load->database('db2', TRUE);
                 //$this->db->select('a.*');
                 //$this->db->where('idstore', $data[1]);
-                //$this->db->Join('sensus_people as c', 'c.idstore = a.idstore', 'left');
-                $dataCat = $this->db->get_where('store')->result();
+                $this->db->Join('sensus_province as b', 'b.id_prov = a.idprov');
+                $dataCat = $this->db->get_where('store as a')->result();
             } else {
                 return $this->token_response();
             }
