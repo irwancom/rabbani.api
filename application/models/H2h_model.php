@@ -1405,8 +1405,8 @@ class H2h_model extends CI_Model {
                         'addrstore' => $datax->alamat,
                         'phonestore' => $datax->tlp,
                         'wa' => $datax->wa,
-                        'id_prov' => $datax->id_prov,
-                        'id_city' => $datax->id_city
+                        'id_prov' => $cekprov[0]->id_prov,
+                        'id_city' => $cekkota[0]->id_city
                     );
                                $this->db->where('namestore', $datax->nama);
                     $supdate = $this->db->update('store', $dataz);
@@ -1416,8 +1416,8 @@ class H2h_model extends CI_Model {
                         'addrstore' => $datax->alamat,
                         'phonestore' => $datax->tlp,
                         'wa' => $datax->wa,
-                        'id_prov' => $datax->id_prov,
-                        'id_city' => $datax->id_city
+                        'id_prov' => $cekprov[0]->id_prov,
+                        'id_city' => $cekkota[0]->id_city
                     );
                     $supdate = $this->db->insert('store', $datay);
                 }
