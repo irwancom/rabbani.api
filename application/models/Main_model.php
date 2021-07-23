@@ -3603,7 +3603,7 @@ class Main_model extends CI_Model {
             if (!empty($verify)) {
                 //$db2 = $this->load->database('db2', TRUE);
                 //$db2->select('*');
-                $this->db->where('id_city', $data[1]);
+                $this->db->where('a.id_city', $data[1]);
                 $this->db->join('sensus_city as c', 'c.id_prov = a.id_prov');
                 $this->db->join('sensus_province as b', 'b.id_prov = a.id_prov');
                 $dataCat = $this->db->get_where('store as a')->result();
