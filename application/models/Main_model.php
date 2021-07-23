@@ -3571,6 +3571,7 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
+                $this->db->group_by('a.idstore');
                $this->db->join('1015_city as c', 'c.province_id = a.id_prov');
                 $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
                 $dataCat = $this->db->get_where('store as a')->result();
