@@ -1443,7 +1443,7 @@ class H2h_model extends CI_Model {
  // print_r($data); exit;
        
                 $this->db->select('a.id_prov,c.city_id,c.type,c.name');
-                $this->db->group_by('a.idStore');
+                $this->db->group_by('c.city_id');
                 $this->db->order_by('c.name', ASC);
                 $this->db->where('a.id_prov',$data[0]);
                 $this->db->join('1015_city as c', 'c.province_id = a.id_prov');
