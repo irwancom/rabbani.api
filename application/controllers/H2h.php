@@ -576,12 +576,19 @@ class H2h extends REST_Controller {
         }
     }
     
-    function citystore_get() {
-        $data = $this->h2h_model->citystore();
-        if ($data) {
-            $this->response($data, 200);
-        } else {
-            $this->response(array('status' => 'fail', 502));
+    public function citystore_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('idprov'),
+                    //$this->input->post('idstore')
+            );
+           
+            $data = $this->h2h_model->citystore($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
         }
     }
     
