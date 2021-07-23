@@ -1438,6 +1438,61 @@ class H2h_model extends CI_Model {
         }
     }
 
+    
+     public function citystore($data = '') {
+ // print_r($data); exit;
+       
+                $this->db->select('a.id_prov,c.city_id,c.type,c.name');
+                $this->db->group_by('idStore');
+                $this->db->order_by('c.name', ASC);
+                $this->db->where('a.id_prov',9);
+                $this->db->join('1015_city as c', 'c.province_id = a.id_prov');
+                //$this->db->join('1015_province as b', 'b.province_id = a.id_prov');
+                $dataCat = $this->db->get_where('store as a')->result();
+        
+
+            if ($dataCat) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCat);
+                $response['data'] = $dataCat;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        
+    }
+
+   
+	 public function provstore($data = '') {
+ // print_r($data); exit;
+       
+                $this->db->select('a.id_prov,b.name');
+                $this->db->group_by('idStore');
+                $this->db->order_by('b.name', ASC);
+                //$this->db->where('a.id_prov',9);
+                //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
+                $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
+                $dataCat = $this->db->get_where('store as a')->result();
+        
+
+            if ($dataCat) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCat);
+                $response['data'] = $dataCat;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        
+    }
 	
 	
 	
