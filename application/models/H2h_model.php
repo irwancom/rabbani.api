@@ -1486,25 +1486,45 @@ class H2h_model extends CI_Model {
         }
     }
 
-        public function storebyprov($data = '') {
-            // print_r($data); exit;
-            $this->db->select('id_prov, namestore');
-            $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();
+    public function storebyprov($data = '') {
+        // print_r($data); exit;
+        $this->db->select('id_prov, namestore');
+        $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();
 
 
-            if ($dataCat) {
-                $response['status'] = 200;
-                $response['error'] = false;
-                $response['totalData'] = count($dataCat);
-                $response['data'] = $dataCat;
-                return $response;
-            } else {
-                $response['status'] = 502;
-                $response['error'] = true;
-                $response['message'] = 'Data failed to receive or data empty.';
-                return $response;
-            }
+        if ($dataCat) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($dataCat);
+            $response['data'] = $dataCat;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
         }
-
     }
     
+    public function storebyregion($data = '') {
+        // print_r($data); exit;
+        $this->db->select('a.id_prov, a.namestore');
+        $this->db->join('store_region as b', 'a.region = b.idregion');
+        $dataCat = $this->db->get_where('store as a', array('b.url' => $data))->result();
+
+
+        if ($dataCat) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($dataCat);
+            $response['data'] = $dataCat;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+}
