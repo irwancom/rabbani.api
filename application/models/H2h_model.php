@@ -1489,7 +1489,7 @@ class H2h_model extends CI_Model {
         public function storebyprov($data = '') {
             // print_r($data); exit;
 
-            $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();s
+            $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();
 
 
             if ($dataCat) {
