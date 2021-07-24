@@ -1470,8 +1470,8 @@ class H2h_model extends CI_Model {
 	 public function provstore($data = '') {
  // print_r($data); exit;
        
-                $this->db->select('a.id_prov,b.name');
-                $this->db->group_by('b.name');
+                $this->db->select(' a.id_prov, b.name');
+                $this->db->group_by('a.id_prov');
                 $this->db->order_by('b.name', ASC);
                 //$this->db->where('a.id_prov',9);
                 //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
