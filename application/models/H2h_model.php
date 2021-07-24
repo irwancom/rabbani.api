@@ -1508,7 +1508,7 @@ class H2h_model extends CI_Model {
     
     public function storebyregion($data = '') {
         // print_r($data); exit;
-        $this->db->select('a.id_prov, a.namestore');
+        $this->db->select('a.region, a.namestore, a.wa');
         $this->db->join('store_region as b', 'a.region = b.idregion');
         $dataCat = $this->db->get_where('store as a', array('b.url' => $data))->result();
 
