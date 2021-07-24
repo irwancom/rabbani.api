@@ -98,13 +98,13 @@ class H2h_model extends CI_Model {
     }
 
     public function product($data = '') {
-		
+
         $dataAccount = $this->verfyAccount($data['keyCode'], $data['secret']);
 
         if (!empty($dataAccount)) {
             $checkDataStore = $this->db->get_where('product_stockStore', array('idstorequantum' => $data['idstorequantum'], 'skuProduct' => $data['skuProduct']))->result();
             //print_r($checkDataStore);exit;
-			$data = array(
+            $data = array(
                 'idstorequantum' => $data['idstorequantum'],
                 'skuProduct' => $data['skuProduct'],
                 'nameProduct' => $data['nameProduct'],
@@ -232,13 +232,13 @@ class H2h_model extends CI_Model {
     }
 
     public function dataSku($data = '') {
-			//print_r($data);exit;
-		
+        //print_r($data);exit;
+
         $dataAccount = $this->verfyAccount($data['keyCode'], $data['secret']);
-		
+
         if (!empty($dataAccount)) {
             $checkDataSku = $this->db->get_where('product_sku', array('skuDitails' => $data['skuDitails']))->result();
-			//print_r($checkDataSku);exit;
+            //print_r($checkDataSku);exit;
             $dataQuery = array(
                 'yearSku' => $data['yearSku'],
                 'sku' => $data['sku'],
@@ -476,8 +476,8 @@ class H2h_model extends CI_Model {
 //        exit;
         /* CHECK TRANSACTION AUTO CANCLE */
         $dataOrders = $this->db->get_where('transaction', array('statusPay' => 0), 500)->result();
-         //print_r ($dataOrders);
-       // exit;
+        //print_r ($dataOrders);
+        // exit;
         if (!empty($dataOrders)) {
             foreach ($dataOrders as $dO) {
                 //print_r ($dO);
@@ -520,7 +520,7 @@ class H2h_model extends CI_Model {
                 $data = $this->courir->jne(2, $dT->trackingCode);
                 $data = json_decode($data);
                 //print_r($data);
-				//exit;
+                //exit;
                 if ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'DELIVERED')) {
                     $this->db->set('status', 2);
                     $this->db->where('idtransaction', $dT->idtransaction);
@@ -534,20 +534,19 @@ class H2h_model extends CI_Model {
         }
         /* END TRACKING */
         /* SYNCE DATA STOCK QUANTUM */
-		//$skuPditails = 'KAN0HA09141A200' ;
-		 //echo $skuPditails;
-           //     exit;
-	//	echo $dS->skuPditails . '<br>';
-		
-		//$sync = $this->quantum->callAPi($skuPditails, 2);
-		//print_r($sync);
-          //      exit;
-		
+        //$skuPditails = 'KAN0HA09141A200' ;
+        //echo $skuPditails;
+        //     exit;
+        //	echo $dS->skuPditails . '<br>';
+        //$sync = $this->quantum->callAPi($skuPditails, 2);
+        //print_r($sync);
+        //      exit;
+
         $last_min = date('Y-m-d H:i:s', strtotime('-15 minutes'));
         $this->db->order_by('rand()');
-        $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min),50)->result();
-			//print_r($dataSync);
-              //  exit;
+        $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min), 50)->result();
+        //print_r($dataSync);
+        //  exit;
 //        if (!empty($dataSync)) {
 //            foreach ($dataSync as $dS) {
 //                echo $dS->skuPditails . '<br>';
@@ -573,15 +572,15 @@ class H2h_model extends CI_Model {
 //        }
         /* END SYNCE STOCK */
         /* ADD NEW PRODUCT BY QUANTUM */
-       // exit;
-		//$newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
+        // exit;
+        //$newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
         $newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
-		//print_r($newProduct);
+        //print_r($newProduct);
         if (!empty($newProduct)) {
             foreach ($newProduct as $nP) {
 //                print_r($nP);
                 $dataQuantum = $this->quantum->callAPi($nP->skuDitails, 3);
-              
+
                 if (!empty($dataQuantum)) {
                     $checkProduct = $this->db->get_where('product', array('skuProduct' => $nP->sku))->result();
                     $insert_id = $checkProduct[0]->idproduct;
@@ -1116,17 +1115,17 @@ class H2h_model extends CI_Model {
         //print_r($cek_id);
         //exit;
         if (!empty($dataAccount)) {
-			//print_r($dataAccount);exit;
+            //print_r($dataAccount);exit;
             if ($cek_id > 0) {
                 $this->db->set('status', 2);
-				//$a = '2020-12-22';
+                //$a = '2020-12-22';
                 $this->db->where('id_quantum', $data[2]);
                 //$this->db->where('cek_date <', '2020-12-22');
                 $dataCat = $this->db->update('all_order');
             } else {
                 return $this->field_response();
             }
-		   //print_r($dataCat);exit;
+            //print_r($dataCat);exit;
         } else {
             return $this->token_response();
         }
@@ -1147,7 +1146,7 @@ class H2h_model extends CI_Model {
     public function getDataProduct() {
         $this->db->select('a.idproduct, b.idpditails, a.skuProduct, a.productName, a.descrDitails, b.skuPditails, b.collor, b.size, b.price');
         $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct');
-        $query = $this->db->get_where('product as a', array('b.statusSend' => 0),100)->result();
+        $query = $this->db->get_where('product as a', array('b.statusSend' => 0), 100)->result();
         if (!empty($query)) {
             foreach ($query as $q) {
 //                print_r($q);
@@ -1160,11 +1159,11 @@ class H2h_model extends CI_Model {
                     'price' => $q->price
                 );
                 $respound = $this->sim->addUpdate($data);
-                
+
                 $this->db->set('statusSend', 1);
                 $this->db->where('idpditails', $q->idpditails);
                 $this->db->update('product_ditails');
-                
+
                 $return[] = array(
                     $q, 'respound' => $respound
                 );
@@ -1172,28 +1171,27 @@ class H2h_model extends CI_Model {
         }
         return $return;
     }
-	
-	
-	 public function productact($data = '') {
-		 $dataAccount = $this->verfyAccount($data[0], $data[1]);
-		 
-		 if (!empty($dataAccount)){
-        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
-        $this->db->where('a.delproduct', 0);
-        $this->db->where('b.delproductditails', 0);
-        $this->db->where('b.stock>5');
-        //$this->db->where('delproduct', 0);
-       // $this->db->where('a.idcategory', $data[0]);
 
-        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
-        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
-        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
-        $this->db->group_by('a.idproduct');
-        $this->db->order_by('a.idproduct', 'DESC');
-        $datax = $this->db->get_where('product as a')->result();
-		 } else {
-			 return $this->token_response();
-		 }
+    public function productact($data = '') {
+        $dataAccount = $this->verfyAccount($data[0], $data[1]);
+
+        if (!empty($dataAccount)) {
+            $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
+            $this->db->where('a.delproduct', 0);
+            $this->db->where('b.delproductditails', 0);
+            $this->db->where('b.stock>5');
+            //$this->db->where('delproduct', 0);
+            // $this->db->where('a.idcategory', $data[0]);
+
+            $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+            $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+            //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+            $this->db->group_by('a.idproduct');
+            $this->db->order_by('a.idproduct', 'DESC');
+            $datax = $this->db->get_where('product as a')->result();
+        } else {
+            return $this->token_response();
+        }
 
         if (!empty($datax)) {
             $response['status'] = 200;
@@ -1209,38 +1207,38 @@ class H2h_model extends CI_Model {
             return $response;
         }
     }
-	
-	 public function productcatact($data = '') {
-		 $dataAccount = $this->verfyAccount($data[0], $data[1]);
-		 
-		 if (!empty($dataAccount)){
-        $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
-        $this->db->where('a.delproduct', 0);
-        $this->db->where('b.delproductditails', 0);
-        $this->db->where('b.stock>5');
-        //$this->db->where('delproduct', 0);
-        $this->db->where('a.idcategory', $data[2]);
 
-        $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
-        $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
-        //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
-        $this->db->group_by('a.idproduct');
-        $this->db->order_by('a.idproduct', 'DESC');
-        $datax = $this->db->get_where('product as a')->result();
-		 } else {
-			 return $this->token_response();
-		 }
-		 $this->db->select('idcategory,categoryName');
-		 $cat = $this->db->get_where('category')->result();
+    public function productcatact($data = '') {
+        $dataAccount = $this->verfyAccount($data[0], $data[1]);
+
+        if (!empty($dataAccount)) {
+            $this->db->select('a.idproduct,a.idcategory,a.skuProduct,a.productName,a.descr,b.idpditails,b.skuPditails,b.collor,b.weight,b.size,b.stock,b.price,c.urlImage');
+            $this->db->where('a.delproduct', 0);
+            $this->db->where('b.delproductditails', 0);
+            $this->db->where('b.stock>5');
+            //$this->db->where('delproduct', 0);
+            $this->db->where('a.idcategory', $data[2]);
+
+            $this->db->join('product_images as c', 'c.idproduct = a.idproduct', 'left');
+            $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct', 'left');
+            //$this->db->join('product_images_ditails as d', 'd.idpditails = b.idproduct','left');
+            $this->db->group_by('a.idproduct');
+            $this->db->order_by('a.idproduct', 'DESC');
+            $datax = $this->db->get_where('product as a')->result();
+        } else {
+            return $this->token_response();
+        }
+        $this->db->select('idcategory,categoryName');
+        $cat = $this->db->get_where('category')->result();
 
         if (!empty($cat)) {
             $response['status'] = 200;
             $response['error'] = false;
             $response['message'] = 'Data successfully processed.';
             $response['totalData'] = count($datax);
-			$response['idcat'] = $cat;
+            $response['idcat'] = $cat;
             $response['databycat'] = $datax;
-			
+
             return $response;
         } else {
             $response['status'] = 502;
@@ -1249,8 +1247,8 @@ class H2h_model extends CI_Model {
             return $response;
         }
     }
-	
-	public function productditailsact($data = '') {
+
+    public function productditailsact($data = '') {
 
 
         //print_r($data);
@@ -1281,27 +1279,27 @@ class H2h_model extends CI_Model {
             return $response;
         }
     }
-	
-	public function tailor($data = '') {
-	//print_r($data[0]);exit;	  
+
+    public function tailor($data = '') {
+        //print_r($data[0]);exit;	  
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
             $datax = json_decode($data[0]);
-			$cek = $this->db->get_where('tailor', array('email' => $datax->email))->result();
-			//print_r($cek);exit;	
-			if (!empty($cek)) {
-				return $this->duplicate_response();
-				} else {
-					$datay = array(
-						'date' =>  date('Y-m-d'),
-						'time' => date('H:i:s'),
-                        'name' => $datax->nama,
-						'email' => $datax->email
-                    );
-					$supdate = $this->db->insert('tailor', $datay);
-				}
-			
+            $cek = $this->db->get_where('tailor', array('email' => $datax->email))->result();
+            //print_r($cek);exit;	
+            if (!empty($cek)) {
+                return $this->duplicate_response();
+            } else {
+                $datay = array(
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'name' => $datax->nama,
+                    'email' => $datax->email
+                );
+                $supdate = $this->db->insert('tailor', $datay);
+            }
+
 
             if ($datay) {
                 $response['status'] = 200;
@@ -1319,46 +1317,45 @@ class H2h_model extends CI_Model {
     }
 
     public function viewtailor($data = '') {
-    //print_r($data[0]);exit;     
-       
-			$this->db->order_by('idtailor', 'DESC');
-            $datay = $this->db->get_where('tailor')->result();
-            if ($datay) {
-                $response['status'] = 200;
-                $response['error'] = false;
-                $response['totalData'] = count($datay);
-                $response['data'] = $datay;
-                return $response;
-            } else {
-                $response['status'] = 502;
-                $response['error'] = true;
-                $response['message'] = 'Data failed to receive or data empty.';
-                return $response;
-            }
-        
+        //print_r($data[0]);exit;     
+
+        $this->db->order_by('idtailor', 'DESC');
+        $datay = $this->db->get_where('tailor')->result();
+        if ($datay) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($datay);
+            $response['data'] = $datay;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
     }
-	
-	public function rumahjahit($data = '') {
-	//print_r($data[0]);exit;	   
+
+    public function rumahjahit($data = '') {
+        //print_r($data[0]);exit;	   
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
             $datax = json_decode($data[0]);
-			$cek = $this->db->get_where('rumahjahit', array('wa' => $datax->wa))->result();
-			//print_r($cek);exit;	
-			if (!empty($cek)) {
-				return $this->duplicate_response();
-				} else {
-					$datay = array(
-						'date' =>  date('Y-m-d'),
-						'time' => date('H:i:s'),
-                        'name' => $datax->nama,
-						'email' => $datax->email,
-						'wa' => $datax->wa
-                    );
-					$supdate = $this->db->insert('rumahjahit', $datay);
-				}
-			
+            $cek = $this->db->get_where('rumahjahit', array('wa' => $datax->wa))->result();
+            //print_r($cek);exit;	
+            if (!empty($cek)) {
+                return $this->duplicate_response();
+            } else {
+                $datay = array(
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'name' => $datax->nama,
+                    'email' => $datax->email,
+                    'wa' => $datax->wa
+                );
+                $supdate = $this->db->insert('rumahjahit', $datay);
+            }
+
 
             if ($datay) {
                 $response['status'] = 200;
@@ -1374,54 +1371,53 @@ class H2h_model extends CI_Model {
             }
         }
     }
-	
-	
-     public function inputstore($data = '') {
-    // print_r($data[0]);exit;      
+
+    public function inputstore($data = '') {
+        // print_r($data[0]);exit;      
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
             $datax = json_decode($data[0]);
-           $this->db->limit('1');
-            $this->db->like('nameProv',$datax->id_prov);
+            $this->db->limit('1');
+            $this->db->like('nameProv', $datax->id_prov);
             $cekprov = $this->db->get_where('sensus_province')->result();
             //print_r($cekprov);exit;
             if (empty($cekprov)) {
                 $cekprov[0]->id_prov = 0;
             }
             $this->db->limit('1');
-            $this->db->like('nameCity',$datax->id_city);
+            $this->db->like('nameCity', $datax->id_city);
             $cekkota = $this->db->get_where('sensus_city')->result();
             // print_r($cekkota);exit;
             if (empty($cekkota)) {
                 $cekkota[0]->id_city = 0;
             }
 
-             $cek = $this->db->get_where('store', array('namestore' => $datax->nama))->result(); 
+            $cek = $this->db->get_where('store', array('namestore' => $datax->nama))->result();
             if (!empty($cek)) {
-                
+
                 $dataz = array(
-                        'namestore' => $datax->nama,
-                        'addrstore' => $datax->alamat,
-                        'phonestore' => $datax->tlp,
-                        'wa' => $datax->wa,
-                        'id_prov' => $cekprov[0]->id_prov,
-                        'id_city' => $cekkota[0]->id_city
-                    );
-                               $this->db->where('namestore', $datax->nama);
-                    $supdate = $this->db->update('store', $dataz);
-                } else {
-                    $datay = array(
-                        'namestore' => $datax->nama,
-                        'addrstore' => $datax->alamat,
-                        'phonestore' => $datax->tlp,
-                        'wa' => $datax->wa,
-                        'id_prov' => $cekprov[0]->id_prov,
-                        'id_city' => $cekkota[0]->id_city
-                    );
-                    $supdate = $this->db->insert('store', $datay);
-                }
-            
+                    'namestore' => $datax->nama,
+                    'addrstore' => $datax->alamat,
+                    'phonestore' => $datax->tlp,
+                    'wa' => $datax->wa,
+                    'id_prov' => $cekprov[0]->id_prov,
+                    'id_city' => $cekkota[0]->id_city
+                );
+                $this->db->where('namestore', $datax->nama);
+                $supdate = $this->db->update('store', $dataz);
+            } else {
+                $datay = array(
+                    'namestore' => $datax->nama,
+                    'addrstore' => $datax->alamat,
+                    'phonestore' => $datax->tlp,
+                    'wa' => $datax->wa,
+                    'id_prov' => $cekprov[0]->id_prov,
+                    'id_city' => $cekkota[0]->id_city
+                );
+                $supdate = $this->db->insert('store', $datay);
+            }
+
 
             if ($datax) {
                 $response['status'] = 200;
@@ -1438,64 +1434,77 @@ class H2h_model extends CI_Model {
         }
     }
 
+    public function citystore($data = '') {
+        // print_r($data); exit;
+
+        $this->db->select('a.id_prov,c.city_id,c.type,c.name');
+        $this->db->group_by('c.city_id');
+        $this->db->order_by('c.name', ASC);
+        $this->db->where('a.id_prov', $data[0]);
+        $this->db->join('1015_city as c', 'c.city_id = a.id_city');
+        //$this->db->join('1015_province as b', 'b.province_id = a.id_prov');
+        $dataCat = $this->db->get_where('store as a')->result();
+
+
+        if ($dataCat) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($dataCat);
+            $response['data'] = $dataCat;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+    public function provstore($data = '') {
+        // print_r($data); exit;
+
+        $this->db->select('count(*) as ttlStore, a.id_prov, b.name');
+        $this->db->group_by('a.id_prov');
+        $this->db->order_by('b.name', ASC);
+        //$this->db->where('a.id_prov',9);
+        //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
+        $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
+        $dataCat = $this->db->get_where('store as a')->result();
+
+
+        if ($dataCat) {
+            $response['status'] = 200;
+            $response['error'] = false;
+            $response['totalData'] = count($dataCat);
+            $response['data'] = $dataCat;
+            return $response;
+        } else {
+            $response['status'] = 502;
+            $response['error'] = true;
+            $response['message'] = 'Data failed to receive or data empty.';
+            return $response;
+        }
+    }
+
+        public function storebyprov($data = '') {
+            // print_r($data); exit;
+
+            $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();s
+
+
+            if ($dataCat) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                $response['totalData'] = count($dataCat);
+                $response['data'] = $dataCat;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+
+    }
     
-     public function citystore($data = '') {
- // print_r($data); exit;
-       
-                $this->db->select('a.id_prov,c.city_id,c.type,c.name');
-                $this->db->group_by('c.city_id');
-                $this->db->order_by('c.name', ASC);
-                $this->db->where('a.id_prov',$data[0]);
-                $this->db->join('1015_city as c', 'c.city_id = a.id_city');
-                //$this->db->join('1015_province as b', 'b.province_id = a.id_prov');
-                $dataCat = $this->db->get_where('store as a')->result();
-        
-
-            if ($dataCat) {
-                $response['status'] = 200;
-                $response['error'] = false;
-                $response['totalData'] = count($dataCat);
-                $response['data'] = $dataCat;
-                return $response;
-            } else {
-                $response['status'] = 502;
-                $response['error'] = true;
-                $response['message'] = 'Data failed to receive or data empty.';
-                return $response;
-            }
-        
-    }
-
-   
-	 public function provstore($data = '') {
- // print_r($data); exit;
-       
-                $this->db->select(' a.id_prov, b.name');
-                $this->db->group_by('a.id_prov');
-                $this->db->order_by('b.name', ASC);
-                //$this->db->where('a.id_prov',9);
-                //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
-                $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
-                $dataCat = $this->db->get_where('store as a')->result();
-        
-
-            if ($dataCat) {
-                $response['status'] = 200;
-                $response['error'] = false;
-                $response['totalData'] = count($dataCat);
-                $response['data'] = $dataCat;
-                return $response;
-            } else {
-                $response['status'] = 502;
-                $response['error'] = true;
-                $response['message'] = 'Data failed to receive or data empty.';
-                return $response;
-            }
-        
-    }
-	
-	
-	
-
-
-}

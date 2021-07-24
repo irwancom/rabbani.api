@@ -140,10 +140,10 @@ class H2h extends REST_Controller {
         }
     }
 
-  function product_post() {
+    function product_post() {
         $data = array(
             'keyCode' => $this->input->post('keyCode'),
-			'secret' => $this->input->post('secret'),
+            'secret' => $this->input->post('secret'),
             'idstorequantum' => $this->input->post('idstorequantum'),
             'skuProduct' => $this->input->post('skuProduct'),
             'nameProduct' => $this->input->post('nameProduct'),
@@ -157,7 +157,7 @@ class H2h extends REST_Controller {
             $this->response($data, 200);
         } else {
             $this->response(array('status' => 'fail', 502));
-        } 
+        }
     }
 
     function transaction_post() {
@@ -460,8 +460,8 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-	
-	 public function productact_post() {
+
+    public function productact_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('keyCode'),
@@ -476,13 +476,13 @@ class H2h extends REST_Controller {
             }
         }
     }
-	
-	 public function productcatact_post() {
+
+    public function productcatact_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('keyCode'),
                 $this->input->post('secret'),
-				$this->input->post('idcat')
+                $this->input->post('idcat')
             );
 
             $data = $this->h2h_model->productcatact($data);
@@ -493,11 +493,11 @@ class H2h extends REST_Controller {
             }
         }
     }
-	
-	public function productditailsact_post() {
+
+    public function productditailsact_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
-				$this->input->post('keyCode'),
+                $this->input->post('keyCode'),
                 $this->input->post('secret'),
                 $this->input->post('idproduct')
             );
@@ -510,8 +510,8 @@ class H2h extends REST_Controller {
             }
         }
     }
-	
-	public function tailor_post() {
+
+    public function tailor_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('data'),
@@ -526,7 +526,7 @@ class H2h extends REST_Controller {
         }
     }
 
-     function viewtailor_get() {
+    function viewtailor_get() {
         $data = $this->h2h_model->viewtailor();
         if ($data) {
             $this->response($data, 200);
@@ -534,8 +534,8 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-	
-	public function rumahjahit_post() {
+
+    public function rumahjahit_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('data'),
@@ -549,8 +549,8 @@ class H2h extends REST_Controller {
             }
         }
     }
-	
-	function rumahjahit_get() {
+
+    function rumahjahit_get() {
         $data = $this->h2h_model->viewtailor();
         if ($data) {
             $this->response($data, 200);
@@ -558,10 +558,8 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-    
-    
-    
-     public function inputstore_post() {
+
+    public function inputstore_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('data'),
@@ -575,14 +573,14 @@ class H2h extends REST_Controller {
             }
         }
     }
-    
+
     public function citystore_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('idprov'),
                     //$this->input->post('idstore')
             );
-           
+
             $data = $this->h2h_model->citystore($data);
             if ($data) {
                 $this->response($data, 200);
@@ -591,7 +589,23 @@ class H2h extends REST_Controller {
             }
         }
     }
-    
+
+    public function storebyprov_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('idprov'),
+                    //$this->input->post('idstore')
+            );
+
+            $data = $this->h2h_model->storebyprov($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+
     function provstore_get() {
         $data = $this->h2h_model->provstore();
         if ($data) {
@@ -600,8 +614,6 @@ class H2h extends REST_Controller {
             $this->response(array('status' => 'fail', 502));
         }
     }
-    
-     
 
 //end
 }
