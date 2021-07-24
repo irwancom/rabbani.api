@@ -592,12 +592,8 @@ class H2h extends REST_Controller {
 
     public function storebyprov_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = array(
-                $this->input->post('idprov'),
-                    //$this->input->post('idstore')
-            );
 
-            $data = $this->h2h_model->storebyprov($data);
+            $data = $this->h2h_model->storebyprov($this->input->post('idprov'));
             if ($data) {
                 $this->response($data, 200);
             } else {
