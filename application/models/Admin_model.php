@@ -2559,9 +2559,8 @@ class Admin_model extends CI_Model {
         }
     }
 
-    public function StoreaddData($data = '') {
-        // print_r($data);
-        // exit;
+     public function StoreaddData($data = '') {
+         // print_r($data); exit;
         if (empty($data[0]) || empty($data[1]) || empty($data)) {
             return $this->empty_response();
         } else {
@@ -2570,31 +2569,35 @@ class Admin_model extends CI_Model {
             // exit;
             if (!empty($verify)) {
 
-                $data = array(
+                $datax = array(
                     //'idstore' => ($data[2]),
-                    'id_prov' => ($data[3]),
-                    'id_city' => ($data[4]),
-                    'id_dis' => ($data[5]),
-                    'id_vill' => ($data[6]),
-                    'namestore' => ($data[7]),
-                    'addrstore' => ($data[8]),
-                    'phonestore' => ($data[9]),
-                    'wa' => ($data[10])
+                    'id_prov' => ($data[2]),
+                    'id_city' => ($data[3]),
+                    //'id_dis' => ($data[5]),
+                    //'id_vill' => ($data[6]),
+                    'namestore' => ($data[4]),
+                    'addrstore' => ($data[5]),
+                    'phonestore' => ($data[6]),
+                    'wa' => ($data[7])
                 );
-                //$this->db->where('name !=', $data[2]);
-                $dataCat = $this->db->get_where('store', $data)->result();
-                // $this->db->where('name !=', $data);
-                if (empty($dataCat)) {
-                    $supdate = $this->db->insert('store', $data);
+                //  print_r($datax['namestore']); exit;
+               $this->db->limit('1');
+               $this->db->where('namestore', $data[4]);
+               $cek = $this->db->get_where('store')->result();
+
+                // $voucher = $this->db->get_where('voucher', array('vouchercode' => $data->voucher))->result();
+            // print_r($cek); exit;
+                if (empty($cek)) {
+                    $supdate = $this->db->insert('store', $datax);
                 } else {
-                    $supdate = '';
+                     return $this->duplicate_response();
                 }
-                $dataCat = $this->db->get_where('store', $data)->result();
+                //$dataCat = $this->db->get_where('store', $data)->result();
                 if ($supdate) {
                     $response['status'] = 200;
                     $response['error'] = false;
                     $response['message'] = 'Data received successfully.';
-                    $response['data'] = $dataCat;
+                    $response['data'] = $datax;
                     return $response;
                 } else {
                     $response['status'] = 502;
@@ -2608,8 +2611,7 @@ class Admin_model extends CI_Model {
     }
 
     public function StoreupdateData($data = '') {
-        // print_r($data);
-        // exit;
+        // print_r($data); exit;
         if (empty($data[0]) || empty($data[1]) || empty($data)) {
             return $this->empty_response();
         } else {
@@ -2618,50 +2620,25 @@ class Admin_model extends CI_Model {
                 // print_r($data);
                 //exit;
                 $datac = array(
-                    // 'idstore' => ($data[2]),
+                   
                     'id_prov' => ($data[3]),
-                    'id_city' => ($data[4]),
-                    'id_dis' => ($data[5]),
-                    'id_vill' => ($data[6]),
-                    'namestore' => ($data[7]),
-                    'addrstore' => ($data[8]),
-                    'phonestore' => ($data[9]),
-                      'wa' => ($data[10])
+                    'id_vill' => ($data[4]),
+                    'namestore' => ($data[5]),
+                    'addrstore' => ($data[6]),
+                    'phonestore' => ($data[7]),
+                    'wa' => ($data[8])
                 );
-                // print_r($datac);
-                //exit;  
-                $dataCat = $this->db->get_where('store', $data)->result();
-                // print_r($dataCat);
-                // exit;       
-                if (empty($dataCat)) {
-                    // print_r($data);
-                    // exit;
-                    //$this->db->set('idstore', ($data[2]));
-
-                    $this->db->set('id_prov', ($data[3]));
-                    $this->db->set('id_city', ($data[4]));
-                    $this->db->set('id_dis', ($data[5]));
-                    $this->db->set('id_vill', ($data[6]));
-                    $this->db->set('namestore', ($data[7]));
-                    $this->db->set('addrstore', ($data[8]));
-                    $this->db->set('phonestore', ($data[9]));
-                    //$this->db->set('pic', ($data[10]));
+                
 
                     $this->db->where('idstore', $data[2]);
-                    $this->db->update('store');
+                    $supdate = $this->db->update('store',$datac);
 
-                    $supdate = 1;
-                    // print_r($dataCat);
-                    // exit;
-                } else {
-                    $supdate = '';
-                }
-
+                    
                 if ($supdate) {
                     $response['status'] = 200;
                     $response['error'] = false;
                     $response['message'] = 'Data received successfully.';
-                    $response['data'] = $supdate;
+                    $response['data'] = $datac;
                     return $response;
                 } else {
                     $response['status'] = 502;
