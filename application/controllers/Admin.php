@@ -585,15 +585,12 @@ class Admin extends REST_Controller {
     }
 
     function store_post($pg = '') {
-        if ($pg == 'add') {
+         if ($pg == 'add') {
             $data = array(
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
-                $this->input->post('idstore'),
                 $this->input->post('id_prov'),
                 $this->input->post('id_city'),
-                $this->input->post('id_dis'),
-                $this->input->post('id_vill'),
                 $this->input->post('namestore'),
                 $this->input->post('addrstore'),
                 $this->input->post('phonestore'),
@@ -607,13 +604,10 @@ class Admin extends REST_Controller {
                 $this->input->post('idstore'),
                 $this->input->post('id_prov'),
                 $this->input->post('id_city'),
-                $this->input->post('id_dis'),
-                $this->input->post('id_vill'),
                 $this->input->post('namestore'),
                 $this->input->post('addrstore'),
                 $this->input->post('phonestore'),
                 $this->input->post('wa')
-            
             );
             $data = $this->admin_model->StoreupdateData($data);
         } elseif ($pg == 'ditails') {
