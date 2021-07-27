@@ -596,7 +596,8 @@ class Admin extends REST_Controller {
                 $this->input->post('id_vill'),
                 $this->input->post('namestore'),
                 $this->input->post('addrstore'),
-                $this->input->post('phonestore')
+                $this->input->post('phonestore'),
+                $this->input->post('wa')
             );
             $data = $this->admin_model->StoreaddData($data);
         } elseif ($pg == 'update') {
@@ -610,7 +611,9 @@ class Admin extends REST_Controller {
                 $this->input->post('id_vill'),
                 $this->input->post('namestore'),
                 $this->input->post('addrstore'),
-                $this->input->post('phonestore')
+                $this->input->post('phonestore'),
+                $this->input->post('wa')
+            
             );
             $data = $this->admin_model->StoreupdateData($data);
         } elseif ($pg == 'ditails') {
