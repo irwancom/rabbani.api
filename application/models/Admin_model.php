@@ -2578,8 +2578,8 @@ class Admin_model extends CI_Model {
                     'id_vill' => ($data[6]),
                     'namestore' => ($data[7]),
                     'addrstore' => ($data[8]),
-                    'phonestore' => ($data[9])
-                        //'pic' => ($data[10])
+                    'phonestore' => ($data[9]),
+                    'wa' => ($data[10])
                 );
                 //$this->db->where('name !=', $data[2]);
                 $dataCat = $this->db->get_where('store', $data)->result();
@@ -2625,8 +2625,8 @@ class Admin_model extends CI_Model {
                     'id_vill' => ($data[6]),
                     'namestore' => ($data[7]),
                     'addrstore' => ($data[8]),
-                    'phonestore' => ($data[9])
-                        //'pic' => ($data[10])
+                    'phonestore' => ($data[9]),
+                      'wa' => ($data[10])
                 );
                 // print_r($datac);
                 //exit;  
