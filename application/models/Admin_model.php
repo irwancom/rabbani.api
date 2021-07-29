@@ -2444,7 +2444,7 @@ class Admin_model extends CI_Model {
         }
     }
 
-    public function dataStore($data = '') {
+   public function dataStore($data = '') {
         // print_r($data);
         // exit;
         if (empty($data[0]) || empty($data[1])) {
@@ -2453,15 +2453,13 @@ class Admin_model extends CI_Model {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
 
-//                $this->db->select('a.*,e.nameVill,d.nameDis,b.nameCity,c.nameProv');
-//                $this->db->join('sensus_city as b', 'b.id_city = a.id_city', 'left');
-//                $this->db->join('sensus_province as c', 'c.id_prov = a.id_prov', 'left');
-//                $this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
-//                $this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
-                //$this->db->get_where('store as a');
                 $this->db->group_by('a.idstore');
-                $this->db->join('1015_city as b', 'b.province_id = a.id_prov');
-                $this->db->join('1015_province as c', 'c.province_id = a.id_prov');
+                $this->db->join('1015_city as b', 'b.city_id = a.id_city');
+                // $this->db->join('1015_city as b', 'b.province_id = a.id_prov');
+                // $this->db->join('1015_province as c', 'c.province_id = a.id_prov');
+                // $this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
+                // $this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
+                //$this->db->get_where('store as a');
 
                 if (!empty($data[2])) {
                     $paging = $data[2] * 10;
@@ -2508,33 +2506,13 @@ class Admin_model extends CI_Model {
             if (!empty($verify)) {
 
 
-                //$this->db->select('a.*,e.nameVill,d.nameDis,b.nameCity,c.nameProv');
-                //$this->db->get_where('store as a');
-                //$this->db->join('sensus_city as b', 'b.id_city = a.id_city', 'left');
-                //$this->db->join('sensus_province as c', 'c.id_prov = a.id_prov', 'left');
-                //$this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
-                //$this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
-                //if (!empty($data[2])) {
-                //   $paging = $data[2] * 10;
-                //} else {
-                //   $paging = 0;
-                //}
-                //$this->db->limit(10, $paging);
-                //$this->db->where('delstore', '0');
-                //$this->db->where('idstore', $data[2]);
-                //$queryx = $this->db->get()->result();
-                //$this->db->select('count(*) as store');
-                //$store = $this->db->get_where('store')->result();
-                // $jlh = $store[0]->store;
-                //$hal = ceil($jlh / 10)-1;
+                
 
 
-
-                $this->db->select('a.*,e.nameVill,d.nameDis,b.nameCity,c.nameProv');
-                $this->db->join('sensus_city as b', 'b.id_city = a.id_city', 'left');
-                $this->db->join('sensus_province as c', 'c.id_prov = a.id_prov', 'left');
-                $this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
-                $this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
+                $this->db->select('a.*,b.type,b.name,b.province_name');
+                $this->db->group_by('a.idstore');
+                $this->db->join('1015_city as b', 'b.city_id = a.id_city');
+                // $this->db->join('1015_province as c', 'c.province_id = a.id_prov');
 
                 $this->db->where('delstore', 0);
                 $this->db->where('idstore', $data[2]);
