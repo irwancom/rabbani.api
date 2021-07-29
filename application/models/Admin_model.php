@@ -2453,12 +2453,15 @@ class Admin_model extends CI_Model {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
 
-                $this->db->select('a.*,e.nameVill,d.nameDis,b.nameCity,c.nameProv');
-                $this->db->join('sensus_city as b', 'b.id_city = a.id_city', 'left');
-                $this->db->join('sensus_province as c', 'c.id_prov = a.id_prov', 'left');
-                $this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
-                $this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
+//                $this->db->select('a.*,e.nameVill,d.nameDis,b.nameCity,c.nameProv');
+//                $this->db->join('sensus_city as b', 'b.id_city = a.id_city', 'left');
+//                $this->db->join('sensus_province as c', 'c.id_prov = a.id_prov', 'left');
+//                $this->db->join('sensus_districts as d', 'd.id_dis = a.id_dis', 'left');
+//                $this->db->join('sensus_village as e', 'e.id_vill = a.id_vill', 'left');
                 //$this->db->get_where('store as a');
+                $this->db->group_by('a.idstore');
+                $this->db->join('1015_city as b', 'b.province_id = a.id_prov');
+                $this->db->join('1015_province as c', 'c.province_id = a.id_prov');
 
                 if (!empty($data[2])) {
                     $paging = $data[2] * 10;
