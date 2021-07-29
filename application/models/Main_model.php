@@ -3754,16 +3754,28 @@ class Main_model extends CI_Model {
 		
 			 
          //$this->db->select('a.*,b.*,c.*');
-		 $this->db->where('a.delproduct', 0);
-		 $this->db->where('b.delproductditails', 0);
-		 $this->db->where('b.stock>4');
-         $this->db->limit('100');
+//		 $this->db->where('a.delproduct', 0);
+//		 $this->db->where('b.delproductditails', 0);
+//		 $this->db->where('b.stock>4');
+//         $this->db->limit('100');
+//		 $this->db->group_by('a.idproduct');
+//		 $this->db->like('productName', $data[0]);
+//		
+//		 $this->db->join('product_images as c', 'c.idproduct = a.idproduct');
+//		 $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct');
+//		 $datax= $this->db->get_where('product as a')->result();
+                 $this->db->where('c.imageFile !=',"");
+		 $this->db->where('b.delproduct', 0);
+		 $this->db->where('a.delproductditails', 0);
+		 $this->db->where('a.stock>4');
+                 $this->db->limit('100');
 		 $this->db->group_by('a.idproduct');
-		 $this->db->like('productName', $data[0]);
+		 $this->db->like('b.productName', $data[0]);
 		
-		 $this->db->join('product_images as c', 'c.idproduct = a.idproduct');
-		 $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct');
-		 $datax= $this->db->get_where('product as a')->result();
+		 $this->db->join('product_images_ditails as c', 'c.idpditails = a.idpditails');
+		 $this->db->join('product as b', 'b.idproduct = a.idproduct');
+		 $datax= $this->db->get_where('product_ditails as a')->result();
+		 
 		 
 		 
 		 
