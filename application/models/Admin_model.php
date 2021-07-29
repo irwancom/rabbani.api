@@ -2603,7 +2603,7 @@ class Admin_model extends CI_Model {
                 $datac = array(
                    
                     'id_prov' => ($data[3]),
-                    'id_vill' => ($data[4]),
+                    'id_city' => ($data[4]),
                     'namestore' => ($data[5]),
                     'addrstore' => ($data[6]),
                     'phonestore' => ($data[7]),
