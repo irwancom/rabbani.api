@@ -692,10 +692,10 @@ class Main_model extends CI_Model {
 		 
 		 $this->db->select('a.idproduct');
 		 $this->db->where('e.delproduct', 0);
-         $this->db->where('e.status', 0);
+                 $this->db->where('e.status', 0);
 		 $this->db->where('a.delproductditails', 0);
 		 $this->db->where('a.stock>4');
-		 //$this->db->where('e.idcategory',3);
+		 $this->db->where('d.urlImage !=',"");
 		 $this->db->limit(10, $page);
 	     $this->db->group_by('e.idproduct');
 		 $this->db->order_by('a.idproduct', 'RANDOM');
@@ -704,7 +704,7 @@ class Main_model extends CI_Model {
 	   //$datax = $this->db->delete('product_images_ditails');
          //$this->db->join('product_images as c', 'c.idproduct = a.idproduct');
 		 $this->db->join('product as e', 'e.idproduct = a.idproduct');
-		 $this->db->join('product_images_ditails as d', 'd.idproduct = a.idproduct');
+		 $this->db->join('product_images_ditails as d', 'd.idpditails = a.idpditails');
 		 $datax= $this->db->get_where('product_ditails as a')->result();
 		 //print_r($datax);exit;
 		 
