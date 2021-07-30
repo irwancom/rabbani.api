@@ -2036,7 +2036,7 @@ class Main_model extends CI_Model {
             $this->db->update('apiauth_user');
 			
 			
-			$massage = ' Kode OTP dari https://rmall.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
+			$massage = ' Kode OTP dari https://rabbani.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
             //$this->sms->SendSms($data[0], $massage);
 			$this->otp->SendOtp($data[0], $massage);
 			//$cek_otp = $this->db->get_where('apiauth_user', array('hp' => $data[0]))->result();
@@ -2739,7 +2739,7 @@ class Main_model extends CI_Model {
                     $people = $this->db->get_where('sensus_people', array('idpeople' => $data1->idpeople))->result();
 
                     if ($v != 2) {
-                        $message = 'rmall.id : Silakan Transfers Rp ' . $total . ',  BCA 7771503334, MANDIRI 1310012668739, BNI 308050850 AN Rabbani Asysa, Batas Pembayaran 1x24 Jam';
+                        $message = 'rabbani.id : Silakan Transfers Rp ' . $total . ',  BCA 7771503334, MANDIRI 1310012668739, BNI 308050850 AN Rabbani Asysa, Batas Pembayaran 1x24 Jam';
                         $message1 = 'order ' . $people[0]->name . ' ';
                         #$this->load->library('sms');
                         //$notif = '081386118382';
@@ -3936,7 +3936,7 @@ class Main_model extends CI_Model {
 		if ($cek_id > 0 ) {
 			
 			$otp = rand(pow(10, 5 - 1), pow(10, 5) - 1);
-			$massage = 'Kode ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk Merubah Password Anda';
+			$massage = 'Kode dari https://rabbani.id ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk Merubah Password Anda';
             $this->sms->SendSms($data['0'], $massage);
 			$cek_otp = $this->db->get_where('apiauth_user', array('hp' => $data[0]))->result();
 			//print_r($cek_otp);
@@ -4006,7 +4006,7 @@ class Main_model extends CI_Model {
 			$this->db->set('password',$data1[password]);
 			$this->db->where('idauthuser', $cek_otp[0]->idauthuser);
 			$supdate = $this->db->update('apiauth_user');
-			$massage = 'Password Berhasil Di Ubah Silakan Login rmall.id dengan username : ' . $cek_otp[0]->username . ' dan password : ' . $data[1] . ' ';
+			$massage = 'Password Berhasil Di Ubah Silakan Login rabbani.id dengan username : ' . $cek_otp[0]->username . ' dan password : ' . $data[1] . ' ';
             $this->sms->SendSms($cek_otp[0]->hp, $massage);
 			
 					
