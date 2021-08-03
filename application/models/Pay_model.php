@@ -113,7 +113,7 @@ class Pay_model extends CI_Model {
             $this->db->insert('pay_histories', $data);
         }
         if (!empty($queryx)) {
-              if ($queryx[0]->orderBy=='0') {
+              if ($queryx[0]->orderBy == 0) {
                   $massage = 'rabbani.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
             $this->sms->SendSms($hp, $massage);
                   
