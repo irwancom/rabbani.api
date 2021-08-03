@@ -75,7 +75,7 @@ class Pay_model extends CI_Model {
         //print_r($dataCallBack);
         //exit;
 //        $query = $this->db->get_where('pay_histories', array('external_id' => $external_id))->result();
-        $this->db->select('a.idtransaction, a.noInvoice, a.idauthuser, a.totalpay, b.hp');
+        $this->db->select('a.orderBy, a.idtransaction, a.noInvoice, a.idauthuser, a.totalpay, b.hp');
         $this->db->join('apiauth_user as b', 'b.idauthuser = a.idauthuser', 'left');
         $queryx = $this->db->get_where('transaction as a', array('a.noInvoice' => $external_id))->result();
         if (!empty($queryx)) {
@@ -115,9 +115,9 @@ class Pay_model extends CI_Model {
         if (!empty($queryx)) {
               if ($queryx[0]->orderBy == 0) {
                   $massage = 'rabbani.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
-            $this->sms->SendSms($hp, $massage);
+                $this->sms->SendSms($hp, $massage);
                   
-              }else {
+              } else {
             $massage = 'tailordigital.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
             $this->sms->SendSms($hp, $massage);
               }
