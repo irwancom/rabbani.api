@@ -170,7 +170,7 @@ class Pay_model extends CI_Model {
             $this->db->insert('pay_histories', $data);
         }
         if (!empty($queryx)) {
-            $massage = 'rabbani.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
+            $massage = 'tailordigital.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
             $this->sms->SendSms($hp, $massage);
 
             $response['status'] = 200;
@@ -294,7 +294,7 @@ class Pay_model extends CI_Model {
             }
         }
         if (!empty($query)) {
-            $massage = 'rabbani.id : Pembayaran Sebesar Rp ' . $dataCallBack->amount . ' Dari Tagihan Rp ' . $totalpay . ' Melalui ' . $dataCallBack->bank_code . ' Virtual Account Telah Di Terima, Info Pengiriman Slahkan Cek Di Menu Transaksi.';
+            $massage = 'tailordigital.id : Pembayaran Sebesar Rp ' . $dataCallBack->amount . ' Dari Tagihan Rp ' . $totalpay . ' Melalui ' . $dataCallBack->bank_code . ' Virtual Account Telah Di Terima, Info Pengiriman Slahkan Cek Di Menu Transaksi.';
             $this->sms->SendSms($hp, $massage);
 
             $response['status'] = 200;
