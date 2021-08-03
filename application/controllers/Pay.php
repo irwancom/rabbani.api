@@ -52,11 +52,35 @@ class Pay extends REST_Controller {
         }
         exit;
     }
+    
+    function FVApaiddt_post() {
+        $rawData1 = file_get_contents("php://input");
+        $rawData = json_decode($rawData1);
+        $data = $this->pay_model->payPaidHistoriesdt($rawData->external_id, $rawData1);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+        exit;
+    }
 
     function FVAcreated_post() {
         $rawData1 = file_get_contents("php://input");
         $rawData = json_decode($rawData1);
         $data = $this->pay_model->payHistories($rawData->external_id, $rawData1);
+        if ($data) {
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+        exit;
+    }
+    
+    function FVAcreateddt_post() {
+        $rawData1 = file_get_contents("php://input");
+        $rawData = json_decode($rawData1);
+        $data = $this->pay_model->payHistoriesdt($rawData->external_id, $rawData1);
         if ($data) {
             $this->response($data, 200);
         } else {
