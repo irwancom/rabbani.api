@@ -1443,7 +1443,7 @@ class H2h_model extends CI_Model {
         $this->db->where('a.id_prov', $data[0]);
         $this->db->join('1015_city as c', 'c.city_id = a.id_city');
         //$this->db->join('1015_province as b', 'b.province_id = a.id_prov');
-        $dataCat = $this->db->get_where('store as a')->result();
+        $dataCat = $this->db->get_where('store as a',array('a.delstore'=>0))->result();
 
 
         if ($dataCat) {
@@ -1469,7 +1469,7 @@ class H2h_model extends CI_Model {
         //$this->db->where('a.id_prov',9);
         //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
         $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
-        $dataCat = $this->db->get_where('store as a')->result();
+        $dataCat = $this->db->get_where('store as a', array('a.delstore'=>0))->result();
 
 
         if ($dataCat) {
@@ -1489,7 +1489,7 @@ class H2h_model extends CI_Model {
     public function storebyprov($data = '') {
         // print_r($data); exit;
         $this->db->select('id_prov, namestore, wa');
-        $dataCat = $this->db->get_where('store', array('id_prov' => $data))->result();
+        $dataCat = $this->db->get_where('store', array('id_prov' => $data,'delstore'=>0))->result();
 
 
         if ($dataCat) {
@@ -1510,7 +1510,7 @@ class H2h_model extends CI_Model {
         // print_r($data); exit;
         $this->db->select('a.region, a.namestore, a.wa');
         $this->db->join('store_region as b', 'a.region = b.idregion');
-        $dataCat = $this->db->get_where('store as a', array('b.url' => $data))->result();
+        $dataCat = $this->db->get_where('store as a', array('b.url' => $data,'a.delstore'=>0))->result();
 
 
         if ($dataCat) {
