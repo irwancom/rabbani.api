@@ -240,7 +240,7 @@ class Pay_model extends CI_Model {
         if (!empty($query)) {
             
             if ($queryx[0]->orderBy=='tailordigital') {
-                  $massage = 'tailordigital.id : Silahkan Transfer Rp ' . $totalpay . ', melalui ' . $dataCallBack->bank_code . ' Virtual Account ' . $dataCallBack->account_number . ' a.n ' . $dataCallBack->name . ', Batas Pembayaran 1x24 Jam';
+                  $massage = 'digitaltailor.id : Pembayaran Sebesar Rp ' . $dataCallBack->amount . ' Dari Tagihan Rp ' . $totalpay . ' Melalui ' . $dataCallBack->bank_code . ' Virtual Account Telah Di Terima, Info Pengiriman Slahkan Cek Di Menu Transaksi.' ;
             $this->sms->SendSms($hp, $massage);
                   
               }else {
