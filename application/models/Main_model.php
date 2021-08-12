@@ -3829,27 +3829,28 @@ class Main_model extends CI_Model {
 	
 	public function vouchernew($data = '') {
 		 
-		$query = $this->db->get_where('voucher', array('vouchercode' => $data[0]))->result();
-		$sql = $this->db->query("SELECT vouchercode FROM voucher where vouchercode='$data[0]'");
+		$query = $this->db->get_where('voucher_new', array('voucher_code' => $data[0]))->result();
+          // print_r($query);exit;
+		$sql = $this->db->query("SELECT voucher_code FROM voucher_new where voucher_code='$data[0]'");
         $cek_id = $sql->num_rows();
 		
-		$awal = date_create($query[0]->dayend);
+		$awal = date_create($query[0]->date_end);
 		$akhir = date_create();
         $diff = date_diff($awal, $akhir);
 	
-		//print_r($diff->invert);exit;
+		// print_r($diff->invert);exit;
                 if (!empty($query)) {
 					if ($diff->invert>0) {
 					
-					$this->db->where('vouchercode',strtoupper($data[0]));
-					$supdate = $this->db->get_where('voucher')->result();
+					$this->db->where('voucher_code',strtoupper($data[0]));
+					$supdate = $this->db->get_where('voucher_new')->result();
 					} else {
 					 return $this->voucher2_response();
 					}
 		 
 				} else {
 					 return $this->voucher_response();
-				}
+				}}
 
         if ($supdate) {
             $response['status'] = 200;
