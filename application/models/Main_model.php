@@ -3850,7 +3850,7 @@ class Main_model extends CI_Model {
 		 
 				} else {
 					 return $this->voucher_response();
-				}}
+				}
 
         if ($supdate) {
             $response['status'] = 200;
