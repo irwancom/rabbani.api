@@ -76,7 +76,7 @@ class Admin_model extends CI_Model {
         return $query;
     }
 
-    //CRUD CATEGORY ok
+    //CRUD CATEGORY 
     public function dataCategory($data = '') {
         if (empty($data[0]) || empty($data[1])) {
             return $this->empty_response();
