@@ -3437,14 +3437,14 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                $db2 = $this->load->database('db2', TRUE);
-                $db2->select('c.productName,a.*,b.realprice,b.idproduct,b.stock,b.collor,b.size,d.urlImage');
-                $db2->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
-                $db2->join('product as c', 'c.idproduct = b.idproduct', 'left');
-                $db2->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
-                $db2->group_by('idpditails');
-                $db2->where('idauthuser', $verify[0]->idauthuser);
-                $dataCat = $db2->get_where('whishlist as a')->result();
+                //$db2 = $this->load->database('db2', TRUE);
+                $this->db->select('c.productName,a.*,b.realprice,b.idproduct,b.stock,b.collor,b.size,d.urlImage');
+                $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
+                $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
+                $this->db->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
+                $this->db->group_by('idpditails');
+                $this->db->where('idauthuser', $verify[0]->idauthuser);
+                $dataCat = $this->db->get_where('whishlist as a')->result();
             } else {
                 return $this->token_response();
             }
