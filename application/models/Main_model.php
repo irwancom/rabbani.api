@@ -3472,10 +3472,10 @@ class Main_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0]);
             if (!empty($verify)) {
-                $db2 = $this->load->database('db2', TRUE);
-                $db2->select('*');
-                $db2->where('idauthuser', $verify[0]->idauthuser);
-                $dataCat = $db2->get_where('whishlist')->result();
+                //$db2 = $this->load->database('db2', TRUE);
+                $this->db->select('*');
+                $this->db->where('idauthuser', $verify[0]->idauthuser);
+                $dataCat = $this->db->get_where('whishlist')->result();
 
                 if (!empty($dataCat)) {
                     foreach ($dataCat as $details) {
