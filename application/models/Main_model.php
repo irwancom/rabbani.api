@@ -418,7 +418,7 @@ class Main_model extends CI_Model {
 		 $this->db->where('a.delproduct', 0);
          $this->db->where('a.status', 0);
 		 $this->db->where('b.delproductditails', 0);
-		 $this->db->where('b.stock>4');
+		 $this->db->where('b.stock>2');
 		
 		 $this->db->limit(10, $page);
          
@@ -454,7 +454,7 @@ class Main_model extends CI_Model {
 		 $this->db->where('a.delproduct', 0);
          $this->db->where('a.status', 0);
 		 $this->db->where('b.delproductditails', 0);
-		 $this->db->where('b.stock>4');
+		 $this->db->where('b.stock>2');
 		 //$this->db->where('d.urlImage !=', '');
 		
         
@@ -632,7 +632,7 @@ class Main_model extends CI_Model {
 		 $this->db->select('a.idproduct');
 		 $this->db->where('e.delproduct', 0);
 		 $this->db->where('a.delproductditails', 0);
-		 $this->db->where('a.stock>4');
+		 $this->db->where('a.stock>2');
          $this->db->where('e.status',0);
 		 $this->db->where('e.idcategory', $name[0]->idcategory);
 		 $this->db->limit(5,1);
@@ -646,7 +646,7 @@ class Main_model extends CI_Model {
 		 foreach ($datax as $q){
 			 $this->db->select('b.idproduct,b.delproduct,e.idpditails,b.productName,e.price,e.realprice');
 			 $this->db->group_by('b.idproduct');
-			 $this->db->where('e.stock>4');
+			 $this->db->where('e.stock>2');
 			 $this->db->where('e.delproductditails', 0);
 			 $this->db->where('b.delproduct', 0);
 			 //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
@@ -694,7 +694,7 @@ class Main_model extends CI_Model {
 		 $this->db->where('e.delproduct', 0);
                  $this->db->where('e.status', 0);
 		 $this->db->where('a.delproductditails', 0);
-		 $this->db->where('a.stock>4');
+		 $this->db->where('a.stock>2');
 		 $this->db->where('d.urlImage !=',"");
 		 $this->db->limit(10, $page);
 	     $this->db->group_by('e.idproduct');
@@ -711,7 +711,7 @@ class Main_model extends CI_Model {
 		 foreach ($datax as $q){
 			 $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
 			 $this->db->group_by('b.idproduct');
-			 $this->db->where('e.stock>4');
+			 $this->db->where('e.stock>2');
 			 $this->db->where('e.delproductditails', 0);
 			 $this->db->where('b.delproduct', 0);
 			 //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
@@ -758,7 +758,7 @@ class Main_model extends CI_Model {
 		 $this->db->select('a.idproduct');
 		 $this->db->where('e.delproduct', 0);
 		 $this->db->where('a.delproductditails', 0);
-		 $this->db->where('a.stock>4');
+		 $this->db->where('a.stock>2');
 		 $this->db->where('e.idcategory',$data[0]);
 		 $this->db->limit(10, $page);
 	     $this->db->group_by('a.idproduct');
@@ -775,7 +775,7 @@ class Main_model extends CI_Model {
 		 foreach ($datax as $q){
 			 $this->db->select('b.idproduct,b.idcategory,e.idpditails,b.productName,e.price,e.realprice');
 			 $this->db->group_by('b.idproduct');
-			 $this->db->where('e.stock>4');
+			 $this->db->where('e.stock>2');
 			 $this->db->where('e.delproductditails', 0);
 			 $this->db->where('b.delproduct', 0);
 			 //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
@@ -819,7 +819,7 @@ class Main_model extends CI_Model {
     public function getDataByCat($data = '') {
          $this->db->where('a.delproduct', 0);
 		 $this->db->where('b.delproductditails', 0);
-		 $this->db->where('b.stock>4');
+		 $this->db->where('b.stock>2');
 		 $this->db->where('a.idcategory', $data[0]);
          
          $this->db->join('product_images as c', 'c.idproduct = a.idproduct','left');
@@ -849,7 +849,7 @@ class Main_model extends CI_Model {
 			$this->db->select('a.*,d.urlImage');
 			$this->db->where('e.delproduct', 0);
 			$this->db->where('a.delproductditails', 0);
-			$this->db->where('a.stock>4');
+			$this->db->where('a.stock>2');
 		    $this->db->where('a.idproduct',$data[0]);
 			//$this->db->limit(10, $page);
 	    // $this->db->group_by('a.idproduct');
@@ -910,7 +910,7 @@ class Main_model extends CI_Model {
                 //$db2->from('product_ditails');
                 $db2->where('idproduct', $x->idproduct);
                 $db2->where('delproductditails', 0);
-                $db2->where('stock>4');
+                $db2->where('stock>2');
                 $db2->group_by('size');
                 $query1 = $db2->get_where(product_ditails)->result();
 				
@@ -925,7 +925,7 @@ class Main_model extends CI_Model {
 				$db2->join('product_ditails as b', 'b.idpditails = a.idpditails');
                 $db2->where('a.idproduct', $x->idproduct);
                 $db2->where('b.delproductditails', 0);
-                $db2->where('b.stock>4');
+                $db2->where('b.stock>2');
                 $db2->group_by('collor');
                 $query2 = $db2->get()->result();
 				
@@ -937,7 +937,7 @@ class Main_model extends CI_Model {
                 $db2->from('product_ditails as a');
 				$db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
                 $db2->where('a.delproductditails', 0);
-                $db2->where('a.stock>4');
+                $db2->where('a.stock>2');
                 $db2->where('b.idproduct', $x->idproduct);
 				$db2->group_by('a.idpditails');
                 $query3 = $db2->get()->result();
@@ -952,7 +952,7 @@ class Main_model extends CI_Model {
                 $db2->where('a.idproduct', $q->idproduct);
                 $db2->where('delproductditails', 0);
 				
-				$db2->where('a.stock>4');
+				$db2->where('a.stock>2');
                 $db2->group_by('a.collor');
 
 				$db2->join('product as c', 'c.idproduct = a.idproduct');	
@@ -1026,7 +1026,7 @@ class Main_model extends CI_Model {
                 //$db2->from('product_ditails');
                 $db2->where('idproduct', $x->idproduct);
                 $db2->where('delproductditails', 0);
-                $db2->where('stock>4');
+                $db2->where('stock>2');
                 $db2->group_by('size');
                 $query1 = $db2->get_where(product_ditails)->result();
 				
@@ -1041,7 +1041,7 @@ class Main_model extends CI_Model {
 				$db2->join('product_ditails as b', 'b.idpditails = a.idpditails');
                 $db2->where('a.idproduct', $x->idproduct);
                 $db2->where('b.delproductditails', 0);
-                $db2->where('b.stock>4');
+                $db2->where('b.stock>2');
                 $db2->group_by('collor');
                 $query2 = $db2->get()->result();
 				
@@ -1053,7 +1053,7 @@ class Main_model extends CI_Model {
                 $db2->from('product_ditails as a');
 				$db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
                 $db2->where('a.delproductditails', 0);
-                $db2->where('a.stock>4');
+                $db2->where('a.stock>2');
                 $db2->where('b.idproduct', $x->idproduct);
 				$db2->group_by('a.idpditails');
                 $query3 = $db2->get()->result();
@@ -1068,7 +1068,7 @@ class Main_model extends CI_Model {
                 $db2->where('a.idproduct', $q->idproduct);
                 $db2->where('delproductditails', 0);
 				
-				$db2->where('a.stock>4');
+				$db2->where('a.stock>2');
                 $db2->group_by('a.collor');
 
 				$db2->join('product as c', 'c.idproduct = a.idproduct');	
@@ -3756,7 +3756,7 @@ class Main_model extends CI_Model {
          //$this->db->select('a.*,b.*,c.*');
 //		 $this->db->where('a.delproduct', 0);
 //		 $this->db->where('b.delproductditails', 0);
-//		 $this->db->where('b.stock>4');
+//		 $this->db->where('b.stock>2');
 //         $this->db->limit('100');
 //		 $this->db->group_by('a.idproduct');
 //		 $this->db->like('productName', $data[0]);
@@ -3767,7 +3767,7 @@ class Main_model extends CI_Model {
                  $this->db->where('c.imageFile !=',"");
 		 $this->db->where('b.delproduct', 0);
 		 $this->db->where('a.delproductditails', 0);
-		 $this->db->where('a.stock>4');
+		 $this->db->where('a.stock>2');
                  $this->db->limit('100');
 		 $this->db->group_by('a.idproduct');
 		 $this->db->like('b.productName', $data[0]);
@@ -4580,7 +4580,7 @@ class Main_model extends CI_Model {
          $this->db->where('e.delproduct', 0);
          $this->db->where('e.status', 0);
          $this->db->where('a.delproductditails', 0);
-         $this->db->where('a.stock>4');
+         $this->db->where('a.stock>2');
         
          $this->db->limit(10, $page);
         
@@ -4596,7 +4596,7 @@ class Main_model extends CI_Model {
              $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
              $this->db->order_by('e.idpditails', 'DESC');
              $this->db->group_by('b.idproduct');
-             $this->db->where('e.stock>4');
+             $this->db->where('e.stock>2');
              $this->db->where('e.delproductditails', 0);
              $this->db->where('b.delproduct', 0);
              //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');

@@ -6737,7 +6737,7 @@ class Admin_model extends CI_Model {
 				
 				$this->db->select('a.idproduct');
 				$this->db->where('a.delproduct',0);
-				$this->db->where('b.stock>4');
+				$this->db->where('b.stock>2');
 				$this->db->group_by('a.idproduct');
 				//$this->db->limit(10, 1);
 				 $this->db->join('product_ditails as b', 'b.idproduct = a.idproduct');
@@ -6746,13 +6746,13 @@ class Admin_model extends CI_Model {
                  foreach ($product as $y){
 				 //print_r($y->idproduct);
 				$this->db->select('idpditails');
-				$this->db->where('stock>4');
+				$this->db->where('stock>2');
 				$product = $this->db->get_where('product_ditails', array('idproduct' => $y->idproduct))->result();
 				
 				foreach ($product as $x){
 				 //print_r($y->idproduct);
 				$this->db->select('idpditails,urlImage');
-				//$this->db->where('stock>4');
+				//$this->db->where('stock>2');
 				$image = $this->db->get_where('product_images_ditails', array('idpditails' => $x->idpditails))->result();
 						 }
 
