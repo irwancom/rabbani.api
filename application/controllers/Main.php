@@ -1227,7 +1227,7 @@ class Main extends REST_Controller {
         }
     }
 
-    public function f_get($page = '') {
+    public function newproduct_get($page = '') {
         $data = $this->main_model->newproduct($page);
         if ($data) {
             $this->response($data, 200);
