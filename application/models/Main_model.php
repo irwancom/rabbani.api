@@ -3441,7 +3441,7 @@ class Main_model extends CI_Model {
                 $this->db->select('c.productName,a.*,b.realprice,b.idproduct,b.stock,b.collor,b.size,d.urlImage');
                 $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
                 $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
-                $this->db->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
+                $this->db->join('product_images as d', 'd.idproduct = b.idproduct', 'left');
                 $this->db->group_by('idpditails');
                 $this->db->where('idauthuser', $verify[0]->idauthuser);
                 $dataCat = $this->db->get_where('whishlist as a')->result();
