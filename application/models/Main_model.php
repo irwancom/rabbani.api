@@ -2332,7 +2332,7 @@ class Main_model extends CI_Model {
                 $this->db->select('a.*,b.skuPditails,b.price,b.stock,b.collor,b.size,b.realprice,b.priceDiscount,c.idproduct,c.productName,d.urlImage');
                 $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
                 $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
-                $this->db->join('product_images_ditails as d', 'd.idpditails = b.idpditails', 'left');
+                $this->db->join('product_images_ditails as d', 'd.idpditails = a.idpditails', 'left');
                 $this->db->where('idauthuser', $verify[0]->idauthuser);
                 $this->db->group_by('d.idpditails');
                 $dataCat = $this->db->get_where('shop_cart as a')->result();
