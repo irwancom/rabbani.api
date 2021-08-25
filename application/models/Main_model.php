@@ -639,7 +639,7 @@ class Main_model extends CI_Model {
 	     $this->db->group_by('a.idproduct');
 		 $this->db->order_by('a.idproduct', 'RANDOM');
 		 $this->db->join('product as e', 'e.idproduct = a.idproduct');
-		 
+		 $this->db->join('product_images_ditails as b', 'b.idpditails = b.idpditails');
 		 $datax= $this->db->get_where('product_ditails as a')->result();
 		 // print_r($datax);exit;
 		 
