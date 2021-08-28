@@ -492,6 +492,8 @@ class Main extends REST_Controller {
         if ($data) {
             if ($mp == 'v2') {
                 $this->pay_model->createVa($data['dataTransaction']['noInvoice'], $this->input->post('keyCode'));
+            } else if ($mp == 'v3') {
+                $this->pay_model->createVa($data['dataTransaction']['noInvoice'], $this->input->post('keyCode'));
             }
             $this->response($data, 200);
         } else {
