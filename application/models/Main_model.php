@@ -760,7 +760,7 @@ class Main_model extends CI_Model {
 		 $this->db->where('a.delproductditails', 0);
 		 $this->db->where('a.stock>2');
 		 $this->db->where('e.idcategory',$data[0]);
-		 $this->db->limit(10, $page);
+		 $this->db->limit(10, $data[1]);
 	     $this->db->group_by('a.idproduct');
 		 $this->db->order_by('a.idproduct', 'RANDOM');
 		 // $this->db->group_by('d.idpditails');

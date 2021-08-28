@@ -141,7 +141,8 @@ class Main extends REST_Controller {
 	public function getproductcat_post() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
-                $this->input->post('cat')
+                $this->input->post('cat'),
+                $this->input->post('hal')
             );
 
             $data = $this->main_model->getproductcat($data);
