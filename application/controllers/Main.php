@@ -483,9 +483,7 @@ class Main extends REST_Controller {
             );
             if ($mp == 'v2') {
                 $data = $this->main_model->addOrders1($data, 2);
-			} elseif ($mp == 'v3') {
-				 $data = $this->main_model->addOrders2($data, 2);
-				
+			
             } else {
                 $data = $this->main_model->addOrders1($data);
             }
@@ -493,8 +491,7 @@ class Main extends REST_Controller {
         if ($data) {
             if ($mp == 'v2') {
                 $this->pay_model->createVa($data['dataTransaction']['noInvoice'], $this->input->post('keyCode'));
-            } else if ($mp == 'v3') {
-                $this->pay_model->createVa($data['dataTransaction']['noInvoice'], $this->input->post('keyCode'));
+            
             }
             $this->response($data, 200);
         } else {
