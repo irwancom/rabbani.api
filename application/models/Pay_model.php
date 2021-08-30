@@ -56,7 +56,7 @@ class Pay_model extends CI_Model {
                     'expected_amount' => $query[0]->totalpay
                 );
                $ok = $this->xendit->createVa(json_encode($data));
-            //    print_r($ok);exit;
+               print_r($ok);exit;
             }
         }
         if ($check) {
