@@ -55,13 +55,14 @@ class Pay_model extends CI_Model {
                     'is_closed' => true,
                     'expected_amount' => $query[0]->totalpay
                 );
-               $this->xendit->createVa(json_encode($data));
+               $getva = $this->xendit->createVa(json_encode($data));
             //    print_r($ok);exit;
             }
         }
         if ($check) {
             $response['status'] = 200;
             $response['error'] = false;
+            $response['data'] = $getva;
             return $response;
         } else {
             $response['status'] = 502;
