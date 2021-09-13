@@ -1551,7 +1551,7 @@ class Main_model extends CI_Model {
         
                             if ($voucher[0]->voucher_amount > 0 ) {
         
-                                // if ($voucher[0]->minimal_order <= array_sum($subtotal) ) {
+                                if ($voucher[0]->minimal_order <= array_sum($subtotal) ) {
         
                                     if ($voucher[0]->voucher_type == 1) {
                                       if ($voucher[0]->voucher_value == 1) {
@@ -1603,11 +1603,11 @@ class Main_model extends CI_Model {
                                      }
                                   
                                         } 
-                            //     } else {
-                            // $voucher1 = 0;
-                            // $ongkir = $data->shippingprice ;
-                            //  // return $this->voucher_response();
-                            //     }
+                                } else {
+                            $voucher1 = 0;
+                            $ongkir = $data->shippingprice ;
+                             // return $this->voucher_response();
+                                }
         
                          } else {
                             $voucher1 = 0;
