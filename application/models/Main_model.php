@@ -2075,6 +2075,9 @@ class Main_model extends CI_Model {
 				$this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
 				$this->db->where('hp',$data[0]);
 				$sql = $this->db->get_where('apiauth_user as a')->result();
+                $massage = ' Kode OTP dari https://rabbani.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
+                //$this->sms->SendSms($data[0], $massage);
+                $this->otp->SendOtp($data[0], $massage);
 		   }
 
         if (!empty($sql)) {
