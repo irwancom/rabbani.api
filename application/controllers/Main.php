@@ -499,6 +499,52 @@ class Main extends REST_Controller {
         }
     }
 
+    function orders2_post($mp = '') {
+        if ($mp == 'new') {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('secret'),
+                $this->input->post('dataOrders')
+            );
+
+            $data = $this->main_model->addOrdersnew($data);
+        } elseif ($mp == 'status') {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('secret'),
+                $this->input->post('id')
+            );
+            $data = $this->main_model->orderStatus($data);
+        } elseif ($mp == 'detials') {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('idTransaction')
+            );
+            $data = $this->main_model->detailsOrders($data);
+        } else {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('secret'),
+                $this->input->post('dataOrders')
+            );
+            if ($mp == 'v2') {
+                $data = $this->main_model->addOrders2($data, 2);
+			
+            } else {
+                $data = $this->main_model->addOrders2($data);
+            }
+        }
+        if ($data) {
+            if ($mp == 'v2') {
+                $this->pay_model->createVa($data['dataTransaction']['noInvoice'], $this->input->post('keyCode'));
+            
+            }
+            $this->response($data, 200);
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
     function user_post($pg = '') {
         if ($pg == 'login') {
             $data = array(
