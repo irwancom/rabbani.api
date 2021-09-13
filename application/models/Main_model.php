@@ -1509,14 +1509,14 @@ class Main_model extends CI_Model {
                                     $totalweight[] = ($dataOrdersx['weight']);
         
         
-                                    // $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
-                                    // $this->db->insert('transaction_details', $dataOrdersx);
+                                    $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
+                                    $this->db->insert('transaction_details', $dataOrdersx);
                                     
                                     
                                 }
                             }
-                            // $this->db->where('idauthuser', $verify[0]->idauthuser);
-             //                $this->db->delete('shop_cart');
+                            $this->db->where('idauthuser', $verify[0]->idauthuser);
+                            $this->db->delete('shop_cart');
         
                             
                             // $sql = $this->db->query("SELECT vouchercode FROM voucher where vouchercode ='$data->voucher'");
