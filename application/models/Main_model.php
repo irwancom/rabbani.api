@@ -1522,7 +1522,7 @@ class Main_model extends CI_Model {
                     $voucher = $this->db->get_where('voucher_new', array('voucher_code' => $data->voucher))->result();
                       // print_r($voucher);exit;         
 
-                    if ($voucher[0]->voucher_amount > 0 ) {
+                    if (!empty($voucher)) {
 
                         // if ($voucher[0]->minimal_order <= array_sum($subtotal) ) {
 
