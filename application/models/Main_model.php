@@ -1446,7 +1446,7 @@ class Main_model extends CI_Model {
         }
     }
 
-    public function addOrders1	($data = '') {
+    public function addOrdersold	($data = '') {
 //print_r($data);exit;
 
         if (empty($data[0])) {
@@ -1598,7 +1598,7 @@ class Main_model extends CI_Model {
     }
 
 
-    public function addOrders2	($data = '') {
+    public function addOrders1	($data = '') {
         print_r($data);exit;
     
                
