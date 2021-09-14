@@ -482,10 +482,10 @@ class Main extends REST_Controller {
                 $this->input->post('dataOrders')
             );
             if ($mp == 'v2') {
-                $data = $this->main_model->addOrders1($data, 2);
+                $data = $this->main_model->addOrders2($data, 2);
 			
             } else {
-                $data = $this->main_model->addOrders1($data);
+                $data = $this->main_model->addOrders2($data);
             }
         }
         if ($data) {
