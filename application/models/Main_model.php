@@ -1446,8 +1446,8 @@ class Main_model extends CI_Model {
         }
     }
 
-    public function addOrdersold	($data = '') {
-//print_r($data);exit;
+    public function addOrders1	($data = '') {
+print_r($data);exit;
 
         if (empty($data[0])) {
             return $this->empty_response();
