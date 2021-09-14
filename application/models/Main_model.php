@@ -83,6 +83,14 @@ class Main_model extends CI_Model {
         return $query;
     }
 
+    public function debitvoucher($idvoucher_new = '', $debit = '') {
+        $this->db->set('voucher_amount', 'voucher_amount-' . $debit, FALSE);
+        // $this->db->set('physical', 'physical-' . $debit, FALSE);
+        $this->db->where('idvoucher_new', $idvoucher_new);
+        // $this->db->where('skuPditails', $sku);
+        $this->db->update('voucher_new');
+    }
+
     // public function seasson_profile(){
     // }
 
