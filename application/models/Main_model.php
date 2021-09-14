@@ -2538,25 +2538,25 @@ class Main_model extends CI_Model {
                 $dataCat = $this->db->get_where('shop_cart as a')->result();
                 //print_r($dataCat);
                 //exit;
-                $sql = $this->db->query("SELECT vouchercode FROM voucher where vouchercode ='$data[1]'");
-                $cek_id = $sql->num_rows();
-                if (!empty($dataCat)) {
-                    if ($cek_id > 0) {
-                        $voucher = $this->db->get_where('voucher', array('vouchercode' => $data[1]))->result();
-                        foreach ($dataCat as $ditail) {
-                            // print_r($ditail);
+                // $sql = $this->db->query("SELECT vouchercode FROM voucher where vouchercode ='$data[1]'");
+                // $cek_id = $sql->num_rows();
+                // if (!empty($dataCat)) {
+                //     if ($cek_id > 0) {
+                //         $voucher = $this->db->get_where('voucher', array('vouchercode' => $data[1]))->result();
+                //         foreach ($dataCat as $ditail) {
+                //             // print_r($ditail);
 
 
-                            $voucher1 = (($ditail->price) * ($ditail->qty));
-                        }
-                        $subtotal[] = $voucher1;
-                        $voucher2 = (array_sum($subtotal) * ($voucher[0]->voucherdisc) / 100);
-                    } else {
-                        $voucher2 = '0';
-                    }
-                } else {
-                    $voucher2 = '0';
-                }
+                //             $voucher1 = (($ditail->price) * ($ditail->qty));
+                //         }
+                //         $subtotal[] = $voucher1;
+                //         $voucher2 = (array_sum($subtotal) * ($voucher[0]->voucherdisc) / 100);
+                //     } else {
+                //         $voucher2 = '0';
+                //     }
+                // } else {
+                //     $voucher2 = '0';
+                // }
             } else {
                 return $this->token_response();
             }
@@ -2573,7 +2573,7 @@ class Main_model extends CI_Model {
                 $response['error'] = false;
                 $response['totalData'] = count($dataCat);
                 $response['data'] = $dataCat;
-                $response['voucher'] = $voucher2;
+                // $response['voucher'] = $voucher2;
                 return $response;
             } else {
 				$response['status'] = 502;
