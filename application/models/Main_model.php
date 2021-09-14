@@ -1447,7 +1447,7 @@ class Main_model extends CI_Model {
     }
 
     public function addOrders1	($data = '') {
-print_r($data);exit;
+//print_r($data);exit;
 
         if (empty($data[0])) {
             return $this->empty_response();
@@ -1598,10 +1598,202 @@ print_r($data);exit;
     }
 
 
-    public function addOrders1	($data = '') {
+    public function addOrders2	($data = '') {
         print_r($data);exit;
     
-               
+                if (empty($data[0])) {
+                    return $this->empty_response();
+                } else {
+                    $verify = $this->verfyAccount($data[0]);
+    
+                    if (!empty($verify)) {
+    
+    
+                        $data = json_decode($data[2]);
+                        //print_r($data->dataOrders);exit;
+    
+                        $dataTrx = array(
+                            'timeCreate' => date('H:i:s'),
+                            'dateCreate' => date('Y-m-d'),
+                            'noInvoice' => $verify[0]->idauthuser . time() . rand(pow(10, 5 - 1), pow(10, 5) - 1),
+                            'shipping' => ($data->shipping),
+                            'shippingprice' => ($data->shippingprice),
+                            'idauthuser' => $verify[0]->idauthuser,
+                            'idpeople' => ($data->idpeople),
+                            'payment' => ($data->payment),
+                            'voucher' => ($data->voucher)
+                            
+                        );
+    
+                        $supdate = $this->db->insert('transaction', $dataTrx);
+                        $insert_id = $this->db->insert_id();
+    
+    
+                        if (!empty($data)) {
+                            foreach ($data->dataOrders as $dO) {
+                                //print_r($dO);exit;
+                                $this->db->join('product_ditails as b', 'b.idpditails = a.idpditails', 'left');
+                                $this->db->join('product as c', 'c.idproduct = b.idproduct', 'left');
+    
+                                $dataProduct = $this->db->get_where('shop_cart as a', array('a.idcart' => $dO->idcart))->result();
+                                 // print_r($dataProduct);exit;
+                                
+                                if (!empty($dataProduct)) {
+                                    $dataOrdersx = array(
+                                        'idtransaction' => $insert_id,
+                                        'idproduct' => $dataProduct[0]->idproduct,
+                                        'idpditails' => $dataProduct[0]->idpditails,
+                                        'productName' => $dataProduct[0]->productName,
+                                        'skuPditails' => $dataProduct[0]->skuPditails,
+                                        'voucher' => $data->voucher,
+                                        'collor' => $dataProduct[0]->collor,
+                                        'size' => $dataProduct[0]->size,
+                                        'price' => $dataProduct[0]->price,
+                                        'disc' => $dataProduct[0]->priceDiscount * $dataProduct[0]->qty,
+                                        'qty' => $dataProduct[0]->qty,
+                                        'weight' => ($dataProduct[0]->weight) * $dataProduct[0]->qty,
+                                        'subtotal' => ($dataProduct[0]->realprice) * $dataProduct[0]->qty
+                                    );
+                                    
+                                    $subtotal[] = $dataOrdersx['subtotal'];
+                                     
+                                    $subdisc[] = $dataOrdersx['disc'];
+                                    $totalweight[] = ($dataOrdersx['weight']);
+    
+    
+                                    // $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
+                                     $this->db->insert('transaction_details', $dataOrdersx);
+                                    
+                                    
+                                }
+                            }
+                            // $this->db->where('idauthuser', $verify[0]->idauthuser);
+             //                $this->db->delete('shop_cart');
+    
+                         
+                            $voucher = $this->db->get_where('voucher_new', array('voucher_code' => $data->voucher))->result();
+                              // print_r($voucher);exit;         
+    
+                            if (!empty($voucher)) {
+    
+                                // if ($voucher[0]->minimal_order <= array_sum($subtotal) ) {
+    
+                                    if ($voucher[0]->voucher_type == 1) {
+                                      if ($voucher[0]->voucher_value == 1) {
+                                         
+                                        $this_nominal_disc = (array_sum($subtotal))*($voucher[0]->discount/100);
+    
+                                         // print_r($this_nominal_disc);exit;
+                                           if ($this_nominal_disc > $voucher[0]->max_discount) {
+                                            $voucher1 = $voucher[0]->max_discount;
+                                            $ongkir = $data->shippingprice ;
+                                            $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                            // print_r($voucher1);exit;
+                                             } else {
+                                            $voucher1 = ceil($this_nominal_disc);
+                                            $ongkir = $data->shippingprice ;
+                                            $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                            // print_r($voucher1);exit;
+                                             }
+                                         // $voucher1 = $this_nominal_disc;
+                                         //  $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                         // print_r($voucher1);exit;
+                                      } else if ($voucher[0]->voucher_value == 2) {
+                                         $voucher1 = $voucher[0]->discount;
+                                         $ongkir = $data->shippingprice ;
+                                         $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                          // print_r($voucher1);exit;
+                                      } 
+                                } else if ($voucher[0]->voucher_type == 2) {
+    
+                                     if ($voucher[0]->voucher_value == 1) {
+    
+                                        $this_nominal_disc = ($data->shippingprice)*($voucher[0]->discount/100);
+                                          // print_r($this_nominal_disc);exit;
+    
+                                        if ($this_nominal_disc < $voucher[0]->max_discount) {
+                                            $ongkir = $voucher[0]->max_discount;
+                                            $voucher1 = 0 ;
+                                            $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                             // print_r($ongkir);exit;
+                                             } else {
+                                            $ongkir = ($this_nominal_disc-$voucher[0]->max_discount);
+                                            $voucher1 = 0 ;
+                                            $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                             // print_r($ongkir);exit;
+                                             }
+    
+                                     } else if ($voucher[0]->voucher_value == 2) {
+                                        $ongkir = $data->shippingprice - $voucher[0]->discount;
+                                        $voucher1 = 0 ;
+                                        $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                       // print_r($ongkir);exit;
+                                     }
+                                  
+                                        } 
+                            //     } else {
+                            // $voucher1 = 0;
+                            // $ongkir = $data->shippingprice ;
+                            //  // return $this->voucher_response();
+                            //     }
+    
+                         } else {
+                            $voucher1 = 0;
+                            $ongkir = $data->shippingprice ;
+                             // return $this->voucher_response();
+                        }
+    
+                            $cost = $ongkir ;
+                            $this->db->set('cost', ($cost), true);
+                            $this->db->set('subtotal', array_sum($subtotal), true);
+                            $this->db->set('discount', array_sum($subdisc), true);
+    
+    
+    
+    
+                            $total = (array_sum($subtotal) - ($voucher1) + $data->kodeunik + ($cost));
+                            $this->db->set('discvoucher',$voucher1);
+                            $this->db->set('totalpay', array_sum($subtotal)  - ($voucher1)+ $data->kodeunik + ($cost), true);
+                            $this->db->where('idtransaction', $insert_id);
+                            $this->db->update('transaction');
+    
+                            $people = $this->db->get_where('sensus_people', array('idpeople' => $data->idpeople))->result();
+    
+                            //$message = 'rmall.id : Pesanan Berhasil, Total Transfers Rp ' . $total . ', Rekening : BCA 7771503334, MANDIRI 1310012668739, BNI 308050850 AN Rabbani Asysa, Jazakallah';
+                            //$message1 = 'order ' .$people[0]->name.' ';
+                            #$this->load->library('sms');
+                            //$notif = '081386118382';
+                           // $this->sms->SendSms($verify[0]->hp, $message);
+                            //$this->sms->SendSms($people[0]->phone, $message);
+                            //$this->sms->SendSms($notif, $message1);
+                        
+                        }
+                    } else {
+                        return $this->token_response();
+                    }
+    
+                    if (!empty($dataProduct)) {
+                        $response['status'] = 200;
+                        $response['error'] = false;
+                        $response['message'] = 'Data successfully processed.';
+                        $response['dataTransaction'] = array(
+                            'ordersDay' => $dataTrx['dateCreate'],
+                            //'corp' => $dataTrx['orderBy'],
+                            'noInvoice' => $dataTrx['noInvoice'],
+                            'shipping' => $dataTrx['shipping'],
+                            'VocherDiscount' => $voucher1,
+                            'Ditailsproduct' => $dataOrdersx,
+                                // 'addressSender' => $dataTrx['addressSender'],
+                                // 'addressRecipient' => $dataTrx['addressRecipient'],
+                        );
+                        return $response;
+                    } else {
+                        $response['status'] = 502;
+                        $response['error'] = true;
+                        $response['message'] = 'Data failed to receive.';
+                        return $response;
+                    }
+                }
             }
 
     public function addOrdersByMp($data = '') {
