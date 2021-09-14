@@ -1515,8 +1515,8 @@ class Main_model extends CI_Model {
                             
                         }
                     }
-					$this->db->where('idauthuser', $verify[0]->idauthuser);
-                    $this->db->delete('shop_cart');
+					// $this->db->where('idauthuser', $verify[0]->idauthuser);
+     //                $this->db->delete('shop_cart');
 
                  
                     $voucher = $this->db->get_where('voucher_new', array('voucher_code' => $data->voucher))->result();
