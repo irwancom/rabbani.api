@@ -1477,7 +1477,8 @@ class Main_model extends CI_Model {
                     'idauthuser' => $verify[0]->idauthuser,
                     'idpeople' => ($data->idpeople),
                     'payment' => ($data->payment),
-					'voucher' => ($data->voucher)
+					'voucher' => ($data->voucher),
+                    'uniquecode' => ($data->kodeunik)
 					
                 );
 
@@ -1501,7 +1502,7 @@ class Main_model extends CI_Model {
                                 'idpditails' => $dataProduct[0]->idpditails,
                                 'productName' => $dataProduct[0]->productName,
                                 'skuPditails' => $dataProduct[0]->skuPditails,
-                                'voucher' => $data->voucher,
+                               // 'voucher' => $data->voucher,
                                 'collor' => $dataProduct[0]->collor,
                                 'size' => $dataProduct[0]->size,
                                 'price' => $dataProduct[0]->price,
@@ -1542,11 +1543,13 @@ class Main_model extends CI_Model {
                                  // print_r($this_nominal_disc);exit;
                                    if ($this_nominal_disc > $voucher[0]->max_discount) {
                                     $voucher1 = $voucher[0]->max_discount;
+                                    $discount = $voucher1;
                                     $ongkir = $data->shippingprice ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                     // print_r($voucher1);exit;
                                      } else {
                                     $voucher1 = ceil($this_nominal_disc);
+                                    $discount = $voucher1;
                                     $ongkir = $data->shippingprice ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                     // print_r($voucher1);exit;
@@ -1556,6 +1559,7 @@ class Main_model extends CI_Model {
                                  // print_r($voucher1);exit;
                               } else if ($voucher[0]->voucher_value == 2) {
                                  $voucher1 = $voucher[0]->discount;
+                                 $discount = $voucher1;
                                  $ongkir = $data->shippingprice ;
                                  $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                   // print_r($voucher1);exit;
@@ -1569,11 +1573,13 @@ class Main_model extends CI_Model {
 
                                 if ($this_nominal_disc < $voucher[0]->max_discount) {
                                     $ongkir = $voucher[0]->max_discount;
+                                    $discount = $ongkir;
                                     $voucher1 = 0 ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                      // print_r($ongkir);exit;
                                      } else {
                                     $ongkir = ($this_nominal_disc-$voucher[0]->max_discount);
+                                    $discount = $ongkir;
                                     $voucher1 = 0 ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                      // print_r($ongkir);exit;
@@ -1581,6 +1587,7 @@ class Main_model extends CI_Model {
 
                              } else if ($voucher[0]->voucher_value == 2) {
                                 $ongkir = $data->shippingprice - $voucher[0]->discount;
+                                $discount = $ongkir;
                                 $voucher1 = 0 ;
                                 $this->debitvoucher($voucher[0]->idvoucher_new,1);
                                // print_r($ongkir);exit;
@@ -1596,6 +1603,7 @@ class Main_model extends CI_Model {
                  } else {
                     $voucher1 = 0;
                     $ongkir = $data->shippingprice ;
+                    $discount = $voucher1;
                      // return $this->voucher_response();
                 }
 
@@ -1608,7 +1616,7 @@ class Main_model extends CI_Model {
 
 
                     $total = (array_sum($subtotal) - ($voucher1) + $data->kodeunik + ($cost));
-                    $this->db->set('discvoucher',$voucher1);
+                    $this->db->set('discvoucher',$discount);
                     $this->db->set('totalpay', array_sum($subtotal)  - ($voucher1)+ $data->kodeunik + ($cost), true);
                     $this->db->where('idtransaction', $insert_id);
                     $this->db->update('transaction');
