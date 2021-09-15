@@ -698,6 +698,21 @@ class Main extends REST_Controller {
         }
     }
 
+    public function historytransdetail_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('keyCode'),
+                $this->input->post('noInvoice')
+            );
+            $data = $this->main_model->historytransdetail($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+
     public function userimage_post() {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

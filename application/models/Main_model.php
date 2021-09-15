@@ -2530,6 +2530,39 @@ class Main_model extends CI_Model {
         }
     }
 
+    public function historytransdetail($data = '') {
+        // print_r($data); exit;
+                if (empty($data[0])||empty($data[1])) {
+                    return $this->empty_response();
+                } else {
+                    $verify = $this->verfyAccount($data[0], $data[1]);
+                    if (!empty($verify)) {
+                        //$db2 = $this->load->database('db2', TRUE);
+                        $this->db->select('a.*,b.idproduct,b.productName,b.qty');
+                        $this->db->where('idauthuser', $verify[0]->idauthuser);
+                        $this->db->where('noInvoice', $data[1]);
+                        $this->db->order_by('a.idtransaction', 'DESC');
+                $this->db->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
+                        $dataCat = $this->db->get_where('transaction as a')->result();
+                    } else {
+                        return $this->token_response();
+                    }
+        
+                    if ($dataCat) {
+                        $response['status'] = 200;
+                        $response['error'] = false;
+                        $response['totalData'] = count($dataCat);
+                        $response['data'] = $dataCat;
+                        return $response;
+                    } else {
+                        $response['status'] = 502;
+                        $response['error'] = true;
+                        $response['message'] = 'Data failed to receive or data empty.';
+                        return $response;
+                    }
+                }
+            }
+
     public function cart($data = '') {
 		 
 		// $this->db->where('idauthuser', $verify[0]->idauthuser);
