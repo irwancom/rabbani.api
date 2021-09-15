@@ -2532,7 +2532,7 @@ class Main_model extends CI_Model {
 
     public function historytransdetail($data = '') {
         // print_r($data); exit;
-                if (empty($data[0])) {
+                if (empty($data[0])||empty($data[1])) {
                     return $this->empty_response();
                 } else {
                     $verify = $this->verfyAccount($data[0], $data[1]);
@@ -2540,7 +2540,7 @@ class Main_model extends CI_Model {
                         //$db2 = $this->load->database('db2', TRUE);
                         $this->db->select('a.*,b.idproduct,b.productName,b.qty');
                         $this->db->where('idauthuser', $verify[0]->idauthuser);
-                        $this->db->limit('1');
+                        $this->db->where('noInvoice', $data[1]);
                         $this->db->order_by('a.idtransaction', 'DESC');
                 $this->db->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
                         $dataCat = $this->db->get_where('transaction as a')->result();

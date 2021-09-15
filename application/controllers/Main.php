@@ -702,7 +702,7 @@ class Main extends REST_Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = array(
                 $this->input->post('keyCode'),
-                // $this->input->post('noInvoice')
+                $this->input->post('noInvoice')
             );
             $data = $this->main_model->historytransdetail($data);
             if ($data) {
