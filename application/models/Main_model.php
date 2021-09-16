@@ -4868,6 +4868,7 @@ class Main_model extends CI_Model {
              
              foreach ($user as $y){
                 $this->db->select('a.urlImage');
+                $this->db->group_by('e.idpditails');
                 $this->db->where('e.stock>2');
                 $this->db->where('e.delproductditails', 0);
                $this->db->join('product_ditails as e', 'e.idproduct = a.idproduct');
