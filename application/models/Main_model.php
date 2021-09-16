@@ -4839,7 +4839,7 @@ class Main_model extends CI_Model {
     public function newproduct($page = '') {
         
          
-         $this->db->select('e.idproduct');
+         $this->db->select('a.idproduct');
          $this->db->where('e.delproduct', 0);
          $this->db->where('e.status', 0);
          $this->db->where('a.delproductditails', 0);
