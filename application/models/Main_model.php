@@ -1571,18 +1571,18 @@ class Main_model extends CI_Model {
                                 $this_nominal_disc = ($data->shippingprice)*($voucher[0]->discount/100);
                                   // print_r($this_nominal_disc);exit;
 
-                                if ($this_nominal_disc < $voucher[0]->max_discount) {
+                                  if ($this_nominal_disc <= $voucher[0]->max_discount) {
                                     $ongkir = $voucher[0]->max_discount;
                                     $discount = $ongkir;
                                     $voucher1 = 0 ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
-                                     // print_r($ongkir);exit;
+                                      // print_r($ongkir);exit;
                                      } else {
-                                    $ongkir = ($this_nominal_disc-$voucher[0]->max_discount);
+                                    $ongkir = $data->shippingprice-($this_nominal_disc-$voucher[0]->max_discount);
                                     $discount = $ongkir;
                                     $voucher1 = 0 ;
                                     $this->debitvoucher($voucher[0]->idvoucher_new,1);
-                                     // print_r($ongkir);exit;
+                                      // print_r($ongkir);exit;
                                      }
 
                              } else if ($voucher[0]->voucher_value == 2) {
