@@ -727,11 +727,12 @@ class Main_model extends CI_Model {
 			 $user = $this->db->get_where('product as b', array('b.idproduct' => $q->idproduct))->result();
 			 
 			 foreach ($user as $y){
-				 //print_r($y);exit;
-			 $this->db->select('urlImage');
-			 $image = $this->db->get_where('product_images', array('idproduct' => $y->idproduct))->result();
-
-			 //print_r($user);
+                $this->db->select('a.urlImage');
+                $this->db->group_by('e.idpditails');
+                $this->db->where('e.stock>2');
+                $this->db->where('e.delproductditails', 0);
+               $this->db->join('product_ditails as e', 'e.idproduct = a.idproduct');
+                $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $y->idproduct))->result();
 			 
 			 
 		 }
