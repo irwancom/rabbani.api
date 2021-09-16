@@ -1586,10 +1586,18 @@ class Main_model extends CI_Model {
                                      }
 
                              } else if ($voucher[0]->voucher_value == 2) {
-                                $ongkir = $data->shippingprice - $voucher[0]->discount;
-                                $discount = $ongkir;
-                                $voucher1 = 0 ;
-                                $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                 if ($voucher[0]->discount >= $data->shippingprice ) {
+                                    $ongkir = $data->shippingprice - $data->shippingprice;
+                                    $discount = $ongkir;
+                                    $voucher1 = 0 ;
+                                    $this->debitvoucher($voucher[0]->idvoucher_new,1);
+
+                                 } else {
+                                    $ongkir = $data->shippingprice - $voucher[0]->discount;
+                                    $discount = $ongkir;
+                                    $voucher1 = 0 ;
+                                    $this->debitvoucher($voucher[0]->idvoucher_new,1);
+                                }
                                // print_r($ongkir);exit;
                              }
                           
