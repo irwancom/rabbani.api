@@ -700,42 +700,42 @@ class Main_model extends CI_Model {
 		 
 		 $this->db->select('a.idproduct');
 		 $this->db->where('e.delproduct', 0);
-                 $this->db->where('e.status', 0);
+         $this->db->where('e.status', 0);
 		 $this->db->where('a.delproductditails', 0);
 		 $this->db->where('a.stock>2');
-		 $this->db->where('d.urlImage !=',"");
+		 // $this->db->where('d.urlImage !=',"");
 		 $this->db->limit(10, $page);
-	     $this->db->group_by('e.idproduct');
+	     $this->db->group_by('a.idproduct');
 		 $this->db->order_by('a.idproduct', 'RANDOM');
 		 // $this->db->group_by('d.idpditails');
-		//$this->db->where('idproduct',0);
-	   //$datax = $this->db->delete('product_images_ditails');
-         //$this->db->join('product_images as c', 'c.idproduct = a.idproduct');
+		
 		 $this->db->join('product as e', 'e.idproduct = a.idproduct');
 		 $this->db->join('product_images_ditails as d', 'd.idpditails = a.idpditails');
 		 $datax= $this->db->get_where('product_ditails as a')->result();
-		 //print_r($datax);exit;
+		   // print_r($datax);
 		 
 		 foreach ($datax as $q){
+             // print_r($q);
 			 $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
-			 $this->db->group_by('b.idproduct');
-			 $this->db->where('e.stock>2');
-			 $this->db->where('e.delproductditails', 0);
-			 $this->db->where('b.delproduct', 0);
+			  $this->db->group_by('b.idproduct');
+			 // $this->db->where('e.stock>2');
+			 // $this->db->where('e.delproductditails', 0);
+			 // $this->db->where('b.delproduct', 0);
 			 //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
 			 $this->db->join('product_ditails as e', 'e.idproduct = b.idproduct');
 			 $user = $this->db->get_where('product as b', array('b.idproduct' => $q->idproduct))->result();
+			  // print_r($user);exit;
 			 
-			 foreach ($user as $y){
-                $this->db->select('a.urlImage');
-                $this->db->group_by('e.idpditails');
-                $this->db->where('e.stock>2');
-                $this->db->where('e.delproductditails', 0);
-               $this->db->join('product_ditails as e', 'e.idproduct = a.idproduct');
-                $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $y->idproduct))->result();
+                
+			$this->db->select('a.idproduct,a.idpditails,a.urlImage');
+            $this->db->group_by('a.idpditails');
+            $this->db->where('e.stock>2');
+            $this->db->where('e.delproductditails', 0);
+            $this->db->join('product_ditails as e', 'e.idproduct = a.idproduct');
+            $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $q->idproduct))->result();
 			 
 			 
-		 }
+		 
 			 $dataCatx[] = array(
                         'Product' => $user,
 						'Image' => $image
@@ -760,6 +760,7 @@ class Main_model extends CI_Model {
             return $response;
         }
     }
+    
 	
 	public function getproductcat($data = '') {
         
