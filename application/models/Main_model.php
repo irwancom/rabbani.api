@@ -731,7 +731,7 @@ class Main_model extends CI_Model {
             $this->db->group_by('a.idpditails');
             $this->db->where('e.stock>2');
             $this->db->where('e.delproductditails', 0);
-            $this->db->join('product_ditails as e', 'e.idproduct = a.idproduct');
+            $this->db->join('product_ditails as e', 'e.idpditails = a.idpditails');
             $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $q->idproduct))->result();
 			 
 			 
@@ -760,7 +760,7 @@ class Main_model extends CI_Model {
             return $response;
         }
     }
-    
+
 	
 	public function getproductcat($data = '') {
         
