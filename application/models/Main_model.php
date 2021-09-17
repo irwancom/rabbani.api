@@ -1006,6 +1006,7 @@ class Main_model extends CI_Model {
     }
 	
 	public function productDetailsnew($data = '') {
+        // print_r($data);exit;
         $this->db->cache_on();
 		$datax = array(
                    
@@ -1020,25 +1021,27 @@ class Main_model extends CI_Model {
         if (empty($data[0])) {
             return $this->empty_response();
         } else {
-            $db2 = $this->load->database('db2', TRUE);
-            $db2->select('a.*,b.*');
-            $db2->from('product as a');
-            $db2->join('category as b', 'b.idcategory = a.idcategory');
+            // $db2 = $this->load->database('db2', TRUE);
+            $this->db->select('a.*,b.*');
+            $this->db->where('a.idProduct',$data[0]);
+            $this->db->where('c.stock>2');
+            $this->db->join('category as b', 'b.idcategory = a.idcategory');
+            $this->db->join('product_ditails as c', 'c.idproduct = a.idproduct');
+            $query = $this->db->get_where('product as a')->result();
 
-            $db2->where('a.idproduct', $data[0]);
-
-            $query = $db2->get()->result();
-			//print_r($query);
-			//exit;
+         }   // $query = $db2->get()->result();
+			 // print_r($query);exit;
 
             foreach ($query as $x) {
-                $db2->select('size');
+
+                $this->db->select('a.size');
                 //$db2->from('product_ditails');
-                $db2->where('idproduct', $x->idproduct);
-                $db2->where('delproductditails', 0);
-                $db2->where('stock>2');
-                $db2->group_by('size');
-                $query1 = $db2->get_where(product_ditails)->result();
+                $this->db->where('a.idproduct', $x->idproduct);
+                $this->db->where('a.delproductditails', 0);
+                $this->db->where('a.stock>2');
+                $this->db->group_by('a.size');
+                $this->db->join('product_images_ditails as c', 'c.idpditails = a.idpditails');
+                $query1 = $this->db->get_where('product_ditails as a')->result();
 				
 				
             }
@@ -1046,64 +1049,60 @@ class Main_model extends CI_Model {
 
 
             foreach ($query as $x) {
-                $db2->select('a.collor');
-                $db2->from('product_images_ditails as a');
-				$db2->join('product_ditails as b', 'b.idpditails = a.idpditails');
-                $db2->where('a.idproduct', $x->idproduct);
-                $db2->where('b.delproductditails', 0);
-                $db2->where('b.stock>2');
-                $db2->group_by('collor');
-                $query2 = $db2->get()->result();
+                $this->db->select('a.collor');
+                $this->db->where('a.idproduct', $x->idproduct);
+                $this->db->where('a.delproductditails', 0);
+                $this->db->where('a.stock>2');
+                $this->db->group_by('a.collor');
+                $this->db->join('product_images_ditails as c', 'c.idpditails = a.idpditails');
+               $query2 = $this->db->get_where('product_ditails as a')->result();
 				
 			
             }
 
             foreach ($query as $x) {
-                $db2->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
-                $db2->from('product_ditails as a');
-				$db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $db2->where('a.delproductditails', 0);
-                $db2->where('a.stock>2');
-                $db2->where('b.idproduct', $x->idproduct);
-				$db2->group_by('a.idpditails');
-                $query3 = $db2->get()->result();
-					//print_r($query3);
-				//exit;
+                $this->db->select('a.idpditails,a.size,a.collor,a.realprice,a.priceDiscount,a.price,a.stock');
+                $this->db->where('a.delproductditails', 0);
+                $this->db->where('a.stock>2');
+                $this->db->where('a.idproduct', $x->idproduct);
+				$this->db->group_by('a.idpditails');
+                $this->db->join('product_images_ditails as b', 'b.idpditails = b.idpditails');
+               $query3 = $this->db->get_where('product_ditails as a')->result();
+                
             }
 
             foreach ($query as $q) {
-                $db2->select('a.*,b.urlImage,c.productName');
-                $db2->from('product_ditails as a');
-                //$this->db->group_by('a.size');
-                $db2->where('a.idproduct', $q->idproduct);
-                $db2->where('delproductditails', 0);
+                $this->db->select('a.*,b.urlImage,c.productName');
+                
+                $this->db->where('a.idproduct', $q->idproduct);
+                $this->db->where('a.delproductditails', 0);
 				
-				$db2->where('a.stock>2');
-                $db2->group_by('a.collor');
+				$this->db->where('a.stock>2');
+                $this->db->group_by('a.idpditails');
 
-				$db2->join('product as c', 'c.idproduct = a.idproduct');	
-                $db2->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
-                $db2->where('b.urlImage!=""');
-                $query = $db2->get()->result();
-
-                $dataq = array(
-                    'idproduct' => $q->idproduct
-                );
-                $db2->select('urlImage, imageFile');
-				//$db2->group_by('idProducts');
-                $queryq = $db2->get_where('product_images', $dataq)->result();
+				$this->db->join('product as c', 'c.idproduct = a.idproduct');	
+                $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
+                $query = $this->db->get_where('product_ditails as a')->result();
+                // $dataq = array(
+                //     'idproduct' => $q->idproduct
+                // );
+    //             $this->db->select('urlImage, imageFile');
+				// //$db2->group_by('idProducts');
+    //             $queryq = $this->db->get_where('product_images', $dataq)->result();
                 //print_r($queryq);
 				//exit;
-                $datax[] = array(
+                
+            }
+
+            $datax[] = array(
                     'product' => $q,
                     'totalsku' => count($query),
                     'variableProduct' => $query,
                     'size' => $query1,
                     'collor' => $query2,
                     'varian' => $query3,
-                    'imageProduct' => $queryq
+                    // 'imageProduct' => $queryq
                 );
-            }
 
             if (!empty($query)) {
                 $response['status'] = 200;
@@ -1118,8 +1117,9 @@ class Main_model extends CI_Model {
                 $response['message'] = 'Data failed to receive.';
                 return $response;
             }
-        }
+        
     }
+
 
 
     public function ditailsSize($data = '') {
