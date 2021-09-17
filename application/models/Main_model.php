@@ -1083,12 +1083,12 @@ class Main_model extends CI_Model {
 				$this->db->join('product as c', 'c.idproduct = a.idproduct');	
                 $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
                 $query = $this->db->get_where('product_ditails as a')->result();
-                // $dataq = array(
-                //     'idproduct' => $q->idproduct
-                // );
-    //             $this->db->select('urlImage, imageFile');
-				// //$db2->group_by('idProducts');
-    //             $queryq = $this->db->get_where('product_images', $dataq)->result();
+                $dataq = array(
+                    'idproduct' => $q->idproduct
+                );
+                $this->db->select('urlImage, imageFile');
+				//$db2->group_by('idProducts');
+                $queryq = $this->db->get_where('product_images', $dataq)->result();
                 //print_r($queryq);
 				//exit;
                 
@@ -1101,7 +1101,7 @@ class Main_model extends CI_Model {
                     'size' => $query1,
                     'collor' => $query2,
                     'varian' => $query3,
-                    // 'imageProduct' => $queryq
+                     'imageProduct' => $queryq
                 );
 
             if (!empty($query)) {
