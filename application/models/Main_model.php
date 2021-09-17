@@ -1078,7 +1078,7 @@ class Main_model extends CI_Model {
                 $this->db->where('a.delproductditails', 0);
 				
 				$this->db->where('a.stock>2');
-                $this->db->group_by('a.idpditails');
+                $this->db->group_by('a.collor');
 
 				$this->db->join('product as c', 'c.idproduct = a.idproduct');	
                 $this->db->join('product_images_ditails as b', 'b.idpditails = a.idpditails');
