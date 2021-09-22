@@ -780,7 +780,7 @@ class Main_model extends CI_Model {
 	   //$datax = $this->db->delete('product_images_ditails');
          //$this->db->join('product_images as c', 'c.idproduct = a.idproduct');
 		 $this->db->join('product as e', 'e.idproduct = a.idproduct');
-		 $this->db->join('product_images_ditails as d', 'd.idproduct = a.idproduct');
+		 $this->db->join('product_images_ditails as d', 'd.idpditails = a.idpditails');
 		 $datax= $this->db->get_where('product_ditails as a')->result();
 		 //print_r($datax);exit;
 		 
