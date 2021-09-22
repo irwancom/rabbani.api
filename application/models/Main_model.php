@@ -784,31 +784,33 @@ class Main_model extends CI_Model {
 		 $datax= $this->db->get_where('product_ditails as a')->result();
 		 //print_r($datax);exit;
 		 
-		 foreach ($datax as $q){
-			 $this->db->select('b.idproduct,b.idcategory,e.idpditails,b.productName,e.price,e.realprice');
-			 $this->db->group_by('b.idproduct');
-			 $this->db->where('e.stock>2');
-			 $this->db->where('e.delproductditails', 0);
-			 $this->db->where('b.delproduct', 0);
-			 //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
-			 $this->db->join('product_ditails as e', 'e.idproduct = b.idproduct');
-			 $user = $this->db->get_where('product as b', array('b.idproduct' => $q->idproduct))->result();
+         foreach ($datax as $q){
 			 
-			 foreach ($user as $y){
-				 //print_r($y);exit;
-			 $this->db->select('urlImage');
-			 $image = $this->db->get_where('product_images', array('idproduct' => $y->idproduct))->result();
 
-			 //print_r($user);
-			 
-			 
-		 }
-			 $dataCatx[] = array(
-                        'Product' => $user,
-						'Image' => $image
-                    );
-			
-		 }
+            $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
+                 $this->db->group_by('b.idproduct');
+                // $this->db->where('e.stock>2');
+                // $this->db->where('e.delproductditails', 0);
+                // $this->db->where('b.delproduct', 0);
+                //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
+                $this->db->join('product_ditails as e', 'e.idproduct = b.idproduct');
+                $user = $this->db->get_where('product as b', array('b.idproduct' => $q->idproduct))->result();
+                 // print_r($user);exit;
+                
+                   
+               $this->db->select('a.idproduct,a.idpditails,a.urlImage,e.stock');
+               $this->db->group_by('a.collor');
+               $this->db->where('e.stock>2');
+               $this->db->where('e.delproductditails', 0);
+               $this->db->join('product_ditails as e', 'e.idpditails = a.idpditails');
+               $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $q->idproduct))->result();
+               $dataCatx[] = array(
+                           'Product' => $user,
+                           'Image' => $image
+                       );
+                
+               
+            }
 		 
 		  
 			 
