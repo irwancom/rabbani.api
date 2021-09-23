@@ -38,7 +38,7 @@ class Artificial extends REST_Controller {
             $data = array(
                 'dataPriceShipping' => $data,
                 'subsidiesShipping' => $this->input->post('totalBay') * 0.02,
-                'uniqCode' => -rand(000, 999)
+                'uniqCode' => -rand(00, 99)
             );
         } else {
             $data = array(
