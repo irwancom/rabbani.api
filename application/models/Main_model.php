@@ -666,7 +666,7 @@ class Main_model extends CI_Model {
                  // print_r($user);exit;
                 
                    
-               $this->db->select('a.idproduct,a.idpditails,a.urlImage,e.stock');
+               $this->db->select('a.urlImage');
                $this->db->group_by('a.collor');
                $this->db->where('e.stock>2');
                $this->db->where('e.delproductditails', 0);
@@ -730,7 +730,7 @@ class Main_model extends CI_Model {
 			  // print_r($user);exit;
 			 
                 
-			$this->db->select('a.idproduct,a.idpditails,a.urlImage');
+			$this->db->select('a.urlImage');
             $this->db->group_by('a.collor');
             $this->db->where('e.stock>2');
             $this->db->where('e.delproductditails', 0);
@@ -799,7 +799,7 @@ class Main_model extends CI_Model {
                  // print_r($user);exit;
                 
                    
-               $this->db->select('a.idproduct,a.idpditails,a.urlImage,e.stock');
+               $this->db->select('a.urlImage');
                $this->db->group_by('a.collor');
                $this->db->where('e.stock>2');
                $this->db->where('e.delproductditails', 0);
