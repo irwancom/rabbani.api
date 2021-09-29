@@ -1530,11 +1530,11 @@ class H2h_model extends CI_Model {
     function sendwaimage($data) {
         // print_r($data);exit;
            // $this->db->select('hp');
-         $this->db->where('alamat',1);
-         // $this->db->where('telepon','081386118382');
-         // $this->db->or_where('telepon','081263036019');
+        //  $this->db->where('alamat',1);
+         $this->db->where('telepon','081386118382');
+         $this->db->or_where('telepon','081263036019');
         $datay = $this->db->get_where('data_tono')->result();
-               // print_r($datay);exit;
+                print_r($datay);exit;
        
           // print_r($dataz[pesan]);exit;
         foreach ($datay as $wa) {
