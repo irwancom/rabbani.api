@@ -623,5 +623,22 @@ class H2h extends REST_Controller {
         }
     }
 
+    public function waimage_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $dataz = array(
+                $this->input->post('phone'),
+                $this->input->post('msg'),
+
+            );
+
+            $data = $this->h2h_model->sendwaimage($dataz);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+
 //end
 }

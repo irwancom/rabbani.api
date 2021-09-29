@@ -1527,4 +1527,73 @@ class H2h_model extends CI_Model {
         }
     }
 
+    function sendwaimage($data) {
+        // print_r($data);exit;
+           // $this->db->select('hp');
+         $this->db->where('alamat',1);
+         // $this->db->where('telepon','081386118382');
+         // $this->db->or_where('telepon','081263036019');
+        $datay = $this->db->get_where('data_tono')->result();
+               // print_r($datay);exit;
+       
+          // print_r($dataz[pesan]);exit;
+        foreach ($datay as $wa) {
+              // print_r($wa->firstname);exit;
+$message = 'Hallo, Ka *'.$wa->nama.'*
+*GRATIS & TERBUKA UNTUK UMUM* Virtual Event Quranic Food dengan tema "Sehat Imun & Iman Bersama Madu & Habbatussauda"
+
+👤 Menghadirkan Ust Oemar Mita
+👤 Demontrasi dari Praktisi Medis dr. Insan Agung Nugroho
+👤 Sambutan oleh Vice CEO Rabbani Grup, Syahid Maulawi
+
+Catatt tanggal nya :
+
+
+📆Kamis, 30 September 2021 
+⏰Jam 09.00 WIB
+Live dari Zoom Meeting dan Youtube Rabbani TV
+Link Zoom : 
+https://bit.ly/Quranicfood
+Meeting ID: 572 550 4765
+Passcode: rabbani
+
+📝egistrasi dan konfirmasi:
+1)https://bit.ly/Reg-QuranicFood';    
+         
+$curl = curl_init();
+$token = "XrdORIbkKSrjqCXQUIcgzm4HWEcXU3Zi9t5JiBxxkiMgELeHL8Z2qnC4qg1Pysbt";
+$data = [
+   'phone' => $wa->telepon,
+   'message' => $message, // can be null
+   'secret' => false, // or true
+   'priority' => false, // or true
+];
+
+curl_setopt($curl, CURLOPT_HTTPHEADER,
+   array(
+       "Authorization: $token",
+   )
+);
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+curl_setopt($curl, CURLOPT_URL, "https://selo.wablas.com/api/send-message");
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+$result = curl_exec($curl);
+
+}
+$err = curl_error($curl);
+           curl_close($curl);
+           if($err){
+             $data_respone = 0;
+           }else{
+             $data_respone = json_decode($result, true);
+             // $count = count($result);
+           }
+       return $data_respone;
+
+
+}
+
 }
