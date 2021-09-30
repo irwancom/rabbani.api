@@ -1530,36 +1530,29 @@ class H2h_model extends CI_Model {
     function sendwaimage($data) {
         // print_r($data);exit;
            // $this->db->select('hp');
-         $this->db->where('alamat',2);
+        //  $this->db->where('alamat',2);
         //  $this->db->where('telepon','081386118382');
         //  $this->db->or_where('telepon','081263036019');
-          $this->db->limit('200');
+          $this->db->limit('1000',1000);
         $datay = $this->db->get_where('data_tono')->result();
-                print_r($datay);exit;
+                // print_r($datay);exit;
        
           // print_r($dataz[pesan]);exit;
         foreach ($datay as $wa) {
               // print_r($wa->firstname);exit;
-$message = 'Hallo, Ka *'.$wa->nama.'*
-*GRATIS & TERBUKA UNTUK UMUM* Virtual Event Quranic Food dengan tema "Sehat Imun & Iman Bersama Madu & Habbatussauda"
+$message = 'Hallo, Ka *'.$wa->nama.'* ada info nich :
+*GRATIS,TERBUKA UNTUK UMUM Webinar Duta Pelajar Rabbani* 
 
-👤 Menghadirkan Ust Oemar Mita
-👤 Demontrasi dari Praktisi Medis dr. Insan Agung Nugroho
-👤 Sambutan oleh Vice CEO Rabbani Grup, Syahid Maulawi
+(Save no ini dengan nama panitia webinar, supaya link warna biru)
 
-Catatt tanggal nya :
-
-
-📆Kamis, 30 September 2021 
-⏰Jam 09.00 WIB
-Live dari Zoom Meeting dan Youtube Rabbani TV
-Link Zoom : 
-https://bit.ly/Quranicfood
+🗓️Sabtu, 2 Oktober 2021 
+☎️CP : https://bit.ly/WA-DPR 
+⏰09.00 wib
+📡Live dari Zoom dan Youtube Rabbani TV
+Link Zoom :
+https://bit.ly/Webinar-DPR
 Meeting ID: 572 550 4765
-Passcode: rabbani
-
-📝egistrasi dan konfirmasi:
-1)https://bit.ly/Reg-QuranicFood';    
+Passcode: rabbani';    
          
 $curl = curl_init();
 $token = "XrdORIbkKSrjqCXQUIcgzm4HWEcXU3Zi9t5JiBxxkiMgELeHL8Z2qnC4qg1Pysbt";
