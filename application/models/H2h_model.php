@@ -1545,7 +1545,7 @@ $message = 'Hallo, Ka *'.$wa->nama.'* ada info nich :
 
 (Save no ini dengan nama panitia webinar, supaya link warna biru)
 
-🗓️Sabtu, 2 Oktober 2021 
+🗓️Sabtu, 2 Oktober 2021   jdjdj
 ☎️CP : https://bit.ly/WA-DPR 
 ⏰09.00 wib
 📡Live dari Zoom dan Youtube Rabbani TV
