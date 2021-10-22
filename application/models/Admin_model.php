@@ -3453,17 +3453,20 @@ class Admin_model extends CI_Model {
                     'size' => $data[3]['upload_data']['file_size'],
                     'type' => $data[3]['upload_data']['image_type']
                 );
-                //$this->db->where('idpditails', $data[2]);
+
                 $supdate = $this->db->insert('product_images_ditails', $data);
+                $this->db->where('idpditails', $data[2]);
+                $datax = $this->db->get_where('product_images_ditails')->result();
             } else {
 				return $this->token_response();
 			}
 
 
-            if ($supdate) {
+            if ($datax) {
                 $response['status'] = 200;
                 $response['error'] = false;
                 $response['message'] = 'Data received successfully.';
+                $response['data'] = $datax;
                 return $response;
             } else {
                 // unlink($data[3]['upload_data']['full_path']) or die("Couldn't delete file");
