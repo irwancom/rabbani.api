@@ -4094,7 +4094,7 @@ class Admin_model extends CI_Model {
             if (!empty($verify)) {
                 $this->db->set('statuspay', 1);
                 $this->db->where('idtransaction', $data[2]);
-                $this->db->where('idstore', $verify[0]->idstore);
+                // $this->db->where('idstore', $verify[0]->idstore);
                 $supdate = $this->db->update('transaction');
             }
 
