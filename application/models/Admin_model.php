@@ -4092,7 +4092,7 @@ class Admin_model extends CI_Model {
         } else {
             $verify = $this->verfyAccount($data[0], $data[1]);
             if (!empty($verify)) {
-                $this->db->set('statuspay', 1);
+                $this->db->set('statuspay', $data[3]);
                 $this->db->where('idtransaction', $data[2]);
                 // $this->db->where('idstore', $verify[0]->idstore);
                 $supdate = $this->db->update('transaction');

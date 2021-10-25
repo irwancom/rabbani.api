@@ -1123,7 +1123,8 @@ class Admin extends REST_Controller {
             $data = array(
                 $this->input->post('keyCodeStaff'),
                 $this->input->post('secret'),
-                $this->input->post('idtransaction')
+                $this->input->post('idtransaction'),
+                $this->input->post('status')
             );
             $data = $this->admin_model->statuspaypayData($data);
         } elseif ($pg == 'cancel') {
