@@ -1384,6 +1384,7 @@ class Admin_model extends CI_Model {
                 // exit;
 
                 $this->db->select('a.*,b.urlImage,c.urlImagektp');
+                $this->db->limit('10',$data[2]);
                 $this->db->from('apiauth_user as a');
                 $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
                 $this->db->join('apiauth_user_ktp as c', 'c.idauthuser = a.idauthuser', 'left');
