@@ -4115,6 +4115,36 @@ class Admin_model extends CI_Model {
         }
     }
 
+    public function statussending($data = '') {
+        // print_r($data);
+        // exit;
+        if (empty($data[0]) || empty($data[1])) {
+            return $this->empty_response();
+        } else {
+            $verify = $this->verfyAccount($data[0], $data[1]);
+            if (!empty($verify)) {
+                $this->db->set('status', $data[3]);
+                $this->db->where('idtransaction', $data[2]);
+                // $this->db->where('idstore', $verify[0]->idstore);
+                $supdate = $this->db->update('transaction');
+            }
+
+
+            if ($supdate) {
+                $response['status'] = 200;
+                $response['error'] = false;
+                // $response['totalData'] = count($supdate);
+                $response['data'] = $supdate;
+                return $response;
+            } else {
+                $response['status'] = 502;
+                $response['error'] = true;
+                $response['message'] = 'Data failed to receive or data empty.';
+                return $response;
+            }
+        }
+    }
+
     public function statuspaycancelData($data = '') {
         // print_r($data);
         // exit;

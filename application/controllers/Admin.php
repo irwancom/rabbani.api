@@ -1893,6 +1893,25 @@ class Admin extends REST_Controller {
             }
         }
     }
+
+
+    public function statussending_post() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = array(
+                $this->input->post('keyCodeStaff'),
+                $this->input->post('secret'),
+                $this->input->post('idtransaction'),
+                $this->input->post('status'),
+              
+            );
+            $data = $this->admin_model->statussending($data);
+            if ($data) {
+                $this->response($data, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
     
     function vouchernew_post($pg = '') {
         if ($pg == 'add') {
