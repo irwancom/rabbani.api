@@ -21,6 +21,21 @@ class Admin extends REST_Controller {
         
     }
 
+    public function verfyAccount($keyCode = '', $secret = '') {
+        $data = array(
+            "keyCodeStaff" => $keyCode,
+            "secret" => $secret
+        );
+        // $this->db->select('c.namestore, a.*');
+        // $this->db->Join('store as c', 'c.idstore = a.idstore', 'left');
+        $query = $this->db->get_where('apiauth_staff as a', $data)->result();
+        return $query;
+    }
+
+     public function token_response() {
+        $this->response(array('status' => 502, 'error' => 'true','message' => 'Token tidak boleh salah'));
+    }
+
     //CRUD CATEGORY
     function category_post($pg = '') {
         if ($pg == 'add') {
@@ -1952,6 +1967,30 @@ class Admin extends REST_Controller {
         }
     }
 	
+
+    public function awbcod_post() { 
+       
+        $dataz = $this->input->post('data');
+        $datay = json_decode($dataz);
+          // print_r($dataz);exit;
+        $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+          
+            if (!empty($verify)) {
+ 
+                $this->db->set('trackingCode', $datay->awb);
+                $this->db->where('noInvoice', $datay->noInvoice);
+                $supdate = $this->db->update('transaction');
+            } else {
+                    return $this->token_response();
+            }
+        
+        if ($supdate) {
+            $this->response(array('status' => 202, 'error' => false,'totalData' => count($supdate),'data' => $supdate));
+             
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
 	
 	
 	 
