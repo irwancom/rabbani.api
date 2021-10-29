@@ -2000,75 +2000,33 @@ class Admin_model extends CI_Model {
 
             if (!empty($verify)) {
 
-               // $this->db->select('*');
-                $ok = 'tailordigital';
                 $this->db->where('status',0);
                 $this->db->or_where('status',1);
+                $this->db->or_where('statusPay',0);
+                $this->db->or_where('statusPay',1);
+                $this->db->or_where('statusPay',4);
                 $this->db->where('orderBy',0);
-                // $this->db->where_exec('order_by IS NOT NULL');
-                $this->db->where('statusPay',0);
-				$this->db->or_where('statusPay',1);
-				$this->db->or_where('statusPay',4);
-				//$this->db->where('dateCreate>="2020-11-01"');
+                $this->db->limit('10',$data[2]);
                 $this->db->order_by('idtransaction', 'desc');
 
-                // if (!empty($data[2])) {
-//                    $paging = $data[2] * 10;
-                //   $paging = 0;
-                //} else {
-                //  $paging = 0;
-                //}
-                //$this->db->limit(10, $paging);
-
                 $queryx = $this->db->get_where(transaction)->result();
-				//print_r($queryx);
-				//exit;
-
-                $this->db->select('count(*) as transaction');
-                $transaction = $this->db->get_where('transaction')->result();
-				
-                if ($transaction[0]->transaction = 0) {
-                    $queryx = $this->db->get()->result();
-                } else {
-                    $jlh = $transaction[0]->transaction;
-                    $hal = ceil($jlh / 10) - 1;
-                }
-
+			
                 foreach ($queryx as $q) {
-                    //print_r($q);
-                    //	exit;
 
-                    $this->db->select('a.*,b.*,c.*');
-                    $this->db->from('transaction_details as a');
-                    $this->db->join('product as b', 'b.idproduct = a.idproduct', 'left');
-                    $this->db->join('product_ditails as c', 'c.idpditails = a.idpditails', 'left');
+                    
                     $this->db->where('idtransaction', $q->idtransaction);
-                    //$this->db->order_by('idtransaction', 'DESC');
-                    // if (!empty($data[2])) {
-                    //     $paging = $data[2] * 10;
-                    // } else {
-                    //    $paging = 0;
-                    // }
-                    //$this->db->limit(10, $paging);
 
-                    $queryy = $this->db->get()->result();
-                    //print_r($queryy);
-                    //exit;
-                    //$this->db->select('count(*) as transaction_details');
-                    //$transaction_details = $this->db->get_where('transaction_details')->result();
-                    //$jlh = $transaction_details[0]->transaction_details;
-                    //$hal = ceil($jlh / 10) - 1;
-					$this->db->select('count(*) as transaction');
-					$transaction = $this->db->get_where('transaction')->result();
-					$jlh = $transaction[0]->transaction;
-                    $hal = ceil($jlh / 10) - 1;
+                    $this->db->join('product_ditails as c', 'c.idpditails = a.idpditails'); 
+                    $this->db->join('product as b', 'b.idproduct = a.idproduct');  
+
+                    $queryy = $this->db->get_where('transaction_details as a')->result();
 
                     $datax[] = array(
                         'order' => $q,
                         'totaltransaction' => count($queryy),
                         'variableProduct' => $queryy,
                     );
-                    ;
+                    
                 }
             }
             if (!empty($datax)) {
@@ -2076,8 +2034,6 @@ class Admin_model extends CI_Model {
                 $response['error'] = false;
                 $response['message'] = 'Data successfully processed.';
                 $response['totalData'] = count($datax);
-                $response['totalPage'] = ($hal);
-                $response['totalTransaction'] = ($jlh);
                 $response['data'] = $datax;
                 return $response;
             } else {
