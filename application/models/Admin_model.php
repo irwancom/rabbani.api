@@ -2002,13 +2002,13 @@ class Admin_model extends CI_Model {
 
                // $this->db->select('*');
                 $ok = 'tailordigital';
-                $this->db->where('status=0');
-                $this->db->or_where('status=1');
-                $this->db->where('orderBy','0');
+                $this->db->where('status',0);
+                $this->db->or_where('status',1);
+                $this->db->where('orderBy',0);
                 // $this->db->where_exec('order_by IS NOT NULL');
-                // $this->db->where('statusPay!=2');
-				// $this->db->where('statusPay!=3');
-				// $this->db->where('statusPay!=4');
+                $this->db->where('statusPay',0);
+				$this->db->or_where('statusPay',1);
+				$this->db->or_where('statusPay',4);
 				//$this->db->where('dateCreate>="2020-11-01"');
                 $this->db->order_by('idtransaction', 'desc');
 
