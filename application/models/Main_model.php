@@ -3455,24 +3455,26 @@ class Main_model extends CI_Model {
             if (!empty($verify)) {
 
                 $data = json_decode($data[1]);
-                //  print_r($data);
-                //exit;
+                if (empty($data->name) || empty($data->phone)||empty($data->email) || empty($data->address)|| empty($data->id_city) || empty($data->id_prov) || empty($data->id_dis) || empty($verify[0]->idauthuser)) {
+                    return $this->empty_response();
+                } else {
 
 
-                $data2 = array(
-                    'name' => $data->name,
-                    'phone' => $data->phone,
-                    'email' => $data->email,
-                    'address' => $data->address,
-                    'id_city' => $data->id_city,
-                    'id_prov' => $data->id_prov,
-                    'id_dis' => $data->id_dis,
-                    'idauthuser' => $verify[0]->idauthuser
+                     $data2 = array(
+                        'name' => $data->name,
+                        'phone' => $data->phone,
+                        'email' => $data->email,
+                        'address' => $data->address,
+                        'id_city' => $data->id_city,
+                        'id_prov' => $data->id_prov,
+                        'id_dis' => $data->id_dis,
+                        'idauthuser' => $verify[0]->idauthuser
                 );
-                //print_r($data2);
-                //exit;
+            //print_r($data2);
+            //exit;
 
-                $xupdate = $this->db->insert('sensus_people', $data2);
+                    $xupdate = $this->db->insert('sensus_people', $data2);
+                }
             }
             //$this->db->where('idauthuser',$data2['phone']);
             //$this->db->insert('apiauth_user', array('hp' => $data2['phone']));
