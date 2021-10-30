@@ -2000,7 +2000,7 @@ class Admin_model extends CI_Model {
 
             if (!empty($verify)) {
 
-                $this->db->where('statusPay = 0 OR statusPay = 1');
+                $this->db->where('statusPay = 0 OR statusPay = 1 OR statusPay = 4');
                 $this->db->where('orderBy',0);
                 $this->db->limit('10',$data[2]);
                 $this->db->order_by('idtransaction', 'desc');
