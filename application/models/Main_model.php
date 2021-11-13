@@ -4874,17 +4874,13 @@ class Main_model extends CI_Model {
              //$this->db->join('product_images as c', 'c.idproduct = b.idproduct');
              $this->db->join('product_ditails as e', 'e.idproduct = b.idproduct');
              $user = $this->db->get_where('product as b', array('b.idproduct' => $q->idproduct))->result();
-             
-             foreach ($user as $y){
-                $this->db->select('a.urlImage');
-                $this->db->group_by('e.collor');
-                $this->db->where('e.stock>2');
-                $this->db->where('e.delproductditails', 0);
-               $this->db->join('product_ditails as e', 'e.idpditails = a.idpditails');
-                $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $y->idproduct))->result();
-             
-             
-         }
+             $this->db->select('a.urlImage');
+             $this->db->group_by('e.collor');
+             $this->db->where('e.stock>2');
+             $this->db->where('e.delproductditails', 0);
+             $this->db->join('product_ditails as e', 'e.idpditails = a.idpditails');
+             $image = $this->db->get_where('product_images_ditails as a', array('a.idproduct' => $q->idproduct))->result();
+            
              $dataCatx[] = array(
                         'Product' => $user,
                         'Image' => $image
