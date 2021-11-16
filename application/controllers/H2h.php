@@ -640,5 +640,40 @@ class H2h extends REST_Controller {
         }
     }
 
+    public function SendWa_post() {
+        $dataz = $this->input->post('data');
+        $datay = json_decode($dataz);
+        
+        // print_r($datay);exit;
+        $curl = curl_init();
+        $token = "gEd4VWUNwazHUwVWuS0M9OkwvlXvZYKWQbqgIeExYiqAiwid8d9d8A8kEfxXaiWQ";
+        $data = [
+            'phone' => $datay->hp,
+            'message' => $datay->pesan,
+            'secret' => false, // or true
+            'priority' => true, // or true
+        ];
+        // print_r($data);exit;
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Authorization: $token",
+                )
+        );
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($curl, CURLOPT_URL, "https://sawit.wablas.com/api/send-message");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        $result = curl_exec($curl);
+        //print_r($result);exit;
+        if ($result) {
+            $this->response(array('status' => 202, 'error' => false,'totalData' => count($result),'data' => $result));
+             
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
+
 //end
 }
