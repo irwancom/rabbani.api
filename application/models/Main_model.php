@@ -4862,7 +4862,7 @@ class Main_model extends CI_Model {
          $this->db->join('product as e', 'e.idproduct = a.idproduct');
          $this->db->join('product_images_ditails as d', 'd.idpditails = a.idpditails');
          $datax= $this->db->get_where('product_ditails as a')->result();
-         // print_r($datax);exit;
+         
          
          foreach ($datax as $q){
              $this->db->select('b.idproduct,b.delproduct,e.*,b.productName,e.price,e.realprice');
