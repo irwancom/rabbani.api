@@ -32,8 +32,12 @@ class Admin extends REST_Controller {
         return $query;
     }
 
-     public function token_response() {
+    public function token_response() {
         $this->response(array('status' => 502, 'error' => 'true','message' => 'Token tidak boleh salah'));
+    }
+
+    public function duplicate_response() {
+        $this->response(array('status' => 502, 'error' => 'true','message' => 'Sudah Ada Data Di Database'));
     }
 
     //CRUD CATEGORY
@@ -1990,6 +1994,77 @@ class Admin extends REST_Controller {
         } else {
             $this->response(array('status' => 'fail', 502));
         }
+    }
+
+    public function addnewproduct_post() {
+        
+        $dataz = $this->input->post('data');
+        $datay = json_decode($dataz);
+        // print_r($datay);exit;
+        $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+          
+        if (!empty($verify)) {
+           
+               $this->db->where('skuProduct',$datay->skuProduct);
+        $cek = $this->db->get_where('product')->result();
+           // print_r($cek);exit;
+            if(empty($cek)) {
+                $datax = array(
+                    'dateCreate' => date('Y-m-d'),
+                    'timeCreate' => date('H:i:s'),
+                    'idstore' => 1,
+                    'idcategory' => $datay->idcategory,
+                    'skuProduct' => $datay->skuProduct,
+                    'productName' => $datay->productName,
+                    'descr' => $datay->descr,
+                    'descrDitails' => $datay->descrDitails,
+                    'delproduct' => $datay->delproduct,
+            );
+             // print_r($datax);exit;      
+            $this->db->insert('product', $datax);
+            $insert_id = $this->db->insert_id();
+
+                foreach($datay->productDitails as $q){
+                    // print_r($q);exit;
+                    $datam = array(
+                        'idproduct' => $insert_id,
+                        'skuPditails' => $q->skuPditails,
+                        'size' => $q->size,
+                        'collor' => $q->collor,
+                        'weight' => $q->weight,
+                        'price' => $q->price,
+                        'realprice' => $q->realprice,
+                        'priceDiscount' => $q->priceDiscount,
+                        'stock' => $q->stock,
+                        'delproductditails' => $q->delproductditails,
+                    );
+                    // print_r($datam);exit;
+                    $this->db->insert('product_ditails', $datam);
+                }
+                $this->db->where('skuProduct',$datay->skuProduct);
+                $datap = $this->db->get_where('product')->result();
+                $this->db->where('idproduct',$datap[0]->idproduct);
+                $datad = $this->db->get_where('product_ditails')->result();
+
+                $dataq= array(
+                        'Product' => $datap,
+                        'product details' => $datad
+                    );
+
+            } else {
+                return $this->duplicate_response();
+            }
+        } else {
+                return $this->token_response();
+        }
+
+            
+                   
+        if ($dataq) {
+            $this->response(array('status' => 202, 'error' => false,'totalData' => count($dataq),'data' => $dataq));
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }     
     }
 	
 	
