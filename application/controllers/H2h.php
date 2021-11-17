@@ -653,8 +653,7 @@ class H2h extends REST_Controller {
             'secret' => false, // or true
             'priority' => true, // or true
         ];
-        // print_r($data);exit;
-
+       
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             "Authorization: $token",
                 )
