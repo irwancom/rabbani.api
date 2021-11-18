@@ -2073,8 +2073,8 @@ class Admin extends REST_Controller {
              $config['upload_path'] = 'img';
              $config['encrypt_name'] = true;
              $config['use_storage_service'] = true;
-            //  $config['allowed_types'] = 'gif|jpg|png|jpeg|svg|image/svg+xml';
-             $config['allowed_types'] = 'svg';
+             $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            //  $config['allowed_types'] = 'svg';
  
              //$config['max_size'] = 100;
              //$config['max_width'] = 700;
