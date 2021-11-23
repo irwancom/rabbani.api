@@ -2105,7 +2105,7 @@ class Admin extends REST_Controller {
             
              
             $datay = json_decode($data[0]);
-            if (empty($datay->idproduct) && empty($datay->idpditails) && empty($data[1]['upload_data']['file_url']) && empty($data[1]['upload_data']['file_name']) && empty($data[2])) {
+            if (!empty($datay->idproduct) || !empty($datay->idpditails) || !empty($data[1]['upload_data']['file_url']) || !empty($data[1]['upload_data']['file_name']) || !empty($data[2])) {
              $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
            // print_r($verify);exit;
                  if (!empty($verify)) {
