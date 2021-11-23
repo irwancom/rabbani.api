@@ -40,6 +40,10 @@ class Admin extends REST_Controller {
         $this->response(array('status' => 502, 'error' => 'true','message' => 'Sudah Ada Data Di Database'));
     }
 
+    public function empty_response() {
+        $this->response(array('status' => 502, 'error' => 'true','message' => 'Data Input Kosong'));
+    }
+
     //CRUD CATEGORY
     function category_post($pg = '') {
         if ($pg == 'add') {
@@ -2101,7 +2105,7 @@ class Admin extends REST_Controller {
             
              
             $datay = json_decode($data[0]);
-             // print_r($datay);exit; 
+            if(empty($datay->idproduct) && empty($datay->idpditails) empty($data[1]['upload_data']['file_url']) empty($data[1]['upload_data']['file_name']) empty($data[2])){
              $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
            // print_r($verify);exit;
                  if (!empty($verify)) {
@@ -2126,6 +2130,9 @@ class Admin extends REST_Controller {
                  } else {
                      return $this->token_response();
                  }
+            } else {   
+                return $this->empty_response();
+            }
              
          
          if ($datax) {
