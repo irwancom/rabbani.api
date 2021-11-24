@@ -2117,6 +2117,7 @@ class Admin extends REST_Controller {
                          $datax = array(
                              'idproduct' => $datay->idproduct,
                              'idpditails' => $datay->idpditails,
+                             'collor' => $datay->collor,
                              'urlImage' => $data[1]['upload_data']['file_url'],
                              'dir' => $data[2],
                              'imageFile' => $data[1]['upload_data']['file_name'],
