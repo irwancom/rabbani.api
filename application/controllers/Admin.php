@@ -2246,6 +2246,24 @@ class Admin extends REST_Controller {
   }
 
 }
+
+public function delkitalog_post() {
+
+    $dataz = $this->input->post('idkitalog');
+    // $datay = json_decode($dataz);
+     // print_r($dataz);exit;
+      
+        $this->db->where('idkitalog',$dataz);           
+        $datax = $this->db->delete('kitalog');
+
+    if ($datax) {
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+             
+    } else {
+            $this->response(array('status' => 'fail', 502));
+    }
+    
+}
 	
 	
 	 
