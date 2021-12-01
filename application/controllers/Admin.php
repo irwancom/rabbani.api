@@ -2172,6 +2172,7 @@ class Admin extends REST_Controller {
         );
                     // print_r($datax);exit;
         $this->db->insert('kitalog', $datax);
+        $this->db->select('idkitalog,title,urlpdf');
         $this->db->where('title',$datay->title);
         $datax = $this->db->get_where('kitalog')->result();
 
