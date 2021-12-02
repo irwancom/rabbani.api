@@ -2186,64 +2186,37 @@ class Admin extends REST_Controller {
 }
 
 
-  public function imgkitalog_post() {
-      header('Content-Type: application/json');
-      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-          $config['upload_path'] = 'img';
-          $config['encrypt_name'] = true;
-          $config['use_storage_service'] = true;
-          $config['allowed_types'] = 'gif|jpg|png|jpeg|svg';       
-          //$config['max_size'] = 100;
-          //$config['max_width'] = 700;
-          // $config['max_height'] = 700;
-          $this->load->library('upload', $config);
-          if (!$this->upload->do_upload('filePic')) {
-              $error = array('error' => $this->upload->display_errors());
-
-              $data = array(
-                  $error
-              );
-              
-          } else {
-              $data = array('upload_data' => $this->upload->data());
-
-              $data = array(
-                  $this->input->post('data'),
-                  $data,
-                  $config['upload_path']
-              );
-           } 
-      // print_r($data);exit;
-       if (!empty($data[0]) || !empty($data[1]['upload_data']['file_url']) || !empty($data[1]['upload_data']['file_name'])) {
-           
-
-                  $datax = array(
-                          'idkitalog' => $data[0],
-                          'urlImage' => $data[1]['upload_data']['file_url'],
-                          'dir' => $data[2],
-                          'imageFile' => $data[1]['upload_data']['file_name'],
-                          'size' => $data[1]['upload_data']['file_size'],
-                          'type' => $data[1]['upload_data']['image_type']
-                      );
-                  // print_r($datax);exit;
-                  $this->db->insert('kitalog_images', $datax);
-
-                  $this->db->where('idkitalog',$data[0]);
-                  $datay = $this->db->get_where('kitalog_images')->result();
-          } else {   
-              return $this->empty_response();
-          }
-              
-      
+public function imgkitalog_post() {
      
+    $dataz = $this->input->post('data');
+    $datay = json_decode($dataz);
+// print_r($datay);exit;
 
-      if ($datay) {
-          $this->response(array('status' => 202, 'error' => false,'totalData' => count($datay),'data' => $datay));
-           
-      } else {
-          $this->response(array('status' => 'fail', 502));
-      }
-  }
+    if (!empty($datay->idkitalog) || !empty($datay->urlimg) || !empty($datay->filename)) {
+        $datax = array(
+            'idkitalog' => $datay->idkitalog,
+            'urlImage' => $datay->urlimg,
+            'imageFile' => $datay->filename,
+                        
+        );
+                // print_r($datax);exit;
+        $this->db->insert('kitalog_images', $datax);
+        $this->db->where('idkitalog',$datay->idkitalog);
+        $this->db->select('idkitalog,urlImage,imageFile');
+        $datax = $this->db->get_where('kitalog_images')->result();
+    } else {
+        return $this->empty_response();
+    }
+  
+ 
+
+    if ($datax) {
+      $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+       
+    } else {
+      $this->response(array('status' => 'fail', 502));
+    }
+
 
 }
 
