@@ -2168,6 +2168,7 @@ class Admin extends REST_Controller {
         $datax = array(
             'title' => $datay->title,
             'urlpdf' => $datay->url,
+            'pdfFile' => $datay->pdfname,
                             
         );
                     // print_r($datax);exit;
