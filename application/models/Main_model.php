@@ -2525,7 +2525,9 @@ class Main_model extends CI_Model {
                 $this->db->select('a.*,b.idproduct,b.productName,b.qty');
                 $this->db->where('idauthuser', $verify[0]->idauthuser);
                 $this->db->order_by('a.idtransaction', 'DESC');
-		$this->db->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
+                $this->db->group_by('a.idtransaction');
+                
+		        $this->db->join('transaction_details as b', 'b.idtransaction = a.idtransaction');
                 $dataCat = $this->db->get_where('transaction as a')->result();
             } else {
                 return $this->token_response();
