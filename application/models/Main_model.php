@@ -1474,23 +1474,44 @@ class Main_model extends CI_Model {
 
                 $data = json_decode($data[2]);
 				//print_r($data->dataOrders);exit;
-
-                $dataTrx = array(
-                    'timeCreate' => date('H:i:s'),
-                    'dateCreate' => date('Y-m-d'),
-                    'noInvoice' => $verify[0]->idauthuser . time() . rand(pow(10, 5 - 1), pow(10, 5) - 1),
-                    'shipping' => ($data->shipping),
-                    'shippingprice' => ($data->shippingprice),
-                    'idauthuser' => $verify[0]->idauthuser,
-                    'idpeople' => ($data->idpeople),
-                    'payment' => ($data->payment),
-					'voucher' => ($data->voucher),
-                    'uniquecode' => ($data->kodeunik)
+                if ($data->payment == 6) {
+                    $dataTrx = array(
+                        'timeCreate' => date('H:i:s'),
+                        'dateCreate' => date('Y-m-d'),
+                        'noInvoice' => $verify[0]->idauthuser . time() . rand(pow(10, 5 - 1), pow(10, 5) - 1),
+                        'shipping' => ($data->shipping),
+                        'shippingprice' => ($data->shippingprice),
+                        'idauthuser' => $verify[0]->idauthuser,
+                        'idpeople' => ($data->idpeople),
+                        'payment' => ($data->payment),
+					    'voucher' => ($data->voucher),
+                        'uniquecode' => ($data->kodeunik),
+                        'statuspay' => 4, 
 					
-                );
+                    );
 
                 $supdate = $this->db->insert('transaction', $dataTrx);
                 $insert_id = $this->db->insert_id();
+                } else {
+
+                    $dataTrx = array(
+                        'timeCreate' => date('H:i:s'),
+                        'dateCreate' => date('Y-m-d'),
+                        'noInvoice' => $verify[0]->idauthuser . time() . rand(pow(10, 5 - 1), pow(10, 5) - 1),
+                        'shipping' => ($data->shipping),
+                        'shippingprice' => ($data->shippingprice),
+                        'idauthuser' => $verify[0]->idauthuser,
+                        'idpeople' => ($data->idpeople),
+                        'payment' => ($data->payment),
+					    'voucher' => ($data->voucher),
+                        'uniquecode' => ($data->kodeunik),
+					
+                    );
+
+                $supdate = $this->db->insert('transaction', $dataTrx);
+                $insert_id = $this->db->insert_id();
+
+                }
 
 
                 if (!empty($data)) {
