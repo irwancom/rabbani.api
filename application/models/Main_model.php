@@ -1475,7 +1475,6 @@ class Main_model extends CI_Model {
                 $data = json_decode($data[2]);
 				//print_r($data->dataOrders);exit;
                 if ($data->payment == 6) {
-                    
                     $dataTrx = array(
                         'timeCreate' => date('H:i:s'),
                         'dateCreate' => date('Y-m-d'),
@@ -1488,8 +1487,6 @@ class Main_model extends CI_Model {
 					    'voucher' => ($data->voucher),
                         'uniquecode' => ($data->kodeunik),
                         'statuspay' => 4, 
-                        'trackingCode' => , 
-                        
 					
                     );
 
@@ -2272,8 +2269,13 @@ class Main_model extends CI_Model {
 	
 	
     public function login($data = '') {
-         //print_r($data[0]);
-        //exit;
+         // print_r($data[0]);exit;
+        // $message = 'test';
+        // $phone = $data[0];
+        // print_r($message);exit;
+        // $x = $this->wa->SendWa($data[0],$message);
+
+        // print_r($x);exit;
 		 $sql = $this->db->query("SELECT hp FROM apiauth_user where hp ='$data[0]'");
          $cek_id = $sql->num_rows();
 		 
@@ -2292,7 +2294,21 @@ class Main_model extends CI_Model {
 			$massage = ' Kode OTP dari https://rabbani.id adalah ' . $otp . ' Jangan Memberikan Kode INI Selain Untuk LOGIN Anda';
             //$this->sms->SendSms($data[0], $massage);
 			$this->otp->SendOtp($data[0], $massage);
-			
+			//$cek_otp = $this->db->get_where('apiauth_user', array('hp' => $data[0]))->result();
+			//print_r($cek_otp);
+			//exit;
+			//$data1 = array(
+               //     'otp' => $otp,
+                  
+             //   );
+			//if ($cek_otp[0]->otp != '') {
+			//$this->db->set('otp',$otp);
+			//$this->db->where('idauthuser', $cek_otp[0]->idauthuser);
+			//$supdate = $this->db->update('apiauth_user');
+			//} else {
+			//$this->db->where('idauthuser', $cek_otp[0]->idauthuser);
+			//$supdate = $this->db->insert('apiauth_user', $data1);
+			//}
 
             $this->db->select('a.idauthuser, a.firstname,a.lastname,a.username,a.email,a.hp,a.keyCode,a.otp, b.urlimage');
             $this->db->join('apiauth_user_images as b', 'b.idauthuser = a.idauthuser', 'left');
