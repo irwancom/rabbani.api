@@ -1669,6 +1669,43 @@ class Main_model extends CI_Model {
 					//$this->sms->SendSms($notif, $message1);
 				
                 }
+
+                if ($data->payment == 6) {
+                    // $this->db->where('idtransaction',$dataTrx['idpeople']);
+            // $trx = $this->db->get_where('transaction')->result();
+    
+            $this->db->where('idpeople',$dataTrx['idpeople']);
+            $this->db->Join('sensus as b', 'b.idsensus = a.id_dis');
+            $people = $this->db->get_where('sensus_people as a')->result();
+            // print_r($people);exit;
+            $curl = curl_init();
+    
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.1itmedia.co.id/auth_api/jne/jne_airwaybill',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array('branch' => 'BDO000','cust' => '10381802','order_id' => $dataTrx['noInvoice'],'shipper_name' => 'RABBANI ONLINE','shipper_addr1' => 'Jl. Mekar Mulya No. 8 Panghegar Panyileukan','shipper_addr2' => 'Jl. Mekar Mulya No. 8 Panghegar Panyileukan','shipper_addr3' => 'Jl. Mekar Mulya No. 8 Panghegar Panyileukan','shipper_city' => 'KOTA BANDUNG','shipper_region' => 'JAWA BARAT','shipper_zip' => '40292','shipper_phone' => '08112346165','receiver_name' => $people[0]->name,'receiver_addr1' => $people[0]->address,'receiver_addr2' => $people[0]->address,'receiver_addr3' => $people[0]->address,'receiver_city' => $people[0]->CITY_NAME,'receiver_region' => $people[0]->PROVINCE_NAME,'receiver_zip' => $people[0]->ZIP_CODE,'receiver_phone' => $people[0]->phone,'qty' => $dataProduct[0]->qty,'weight' => $dataOrdersx['weight'],'goods_desc' => 'fashion muslim','goods_value' => '1','goods_type' => '1','inst' => 'OK','ins_flag' => 'Y','origin' => 'BDO10000','destination' => 'BDO10000','service' => 'REG','cod_flag' => 'YES','cod_amount' => $total),
+                CURLOPT_HTTPHEADER => array(
+                    'X-Token-Secret: 2dc2968735c4fa0b047834a73ce5dff7a46a73871a37265a35e1e3eff8df72c3',
+                    'X-Jne-Env: production',
+                    'X-Jne-Username: RABBANIASYSA',
+                    'X-Jne-Api-Key: e072b9ac674b405ab58a5982fb79232b'
+                    ),
+                ));
+    
+                $xx = curl_exec($curl);
+                $xy = json_decode($xx);
+               // print_r($total);exit;
+                $this->db->set('trackingCode',$xy->data->detail[0]->cnote_no);
+                $this->db->where('idtransaction',$insert_id);
+                $this->db->update('transaction');
+                // exit;
+            }
             } else {
                 return $this->token_response();
             }
