@@ -15,6 +15,7 @@ class Main extends REST_Controller {
         $this->load->library('email');
         $this->load->library('sms');
 		$this->load->library('otp');
+        $this->load->library('wa');
         $this->load->library('xendit');
 
         $this->load->helper(array('form', 'url'));
