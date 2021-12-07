@@ -1546,7 +1546,7 @@ class Main_model extends CI_Model {
                             $totalweight[] = ($dataOrdersx['weight']);
 
 
-                            // $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
+                             $this->debitStock($dataProduct[0]->idpditails, $dataProduct[0]->skuPditails, $dataProduct[0]->qty);
                              $this->db->insert('transaction_details', $dataOrdersx);
 							
                             
