@@ -26,8 +26,7 @@ class Wa {
         
         $response = curl_exec($curl);
         
-        curl_close($curl);
-        echo $response;
+      
     }
 
     function SendWa2($name ='',$phone = '', $message = '') {
