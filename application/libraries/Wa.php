@@ -6,28 +6,24 @@ class Wa {
 
     function SendWa($phone = '', $message = '') {
         $curl = curl_init();
+        $token = "Z1ZrcYypiCPBJQ9NPAGc6SInTxj6dgiFZ8Km4c7EQziqKwNfa9pxlJpnZuI2QUpy";
+        $data = [
+            'phone' => $phone,
+            'message' => $message
+        ];
 
-curl_setopt_array($curl, array(
-  CURLOPT_URL => 'https://api.1itmedia.co.id/auth_api/wablas/send_message',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
-  CURLOPT_FOLLOWLOCATION => true,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => 'message='.$message.'&phone_number='.$phone.'',
-  CURLOPT_HTTPHEADER => array(
-    'X-Token-Secret: 2dc2968735c4fa0b047834a73ce5dff7a46a73871a37265a35e1e3eff8df72c3',
-    'X-Wablas-Domain: https://sawit.wablas.com',
-    'X-Wablas-Token: qsHngVozssYQXZk3DwYZxQLvhcRM2MVAdTf5hH3wY1rUD0gb76QBDTugkWfMbxKT'
-  ),
-));
-
-$response = curl_exec($curl);
-
-curl_close($curl);
-echo $response;
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            "Authorization: $token",
+                )
+        );
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($curl, CURLOPT_URL, "https://kemusu.wablas.com/api/send-message");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        $result = curl_exec($curl);
+        curl_close($curl);
     }
 
     function SendWa2($name ='',$phone = '', $message = '') {
