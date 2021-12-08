@@ -56,6 +56,7 @@ class Artificial_model extends CI_Model {
                 c.PROVINCE_NAME as province_name, c.CITY_NAME as nameCity, c.ZIP_CODE as postcode, c.CITY_CODE as JNEcode'
             );
             $this->db->where('a.trackingCode!=""');
+            $this->db->where('a.dateCreate >=','2021-12-01');
             $this->db->where('a.status', 0);
             $this->db->where('a.statusPay = 1 OR a.statusPay = 4');
             
