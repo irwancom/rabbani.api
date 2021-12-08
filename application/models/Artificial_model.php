@@ -55,8 +55,9 @@ class Artificial_model extends CI_Model {
                 b.idpeople, b.id_city, b.address, b.pos, b.name, b.phone,
                 c.PROVINCE_NAME as province_name, c.CITY_NAME as nameCity, c.ZIP_CODE as postcode, c.CITY_CODE as JNEcode'
             );
+            $tgl = '2021-12-01';
             $this->db->where('a.trackingCode!=""');
-            $this->db->where('a.dateCreate >=','2021-12-01');
+           
             $this->db->where('a.status', 0);
             $this->db->where('a.statusPay = 1 OR a.statusPay = 4');
             
@@ -64,7 +65,7 @@ class Artificial_model extends CI_Model {
             $this->db->join('sensus as c', 'c.CITY_ID = b.id_city', 'left');
             $this->db->group_by('a.idtransaction');
             $this->db->order_by('a.idtransaction','ASC');
-            
+            $this->db->where('a.dateCreate >=',$tgl);
             // $this->db->or_where('a.statusPay', 4);
             $query = $this->db->get_where('transaction as a')->result();
              //print_r($query);
