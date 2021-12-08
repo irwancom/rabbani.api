@@ -61,7 +61,7 @@ class Artificial_model extends CI_Model {
             $this->db->group_by('a.idtransaction');
             $this->db->order_by('a.idtransaction','ASC');
             $this->db->where('a.status', 0);
-            $this->db->where('a.statusPay', '(statusPay=1 OR statusPay=4)');
+            $this->db->where('a.statusPay = 1 OR a.statusPay = 4');
             // $this->db->or_where('a.statusPay', 4);
             $query = $this->db->get_where('transaction as a')->result();
              //print_r($query);
