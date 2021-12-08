@@ -432,11 +432,11 @@ class H2h_model extends CI_Model {
         }
     }
 
-    public function cron() {
+    // public function cron() {
 
-        $this->db->where('stock > 0');
-        $this->db->set('delproductditails', 0);
-        $product = $this->db->update('product_ditails');
+    //     $this->db->where('stock > 0');
+    //     $this->db->set('delproductditails', 0);
+    //     $product = $this->db->update('product_ditails');
         //exit;
 //        $dataOrders = $this->db->get_where('transaction', array('statusPay' => 1, 'trackingCode' => ''), 1)->result();
 //        if (!empty($dataOrders)) {
@@ -475,165 +475,165 @@ class H2h_model extends CI_Model {
 //        $this->db->update('transaction');
 //        exit;
         /* CHECK TRANSACTION AUTO CANCLE */
-        $dataOrders = $this->db->get_where('transaction', array('statusPay' => 0), 500)->result();
-        //print_r ($dataOrders);
-        // exit;
-        if (!empty($dataOrders)) {
-            foreach ($dataOrders as $dO) {
-                //print_r ($dO);
-                //exit;
-                echo $dO->dateCreate . ' ' . $dO->timeCreate . '<br>';
-                $awal = date_create($dO->dateCreate . ' ' . $dO->timeCreate);
-                $akhir = date_create();
-                $diff = date_diff($awal, $akhir);
+//         $dataOrders = $this->db->get_where('transaction', array('statusPay' => 0), 500)->result();
+//         //print_r ($dataOrders);
+//         // exit;
+//         if (!empty($dataOrders)) {
+//             foreach ($dataOrders as $dO) {
+//                 //print_r ($dO);
+//                 //exit;
+//                 echo $dO->dateCreate . ' ' . $dO->timeCreate . '<br>';
+//                 $awal = date_create($dO->dateCreate . ' ' . $dO->timeCreate);
+//                 $akhir = date_create();
+//                 $diff = date_diff($awal, $akhir);
 
-                //$now = date('Y-m-d');
-                //$old = $dO->dateCreate;
-                //$diff2 = $now->diff($old);
-                ///print_r($diff->d);
-                //exit;
-                // }  
-                if ($diff->d >= 1) {
-                    $this->db->set('statusPay', 2);
-                    $this->db->where('idtransaction', $dO->idtransaction);
-                    $this->db->update('transaction');
-                }
+//                 //$now = date('Y-m-d');
+//                 //$old = $dO->dateCreate;
+//                 //$diff2 = $now->diff($old);
+//                 ///print_r($diff->d);
+//                 //exit;
+//                 // }  
+//                 if ($diff->d >= 1) {
+//                     $this->db->set('statusPay', 2);
+//                     $this->db->where('idtransaction', $dO->idtransaction);
+//                     $this->db->update('transaction');
+//                 }
 
-                //if ($diff->d = 0 && $diff->h = 3) {
-                //$massage = 'rmall.id : Assalamualaikum Rabbaners belanja anda belum di tranfers lho no invoice' . $dataOrders[0]->noInvoice . 'Batas Pembayaran 1x24 Jam, Jazakallah';
-                //$this->sms->SendSms($hp, $massage);
-                // }  
-            }
-        }
-        /* END CHECK */
-        /* TRACKING POSITION */
-        $where = array(
-            'statusPay' => 1
-        );
-        $this->db->where('trackingCode!=""');
-        $this->db->where('status!=2');
-        $this->db->order_by('rand()');
-        $dataTracking = $this->db->get_where('transaction', $where, 25)->result();
-        if (!empty($dataTracking)) {
-            foreach ($dataTracking as $dT) {
-                echo $dT->trackingCode . '<br>';
-                $data = $this->courir->jne(2, $dT->trackingCode);
-                $data = json_decode($data);
-                //print_r($data);
-                //exit;
-                if ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'DELIVERED')) {
-                    $this->db->set('status', 2);
-                    $this->db->where('idtransaction', $dT->idtransaction);
-                    $this->db->update('transaction');
-                } elseif ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'ON PROCESS')) {
-                    $this->db->set('status', 1);
-                    $this->db->where('idtransaction', $dT->idtransaction);
-                    $this->db->update('transaction');
-                }
-            }
-        }
-        /* END TRACKING */
-        /* SYNCE DATA STOCK QUANTUM */
-        //$skuPditails = 'KAN0HA09141A200' ;
-        //echo $skuPditails;
-        //     exit;
-        //	echo $dS->skuPditails . '<br>';
-        //$sync = $this->quantum->callAPi($skuPditails, 2);
-        //print_r($sync);
-        //      exit;
+//                 //if ($diff->d = 0 && $diff->h = 3) {
+//                 //$massage = 'rmall.id : Assalamualaikum Rabbaners belanja anda belum di tranfers lho no invoice' . $dataOrders[0]->noInvoice . 'Batas Pembayaran 1x24 Jam, Jazakallah';
+//                 //$this->sms->SendSms($hp, $massage);
+//                 // }  
+//             }
+//         }
+//         /* END CHECK */
+//         /* TRACKING POSITION */
+//         $where = array(
+//             'statusPay' => 1
+//         );
+//         $this->db->where('trackingCode!=""');
+//         $this->db->where('status!=2');
+//         $this->db->order_by('rand()');
+//         $dataTracking = $this->db->get_where('transaction', $where, 25)->result();
+//         if (!empty($dataTracking)) {
+//             foreach ($dataTracking as $dT) {
+//                 echo $dT->trackingCode . '<br>';
+//                 $data = $this->courir->jne(2, $dT->trackingCode);
+//                 $data = json_decode($data);
+//                 //print_r($data);
+//                 //exit;
+//                 if ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'DELIVERED')) {
+//                     $this->db->set('status', 2);
+//                     $this->db->where('idtransaction', $dT->idtransaction);
+//                     $this->db->update('transaction');
+//                 } elseif ((!empty($data->cnote->pod_status)) && ($data->cnote->pod_status == 'ON PROCESS')) {
+//                     $this->db->set('status', 1);
+//                     $this->db->where('idtransaction', $dT->idtransaction);
+//                     $this->db->update('transaction');
+//                 }
+//             }
+//         }
+//         /* END TRACKING */
+//         /* SYNCE DATA STOCK QUANTUM */
+//         //$skuPditails = 'KAN0HA09141A200' ;
+//         //echo $skuPditails;
+//         //     exit;
+//         //	echo $dS->skuPditails . '<br>';
+//         //$sync = $this->quantum->callAPi($skuPditails, 2);
+//         //print_r($sync);
+//         //      exit;
 
-        $last_min = date('Y-m-d H:i:s', strtotime('-15 minutes'));
-        $this->db->order_by('rand()');
-        $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min), 50)->result();
-        //print_r($dataSync);
-        //  exit;
-        if (!empty($dataSync)) {
-            foreach ($dataSync as $dS) {
-                echo $dS->skuPditails . '<br>';
-                $sync = $this->quantum->callAPi($dS->skuPditails, 2);
-                //print_r($sync);
-               // exit;
-                //$this->db->set('stock', $sync->ts);
-                $this->db->set('stockRmall', $sync->ts);
-                $this->db->set('valuePrice', $dS->price * $sync->ts);
-                $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
-                // //if (empty($sync->ts)) {
-                //  //  $this->db->set('delproductditails', 1);
-                //  //}
-                $this->db->set('stockAllBandung', 0);
-                $this->db->set('valuePriceAllBandung', 0);
-                $this->db->set('stockAllJabar', 0);
-                $this->db->set('valuePriceAllJabar', 0);
-                $this->db->where('skuPditails', $dS->skuPditails);
-                $this->db->update('product_ditails');
-				 // print_r($sync);
-                //exit;
-            }
-        }
-        /* END SYNCE STOCK */
-        /* ADD NEW PRODUCT BY QUANTUM */
-        // exit;
-        //$newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
-        $newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
-        //print_r($newProduct);
-        if (!empty($newProduct)) {
-            foreach ($newProduct as $nP) {
-//                print_r($nP);
-                $dataQuantum = $this->quantum->callAPi($nP->skuDitails, 3);
+//         $last_min = date('Y-m-d H:i:s', strtotime('-15 minutes'));
+//         $this->db->order_by('rand()');
+//         $dataSync = $this->db->get_where('product_ditails', array('delproductditails' => 0, 'lastUpdate<' => $last_min), 50)->result();
+//         //print_r($dataSync);
+//         //  exit;
+//         if (!empty($dataSync)) {
+//             foreach ($dataSync as $dS) {
+//                 echo $dS->skuPditails . '<br>';
+//                 $sync = $this->quantum->callAPi($dS->skuPditails, 2);
+//                 //print_r($sync);
+//                // exit;
+//                 //$this->db->set('stock', $sync->ts);
+//                 $this->db->set('stockRmall', $sync->ts);
+//                 $this->db->set('valuePrice', $dS->price * $sync->ts);
+//                 $this->db->set('lastUpdate', date('Y-m-d H:i:s'));
+//                 // //if (empty($sync->ts)) {
+//                 //  //  $this->db->set('delproductditails', 1);
+//                 //  //}
+//                 $this->db->set('stockAllBandung', 0);
+//                 $this->db->set('valuePriceAllBandung', 0);
+//                 $this->db->set('stockAllJabar', 0);
+//                 $this->db->set('valuePriceAllJabar', 0);
+//                 $this->db->where('skuPditails', $dS->skuPditails);
+//                 $this->db->update('product_ditails');
+// 				 // print_r($sync);
+//                 //exit;
+//             }
+//         }
+//         /* END SYNCE STOCK */
+//         /* ADD NEW PRODUCT BY QUANTUM */
+//         // exit;
+//         //$newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
+//         $newProduct = $this->db->get_where('product_sku', array('ssku' => 0), 25)->result();
+//         //print_r($newProduct);
+//         if (!empty($newProduct)) {
+//             foreach ($newProduct as $nP) {
+// //                print_r($nP);
+//                 $dataQuantum = $this->quantum->callAPi($nP->skuDitails, 3);
 
-                if (!empty($dataQuantum)) {
-                    $checkProduct = $this->db->get_where('product', array('skuProduct' => $nP->sku))->result();
-                    $insert_id = $checkProduct[0]->idproduct;
-                    if (empty($checkProduct)) {
-                        $data = array(
-                            'skuProduct' => $nP->sku,
-                            'timeCreate' => date('H:i:s'),
-                            'dateCreate' => date('Y-m-d'),
-                            'productName' => $nP->productName,
-                            'delproduct' => 1
-                        );
+//                 if (!empty($dataQuantum)) {
+//                     $checkProduct = $this->db->get_where('product', array('skuProduct' => $nP->sku))->result();
+//                     $insert_id = $checkProduct[0]->idproduct;
+//                     if (empty($checkProduct)) {
+//                         $data = array(
+//                             'skuProduct' => $nP->sku,
+//                             'timeCreate' => date('H:i:s'),
+//                             'dateCreate' => date('Y-m-d'),
+//                             'productName' => $nP->productName,
+//                             'delproduct' => 1
+//                         );
 
-                        $this->db->insert('product', $data);
-                        $insert_id = $this->db->insert_id();
-                    }
-                    $checkProductDetails = $this->db->get_where('product_ditails', array('skuPditails' => $nP->skuDitails))->result();
-                    if (!empty($checkProductDetails)) {
-                        $data = array(
-//                            'idproduct' => $insert_id,
-//                            'skuPditails' => $nP->skuDitails,
-//                            'collor' => $nP->collor,
-//                            'size' => $nP->size,
-//                            'price' => $nP->price,
-//                            'realprice' => $nP->price,
-                            'stock' => $dataQuantum[0]->s
-                        );
-                        $this->db->set($data);
-                        $this->db->where('skuPditails', $nP->skuDitails);
-                        $this->db->update('product_ditails');
-                    } else {
-                        $data = array(
-                            'idproduct' => $insert_id,
-                            'skuPditails' => $nP->skuDitails,
-                            'collor' => $nP->collor,
-                            'size' => $nP->size,
-                            'price' => $nP->price,
-                            'realprice' => $nP->price,
-                            'stock' => $dataQuantum[0]->s
-                        );
+//                         $this->db->insert('product', $data);
+//                         $insert_id = $this->db->insert_id();
+//                     }
+//                     $checkProductDetails = $this->db->get_where('product_ditails', array('skuPditails' => $nP->skuDitails))->result();
+//                     if (!empty($checkProductDetails)) {
+//                         $data = array(
+// //                            'idproduct' => $insert_id,
+// //                            'skuPditails' => $nP->skuDitails,
+// //                            'collor' => $nP->collor,
+// //                            'size' => $nP->size,
+// //                            'price' => $nP->price,
+// //                            'realprice' => $nP->price,
+//                             'stock' => $dataQuantum[0]->s
+//                         );
+//                         $this->db->set($data);
+//                         $this->db->where('skuPditails', $nP->skuDitails);
+//                         $this->db->update('product_ditails');
+//                     } else {
+//                         $data = array(
+//                             'idproduct' => $insert_id,
+//                             'skuPditails' => $nP->skuDitails,
+//                             'collor' => $nP->collor,
+//                             'size' => $nP->size,
+//                             'price' => $nP->price,
+//                             'realprice' => $nP->price,
+//                             'stock' => $dataQuantum[0]->s
+//                         );
 
-                        $this->db->insert('product_ditails', $data);
-                    }
-                }
-                $this->db->set('ssku', 1);
-                $this->db->where('skuDitails', $nP->skuDitails);
-                $this->db->update('product_sku');
-            }
-        } else {
-            $this->db->set('ssku', 0);
-            $this->db->update('product_sku');
-        }
-        /* END NEW PRODUCT BY QUANTUM */
-    }
+//                         $this->db->insert('product_ditails', $data);
+//                     }
+//                 }
+//                 $this->db->set('ssku', 1);
+//                 $this->db->where('skuDitails', $nP->skuDitails);
+//                 $this->db->update('product_sku');
+//             }
+//         } else {
+//             $this->db->set('ssku', 0);
+//             $this->db->update('product_sku');
+//         }
+//         /* END NEW PRODUCT BY QUANTUM */
+//     }
 
     public function po($data = '') {
         //print_r($data);
