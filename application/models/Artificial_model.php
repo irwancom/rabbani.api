@@ -39,6 +39,7 @@ class Artificial_model extends CI_Model {
             $data = array(
                 "status" => 0,
                 "statusPay" => 1,
+                
             );
             $query = $this->db->get_where('transaction', $data, 100)->result();
 			//print_r($query);
@@ -58,7 +59,10 @@ class Artificial_model extends CI_Model {
             $this->db->join('sensus_people as b', 'b.idpeople = a.idpeople', 'left');
             $this->db->join('sensus as c', 'c.CITY_ID = b.id_city', 'left');
             $this->db->group_by('a.idtransaction');
-            $query = $this->db->get_where('transaction as a', $data)->result();
+            $this->db->where('a.status', 0);
+            $this->db->where('a.statusPay', 1);
+            $this->db->or_where('a.statusPay', 4);
+            $query = $this->db->get_where('transaction as a')->result();
              //print_r($query);
              //exit;
             $dataTrx = 0; 
