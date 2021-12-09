@@ -6144,12 +6144,10 @@ class Admin_model extends CI_Model {
                     'detail_order' => $data[1],
 					'HPJ' => $a,
 					'total_voucher' => $feemp,
-					'rekening' => $fee[0]->rekening
-					
+					'rekening' => 0					
                     
                 );
-			//			print_r($datay);
-		//exit;
+						// print_r($datay);exit;
 				 $sql = $this->db->query("SELECT no_order FROM all_order where no_order='$datax->salesorder_no'");
                  $cek_order = $sql->num_rows();
 				 $sql = $this->db->query("SELECT no_resi FROM all_order where no_order='$datax->tracking_no'");
