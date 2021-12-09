@@ -1527,67 +1527,34 @@ class H2h_model extends CI_Model {
         }
     }
 
-    function sendwaimage($data) {
-        // print_r($data);exit;
-           // $this->db->select('hp');
-        //  $this->db->where('alamat',2);
-        //  $this->db->where('telepon','081386118382');
-        //  $this->db->or_where('telepon','081263036019');
-          $this->db->limit('1000',1000);
-        $datay = $this->db->get_where('data_tono')->result();
-                // print_r($datay);exit;
-       
-          // print_r($dataz[pesan]);exit;
-        foreach ($datay as $wa) {
-              // print_r($wa->firstname);exit;
-$message = 'Hallo, Ka *'.$wa->nama.'* ada info nich :
-*GRATIS,TERBUKA UNTUK UMUM Webinar Duta Pelajar Rabbani* 
+    public function resi_post() {
+        $resi = $this->input->post('resi');
+        // print_r($resi);exit;
+        $this->db->where('noInvoice',$resi);
+        $this->db->or_where('trackingCode',$resi);
+        // $this->db->Join('transaction_details as c', 'c.idtransaction = a.idtransaction','left');
+        $trx = $this->db->get_where('transaction')->result();
 
-(Save no ini dengan nama panitia webinar, supaya link warna biru)
+// print_r($trx);exit;
+       foreach ($trx as $q){
+        // print_r($trx[0]->idtransaction);exit;
+        $this->db->where('idtransaction',$trx[0]->idtransaction);
+        $trx_dtl = $this->db->get_where('transaction_details')->result();
+       }
 
-🗓️Sabtu, 2 Oktober 2021   jdjdj
-☎️CP : https://bit.ly/WA-DPR 
-⏰09.00 wib
-📡Live dari Zoom dan Youtube Rabbani TV
-Link Zoom :
-https://bit.ly/Webinar-DPR
-Meeting ID: 572 550 4765
-Passcode: rabbani';    
-         
-$curl = curl_init();
-$token = "XrdORIbkKSrjqCXQUIcgzm4HWEcXU3Zi9t5JiBxxkiMgELeHL8Z2qnC4qg1Pysbt";
-$data = [
-   'phone' => $wa->telepon,
-   'message' => $message, // can be null
-   'secret' => false, // or true
-   'priority' => false, // or true
-];
+      
+       $datatrx[] = array(
+                        'Product' => $trx,
+                        'Product Details' => $trx_dtl
+                    );
+        
 
-curl_setopt($curl, CURLOPT_HTTPHEADER,
-   array(
-       "Authorization: $token",
-   )
-);
-curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-curl_setopt($curl, CURLOPT_URL, "https://selo.wablas.com/api/send-message");
-curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-$result = curl_exec($curl);
-
-}
-$err = curl_error($curl);
-           curl_close($curl);
-           if($err){
-             $data_respone = 0;
-           }else{
-             $data_respone = json_decode($result, true);
-             // $count = count($result);
-           }
-       return $data_respone;
-
-
-}
+        if ($datatrx) {
+            $this->response(array('status' => 202, 'error' => false,'totalData' => count($datatrx),'data' => $datatrx));
+             
+        } else {
+            $this->response(array('status' => 'fail', 502));
+        }
+    }
 
 }
