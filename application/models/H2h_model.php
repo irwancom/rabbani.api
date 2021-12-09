@@ -1529,7 +1529,7 @@ class H2h_model extends CI_Model {
 
     public function resi_post() {
         $resi = $this->input->post('resi');
-        // print_r($resi);exit;
+        print_r($resi);exit;
         $this->db->where('noInvoice',$resi);
         $this->db->or_where('trackingCode',$resi);
         // $this->db->Join('transaction_details as c', 'c.idtransaction = a.idtransaction','left');
