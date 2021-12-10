@@ -2321,7 +2321,7 @@ class Main_model extends CI_Model {
 					
 
             $dataCode = md5($data[0]);	
-			$otp = rand(pow(10, 5 - 1), pow(10, 5) - 1);
+			$otp = rand(pow(10, 5 - 1), pow(10, 6) - 1);
             $this->db->set('keyCode',$dataCode);
 			$this->db->set('otp',$otp);
             $this->db->where('hp',$data[0]);
@@ -2353,7 +2353,7 @@ class Main_model extends CI_Model {
             $sql = $this->db->get_where('apiauth_user as a')->result();
 		   }else {
 				$dataCode = md5($data[0]);	
-				$otp = rand(pow(10, 5 - 1), pow(10, 5) - 1);
+				$otp = rand(pow(10, 5 - 1), pow(10, 6) - 1);
 				$data1 = array(
 					'timeCreate' => date('H:i:s'),
                     'dateCreate' => date('Y-m-d'),
