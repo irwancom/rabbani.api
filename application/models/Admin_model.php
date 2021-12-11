@@ -6214,8 +6214,10 @@ class Admin_model extends CI_Model {
 	//print_r($data);
 	//exit;
 		
-		$this->db->where('cek_date',$data[0]);
-		$query = $this->db->get_where('all_order')->result();
+		$this->db->select('a.*,b.payment,shippingprice');
+		$this->db->where('a.cek_date',$data[0]);
+        $this->db->join('transaction as b', 'b.noInvoice = a.no_order','left');
+		$query = $this->db->get_where('all_order as a')->result();
 				
       
 
