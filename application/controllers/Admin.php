@@ -2242,6 +2242,7 @@ public function delkitalog_post() {
 public function searchstatus_post() {
 
     $dataz = $this->input->post('status');
+    $page = $this->input->post('page');
     // $datay = json_decode($dataz);
      // print_r($dataz);exit;
       
@@ -2251,6 +2252,7 @@ public function searchstatus_post() {
         $this->db->join('sensus_people as c', 'c.idpeople = a.idpeople', 'left');
         $this->db->like('a.status', $dataz);
         $this->db->order_by('a.idtransaction', 'DESC');
+        $this->db->limit('10', $page);
         $datax = $this->db->get()->result();
 
     if ($datax) {
@@ -2264,6 +2266,7 @@ public function searchstatus_post() {
 public function searchstatuspay_post() {
 
     $dataz = $this->input->post('status');
+    $page = $this->input->post('page');
     // $datay = json_decode($dataz);
      // print_r($dataz);exit;
       
@@ -2273,6 +2276,7 @@ public function searchstatuspay_post() {
         $this->db->join('sensus_people as c', 'c.idpeople = a.idpeople', 'left');
         $this->db->like('a.statusPay', $dataz);
         $this->db->order_by('a.idtransaction', 'DESC');
+        $this->db->limit('10', $page);
         $datax = $this->db->get()->result();
 
     if ($datax) {
