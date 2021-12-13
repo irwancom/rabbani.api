@@ -2254,9 +2254,10 @@ public function searchstatus_post() {
         $this->db->order_by('a.idtransaction', 'DESC');
         $this->db->limit('10', $page);
         $datax = $this->db->get()->result();
+        $datay = $this->db->get_where('trasaction')->result();
 
     if ($datax) {
-        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datay),'data' => $datax));
              
     } else {
             $this->response(array('status' => 'fail', 502));
@@ -2278,9 +2279,10 @@ public function searchstatuspay_post() {
         $this->db->order_by('a.idtransaction', 'DESC');
         $this->db->limit('10', $page);
         $datax = $this->db->get()->result();
+        $datay = $this->db->get_where('trasaction')->result();
 
     if ($datax) {
-        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datay),'data' => $datax));
              
     } else {
             $this->response(array('status' => 'fail', 502));
