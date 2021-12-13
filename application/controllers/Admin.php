@@ -2238,6 +2238,53 @@ public function delkitalog_post() {
     }
     
 }
+
+public function searchstatus_post() {
+
+    $dataz = $this->input->post('status');
+    // $datay = json_decode($dataz);
+     // print_r($dataz);exit;
+      
+        $this->db->select('a.*,b.username,b.firstname,b.hp');
+        $this->db->from('transaction as a');
+        $this->db->join('apiauth_user as b', 'b.idauthuser = a.idauthuser', 'left');
+        $this->db->join('sensus_people as c', 'c.idpeople = a.idpeople', 'left');
+        $this->db->like('a.status', $dataz);
+        $this->db->order_by('a.idtransaction', 'DESC');
+        $datax = $this->db->get()->result();
+
+    if ($datax) {
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+             
+    } else {
+            $this->response(array('status' => 'fail', 502));
+    }  
+    
+}
+public function searchstatuspay_post() {
+
+    $dataz = $this->input->post('status');
+    // $datay = json_decode($dataz);
+     // print_r($dataz);exit;
+      
+        $this->db->select('a.*,b.username,b.firstname,b.hp');
+        $this->db->from('transaction as a');
+        $this->db->join('apiauth_user as b', 'b.idauthuser = a.idauthuser', 'left');
+        $this->db->join('sensus_people as c', 'c.idpeople = a.idpeople', 'left');
+        $this->db->like('a.statusPay', $dataz);
+        $this->db->order_by('a.idtransaction', 'DESC');
+        $datax = $this->db->get()->result();
+
+    if ($datax) {
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+             
+    } else {
+            $this->response(array('status' => 'fail', 502));
+    }
+
+    
+    
+}
 	
 	
 	 
