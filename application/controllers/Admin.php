@@ -2145,6 +2145,49 @@ class Admin extends REST_Controller {
      }
  }
 
+ public function addimgdetailnew_post() { 
+    $dataz = $this->input->post('data');
+    $datay = json_decode($dataz);
+    // print_r($datay);exit;
+            
+    if (!empty($datay->idproduct) || !empty($datay->idpditails) || !empty($datay->collor) || !empty($datay->url)) {
+             $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+           // print_r($verify);exit;
+                 if (!empty($verify)) {
+                     $this->db->where('idpditails',$datay->idpditails);
+                     $cek = $this->db->get_where('product_images_ditails')->result();
+                     if(!empty($cek)) {
+                         return $this->duplicate_response();
+                     } else {
+                         $datam = array(
+                             'idproduct' => $datay->idproduct,
+                             'idpditails' => $datay->idpditails,
+                             'collor' => $datay->collor,
+                             'urlImage' => $datay->url,
+        
+                         );
+                         $this->db->insert('product_images_ditails', $datam);
+                        $datax = $this->db->get_where('product_images_ditails', array('idpditails' => $datay->idpditails ))->result();                         
+                     }
+                
+                 
+                 } else {
+                     return $this->token_response();
+                 }
+            } else {   
+                return $this->empty_response();
+            }
+             
+         
+         if ($datax) {
+             $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+              
+         } else {
+             $this->response(array('status' => 'fail', 502));
+         }
+     
+ }
+
  public function kitalog_post() {
         
      
