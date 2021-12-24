@@ -15,6 +15,7 @@ class Pay extends REST_Controller {
         $this->load->library('xendit');
         $this->load->library('sms');
         $this->load->library('courir');
+        $this->load->library('wa');
 
         $this->load->helper(array('form', 'url'));
     }
@@ -95,7 +96,7 @@ class Pay extends REST_Controller {
         $rawData = json_decode($rawData1);
 //        print_r($rawData[0]->amount);
 //        exit;
-        $data = $this->pay_model->payPaidHistoriesMoota($rawData[0]->amount, $rawData);
+        $data = $this->pay_model->payPaidHistoriesMoota($rawData[0]->amount);
         if ($data) {
             $this->response($data, 200);
         } else {
