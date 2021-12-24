@@ -331,7 +331,7 @@ class Pay_model extends CI_Model {
 //        print_r($queryx[0]->hp);
 //        exit;
         if (!empty($queryx)) {
-            $this->wa->SendWa(081386118382, $totalpay);
+            $this->wa->SendWa('081386118382', $totalpay);
             $this->db->set('statusPay', 1);
             $this->db->where('totalpay', $totalpay);
             $this->db->update('transaction');
