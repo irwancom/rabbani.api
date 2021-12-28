@@ -6173,9 +6173,9 @@ class Admin_model extends CI_Model {
                     'source_order' => $datax->source_name,
                     'total_order' => $datax->grand_total,
                     'detail_order' => $data[1],
-                    'HPJ' => $a,
-                    'total_voucher' => $feemp,
-                    'rekening' => 0
+                    // 'HPJ' => $a,
+                    // 'total_voucher' => $feemp,
+                    // 'rekening' => 0
                     
                     
                 );
