@@ -6175,7 +6175,7 @@ class Admin_model extends CI_Model {
                     'detail_order' => $data[1],
                     'HPJ' => $a,
                     'total_voucher' => $feemp,
-                    'rekening' => $fee[0]->rekening
+                    'rekening' => 0
                     
                     
                 );
