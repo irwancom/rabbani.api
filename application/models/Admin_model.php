@@ -6159,6 +6159,39 @@ class Admin_model extends CI_Model {
                     } else {
                        $query = $this->db->insert('all_order', $datay);
 					}
+                } elseif ($datax->source_name === 'TIKTOK') {
+                    $result = preg_replace("/[^a-zA-Z0-9]/", "", $datax->shipping_full_name);
+                     $datay = array(
+                    'cek_date' => date('Y-m-d'),
+                    'cek_time' => date('H:i:s'),
+                    'no_order' => $datax->salesorder_no,
+                    'no_resi' => $datax->tracking_no,
+                    'date_order' => $datax->transaction_date,
+                    'user_name' => $result,
+                    'user_phone' => $datax->shipping_phone,
+                    'courier' => $datax->courier,
+                    'source_order' => $datax->source_name,
+                    'total_order' => $datax->grand_total,
+                    'detail_order' => $data[1],
+                    'HPJ' => $a,
+                    'total_voucher' => $feemp,
+                    'rekening' => $fee[0]->rekening
+                    
+                    
+                );
+            //          print_r($datay);
+        //exit;
+                 $sql = $this->db->query("SELECT no_order FROM all_order where no_order='$datax->salesorder_no'");
+                 $cek_order = $sql->num_rows();
+                 $sql = $this->db->query("SELECT no_resi FROM all_order where no_order='$datax->tracking_no'");
+                 $cek_resi = $sql->num_rows();
+                
+                
+                 if ($cek_order > 0 or $cek_resi > 0 ) {
+                        return $this->duplicate_response();
+                    } else {
+                       $query = $this->db->insert('all_order', $datay);
+                    }
 				
 				} else {
 					 return $this->empty_response();
