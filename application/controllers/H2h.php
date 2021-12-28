@@ -674,6 +674,53 @@ class H2h extends REST_Controller {
         }
     }
 
+    public function tesimage_post() {
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $config['upload_path'] = 'images/';
+            $config['encrypt_name'] = true;
+            $config['use_storage_service'] = true;
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            // $config['max_size'] = 100;
+            // $config['max_width'] = 1024;
+            // $config['max_height'] = 768;
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('filePic')) {
+                $error = array('error' => $this->upload->display_errors());
+
+                $data = array(
+                    $error
+                );
+                
+            } else {
+                $data = array('upload_data' => $this->upload->data());
+
+                $data = array(
+                    $this->input->post('idproduct'),
+                    $data,
+                    $config['upload_path']
+                );
+            }
+            // print_r($data);exit;
+            $datax = array(
+                    'idproduct' => $data[0],
+                    'urlImage' => $data[1]['upload_data']['file_url'],
+                    'imageFile' => $data[1]['upload_data']['file_name']
+                    );
+            // print_r($datax);exit;
+
+            $this->db->insert('product_images', $datax);
+            $datay = $this->db->get_where('product_images',array('idproduct' => $data[0]))->result();
+
+            if ($datay) {
+                $this->response($datay, 200);
+            } else {
+                $this->response(array('status' => 'fail', 502));
+            }
+        }
+    }
+
 
    
 
