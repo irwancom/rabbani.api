@@ -2188,6 +2188,74 @@ class Admin extends REST_Controller {
      
  }
 
+ public function updatenewproduct_post() {
+        
+    $dataz = $this->input->post('data');
+    $datay = json_decode($dataz);
+    // print_r($datay);exit;
+    $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+      
+    if (!empty($verify)) {
+            $datax = array(
+                'idcategory' => $datay->idcategory,
+                'skuProduct' => $datay->skuProduct,
+                'productName' => $datay->productName,
+                'descr' => $datay->descr,
+                'descrDitails' => $datay->descrDitails,
+                'delproduct' => $datay->delproduct,
+        );
+        $this->db->where('idproduct',$datay->idproduct);
+        $this->db->update('product', $datax);
+     
+    } else {
+            return $this->token_response();
+    }
+
+        
+               
+    if ($datax) {
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+    } else {
+        $this->response(array('status' => 'fail', 502));
+    }     
+}
+
+ public function updatenewproductdtl_post() {
+    
+    $dataz = $this->input->post('data');
+    $datay = json_decode($dataz);
+    // print_r($datay);exit;
+    $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+      
+    if (!empty($verify)) {
+             $datax = array(
+                    'skuPditails' => $datay->skuPditails,
+                    'size' => $datay->size,
+                    'collor' => $datay->collor,
+                    'weight' => $datay->weight,
+                    'price' => $datay->price,
+                    'realprice' => $datay->realprice,
+                    'priceDiscount' => $datay->priceDiscount,
+                    'stock' => $datay->stock,
+                    'delproductditails' => $q->delproductditails,
+                );
+        $this->db->where('idpditails',$datay->idpditails);
+        $this->db->update('product_ditails', $datax);
+     
+    } else {
+            return $this->token_response();
+    }
+
+        
+               
+    if ($datax) {
+        $this->response(array('status' => 202, 'error' => false,'totalData' => count($datax),'data' => $datax));
+    } else {
+        $this->response(array('status' => 'fail', 502));
+    }     
+}
+
+
  public function kitalog_post() {
         
      
