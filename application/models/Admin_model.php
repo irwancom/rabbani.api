@@ -683,23 +683,15 @@ class Admin_model extends CI_Model {
 
             if (!empty($verify)) {
 
-                $this->db->select('a.*, c.*, d.weight');
-                $this->db->from('product as a');
-//                $this->db->where('delproduct', '0');
-                $this->db->join('category as c', 'c.idcategory = a.idcategory', 'left');
-                $this->db->join('product_ditails as d', 'd.idproduct = a.idproduct', 'left');
-                $this->db->order_by('a.productName', 'ASC');
-                $this->db->group_by("d.idproduct");
-                $this->db->where('a.idproduct', $data[2]);
-                $query = $this->db->get()->result();
-
-                $this->db->select('*');
-                $query2 = $this->db->get_where('product_ditails', array('idproduct' => $query[0]->idproduct))->result();
+                $this->db->join('category as c', 'c.idcategory = a.idcategory');
+                $query = $this->db->get_where('product as a',['a.idproduct' => $data[2]])->result();
+                // print_r($query);exit;
+                $query2 = $this->db->get_where('product_ditails', ['idproduct' => $query[0]->idproduct])->result();
                 $this->db->select('idpimages, idproduct, urlImage, imageFile');
-                $query3 = $this->db->get_where('product_images', array('idproduct' => $query[0]->idproduct))->result();
+                $query3 = $this->db->get_where('product_images', ['idproduct' => $query[0]->idproduct])->result();
                 $this->db->select('idpimagesdetails, idproduct,idpditails, collor, urlImage, imageFile');
                 $this->db->group_by("collor");
-                $query4 = $this->db->get_where('product_images_ditails', array('idproduct' => $query[0]->idproduct))->result();
+                $query4 = $this->db->get_where('product_images_ditails', ['idproduct' => $query[0]->idproduct])->result();
             } else {
                 return $this->token_response();
             }
