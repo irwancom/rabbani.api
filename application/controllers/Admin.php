@@ -2255,6 +2255,82 @@ class Admin extends REST_Controller {
     }     
 }
 
+public function updateimgdetail_post() { 
+    header('Content-Type: application/json');
+     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+         $config['upload_path'] = 'img';
+         $config['encrypt_name'] = true;
+         $config['use_storage_service'] = true;
+         $config['allowed_types'] = 'gif|jpg|png|jpeg';
+         //$config['max_size'] = 100;
+         //$config['max_width'] = 700;
+         // $config['max_height'] = 700;
+         $this->load->library('upload', $config);
+         if (!$this->upload->do_upload('filePic')) {
+             $error = array('error' => $this->upload->display_errors());
+             $data = array(
+                 $error
+             );
+         } else {
+             $data = array('upload_data' => $this->upload->data());
+             $data = array(
+                 $this->input->post('data'),
+                 $data,
+                 $config['upload_path']
+             );
+          } 
+
+        // $datax = $this->db->get_where('category', ['idcategory' => 1])->result();
+
+        // print_r($data);exit;
+
+        $datay = json_decode($data[0]);
+         // print_r($datay);exit;
+        if (!empty($datay->collor) || !empty($datay->idpditails) || !empty($data[1]['upload_data']['file_url']) || !empty($data[1]['upload_data']['file_name']) || !empty($data[2])) {
+         $verify = $this->verfyAccount($datay->keyCodeStaff, $datay->secret);
+       // print_r($verify);exit;
+             if (!empty($verify)) {
+                 
+                     $datax = array(
+                         // 'idproduct' => $datay->idproduct,
+                         // 'idpditails' => $datay->idpditails,
+                         'collor' => $datay->collor,
+                         'urlImage' => $data[1]['upload_data']['file_url'],
+                         'dir' => $data[2],
+                         'imageFile' => $data[1]['upload_data']['file_name'],
+                         'size' => $data[1]['upload_data']['file_size'],
+                         'type' => $data[1]['upload_data']['image_type']
+                     );
+
+                     // print_r($datax);exit;
+                     $this->db->where('idpditails',$datay->idpditails);
+                     $this->db->update('product_images_ditails', $datax);
+                     // $this->db->insert('product_images_ditails', $datax);
+               
+            
+             
+             } else {
+                 return $this->token_response();
+             }
+        } else {   
+            return $this->empty_response();
+        }
+         
+     
+     if ($datax) {
+         $this->response([
+            'status' => true, 
+            'error' => false,
+            'totalData' => count($datax),
+            'data' => $datax
+        ], REST_Controller::HTTP_OK);
+          
+     } else {
+         $this->response(array('status' => 'fail', 502));
+     }
+ }
+}
+
 
  public function kitalog_post() {
         
