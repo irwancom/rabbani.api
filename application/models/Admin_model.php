@@ -690,7 +690,7 @@ class Admin_model extends CI_Model {
                 $this->db->select('idpimages, idproduct, urlImage, imageFile');
                 $query3 = $this->db->get_where('product_images', ['idproduct' => $query[0]->idproduct])->result();
                 $this->db->select('idpimagesdetails, idproduct,idpditails, collor, urlImage, imageFile');
-                $this->db->group_by("collor");
+                // $this->db->group_by("collor");
                 $query4 = $this->db->get_where('product_images_ditails', ['idproduct' => $query[0]->idproduct])->result();
             } else {
                 return $this->token_response();
