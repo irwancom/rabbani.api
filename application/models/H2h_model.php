@@ -1442,7 +1442,7 @@ class H2h_model extends CI_Model {
         $this->db->order_by('c.name', ASC);
         $this->db->where('a.id_prov', $data[0]);
         $this->db->join('1015_city as c', 'c.city_id = a.id_city');
-        //$this->db->join('1015_province as b', 'b.province_id = a.id_prov');
+        $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
         $dataCat = $this->db->get_where('store as a',array('a.delstore'=>0))->result();
 
 
@@ -1466,8 +1466,8 @@ class H2h_model extends CI_Model {
         $this->db->select('count(*) as ttlStore, a.id_prov, b.name');
         $this->db->group_by('a.id_prov');
         $this->db->order_by('b.name', ASC);
-        //$this->db->where('a.id_prov',9);
-        //$this->db->join('1015_city as c', 'c.province_id = a.id_prov');
+        $this->db->where('a.id_prov',9);
+        $this->db->join('1015_city as c', 'c.province_id = a.id_prov');
         $this->db->join('1015_province as b', 'b.province_id = a.id_prov');
         $dataCat = $this->db->get_where('store as a', array('a.delstore'=>0))->result();
 
