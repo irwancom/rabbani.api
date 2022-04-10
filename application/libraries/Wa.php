@@ -20,7 +20,7 @@ class Wa {
           CURLOPT_HTTPHEADER => array(
             'X-Token-Secret: 2dc2968735c4fa0b047834a73ce5dff7a46a73871a37265a35e1e3eff8df72c3',
             'X-Wablas-Domain: https://sawit.wablas.com',
-            'X-Wablas-Token: qsHngVozssYQXZk3DwYZxQLvhcRM2MVAdTf5hH3wY1rUD0gb76QBDTugkWfMbxKT'
+            'X-Wablas-Token: QucSVjBzdeKIclyGhJ11F7YoDiPKrAXgtzebUu4V9dgOnMn4rrssH72HpN57TgtL'
           ),
         ));
         
