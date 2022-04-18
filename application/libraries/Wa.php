@@ -20,7 +20,7 @@ class Wa {
           CURLOPT_HTTPHEADER => array(
             'X-Token-Secret: 2dc2968735c4fa0b047834a73ce5dff7a46a73871a37265a35e1e3eff8df72c3',
             'X-Wablas-Domain: https://solo.wablas.com',
-            'X-Wablas-Token: wwWkcXZCv0iKHPcujmp6Rs51p2HWhXL0VnE7f4D1Cp8MOs0efKGDC9Ya8kQ6m4fr'
+            'X-Wablas-Token: QucSVjBzdeKIclyGhJ11F7YoDiPKrAXgtzebUu4V9dgOnMn4rrssH72HpN57TgtL'
           ),
         ));
         
