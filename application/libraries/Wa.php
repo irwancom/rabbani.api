@@ -5,26 +5,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Wa {
 
     function SendWa($phone = '', $message = '') {
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.1itmedia.co.id/auth_api/wablas/send_message',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => '',
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 0,
-          CURLOPT_FOLLOWLOCATION => true,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS => 'message='.$message.'&phone_number='.$phone.'',
-          CURLOPT_HTTPHEADER => array(
-            'X-Token-Secret: 2dc2968735c4fa0b047834a73ce5dff7a46a73871a37265a35e1e3eff8df72c3',
-            'X-Wablas-Domain: https://solo.wablas.com',
-            'X-Wablas-Token: QucSVjBzdeKIclyGhJ11F7YoDiPKrAXgtzebUu4V9dgOnMn4rrssH72HpN57TgtL'
-          ),
+        CURLOPT_URL => 'https://solo.wablas.com/api/send-message',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array('phone' => $phone,'message' => $message),
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: QucSVjBzdeKIclyGhJ11F7YoDiPKrAXgtzebUu4V9dgOnMn4rrssH72HpN57TgtL'
+        ),
         ));
-        
+
         $response = curl_exec($curl);
+
+        curl_close($curl);
         
       
     }
