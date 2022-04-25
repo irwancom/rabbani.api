@@ -19,7 +19,7 @@ class Wa {
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array('phone' => $phone,'message' => $message),
         CURLOPT_HTTPHEADER => array(
-            'Authorization: QucSVjBzdeKIclyGhJ11F7YoDiPKrAXgtzebUu4V9dgOnMn4rrssH72HpN57TgtL'
+            'Authorization: wwWkcXZCv0iKHPcujmp6Rs51p2HWhXL0VnE7f4D1Cp8MOs0efKGDC9Ya8kQ6m4fr'
         ),
         ));
 
