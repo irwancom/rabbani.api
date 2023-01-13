@@ -313,7 +313,7 @@ class Fulfillment extends REST_Controller {
 
     function sendWa($phone = '', $msg = '') {
         $curl = curl_init();
-        $token = "Z1ZrcYypiCPBJQ9NPAGc6SInTxj6dgiFZ8Km4c7EQziqKwNfa9pxlJpnZuI2QUpy";
+        $token = "CZrRIT5qo1GNYdiFXySxc0oW4oINZ5WZmLi40HlHHAushg4S1GlSfnSTHQfJEQgs";
         $data = [
             'phone' => $phone,
             'message' => $msg,

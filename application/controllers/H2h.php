@@ -646,7 +646,7 @@ class H2h extends REST_Controller {
         
         // print_r($datay);exit;
         $curl = curl_init();
-        $token = "gEd4VWUNwazHUwVWuS0M9OkwvlXvZYKWQbqgIeExYiqAiwid8d9d8A8kEfxXaiWQ";
+        $token = "CZrRIT5qo1GNYdiFXySxc0oW4oINZ5WZmLi40HlHHAushg4S1GlSfnSTHQfJEQgs";
         $data = [
             'phone' => $datay->hp,
             'message' => $datay->pesan,
