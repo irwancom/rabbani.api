@@ -73,4 +73,13 @@ class CI_Model {
 		return get_instance()->$key;
 	}
 
+	public function selectFirstWithArgs($args = array()) {
+		foreach ($args as $key => $value) {
+			$this->db->where($key, $value);
+		}
+		$query = $this->db->get('settingapi');
+		$result = $query->row();
+		return $result;
+	}
+
 }

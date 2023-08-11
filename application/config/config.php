@@ -1,6 +1,64 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-date_default_timezone_set('Asia/Jakarta');
+$config['barcode_path'] = getenv('UPLOAD_PATH') ? getenv('UPLOAD_PATH') . '/barcodes' : "upload/barcodes";
+$config['image_path'] = getenv('UPLOAD_PATH') ? getenv('UPLOAD_PATH') . '/images' : "upload/images";
+//Change this to TRUE
+$config['check_cors'] = TRUE;
+
+//No change here
+$config['allowed_cors_headers'] = [
+  'Origin',
+  'X-Requested-With',
+  'Content-Type',
+  'Content-Disposition',
+  'Accept',
+  'Access-Control-Request-Method',
+  'Authorization',
+  'X-Token-Secret',
+  'x-token-secret',
+  'X-Digital-Ocean-Cdn-Link',
+  'X-Digital-Ocean-Key',
+  'X-Digital-Ocean-Secret',
+  'X-Digital-Ocean-Space-Name',
+  'X-Digital-Ocean-Region',
+  'X-Wablas-Domain',
+  'X-Wablas-Token',
+  'x-wablas-domain',
+  'x-wablas-token',
+  'X-Xendit-Api-Key',
+  'x-xendit-api-key',
+  'x-jne-env',
+  'x-jne-api-key',
+  'x-jne-username',
+  'X-Jne-Env',
+  'X-Jne-Api-Key',
+  'X-Jne-Username',
+  '*',
+  'X-Mailgun-Domain',
+  'x-mailgun-domain',
+  'X-Mailgun-Key',
+  'x-mailgun-key'
+];
+
+//No change here
+$config['allowed_cors_methods'] = [
+  'GET',
+  'POST',
+  'OPTIONS',
+  'PUT',
+  'PATCH',
+  'DELETE'
+];
+
+//Set to TRUE to enable Cross-Origin Resource Sharing (CORS) from any source domain
+$config['allow_any_cors_domain'] = TRUE;
+
+
+//Used if $config['check_cors'] is set to TRUE and $config['allow_any_cors_domain'] is set to FALSE. 
+//Set all the allowable domains within the array
+//e.g. $config['allowed_origins'] =['http://www.example.com','https://spa.example.com']
+
+$config['allowed_cors_origins'] = [];
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -23,7 +81,7 @@ date_default_timezone_set('Asia/Jakarta');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = "https://".$_SERVER['HTTP_HOST'];
+$config['base_url'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +93,7 @@ $config['base_url'] = "https://".$_SERVER['HTTP_HOST'];
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -136,7 +194,8 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = TRUE;
+require_once APPPATH.'../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -432,7 +491,7 @@ $config['standardize_newlines'] = FALSE;
 |          for backwards compatibility purposes!
 |
 */
-$config['global_xss_filtering'] = TRUE;
+$config['global_xss_filtering'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------

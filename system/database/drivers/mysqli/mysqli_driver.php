@@ -135,7 +135,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 		$this->_mysqli = mysqli_init();
 
 		$this->_mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10);
-
+		$this->_mysqli->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, TRUE);
 		if (isset($this->stricton))
 		{
 			if ($this->stricton)
@@ -429,7 +429,7 @@ class CI_DB_mysqli_driver extends CI_DB {
 	 */
 	protected function _list_tables($prefix_limit = FALSE)
 	{
-		$sql = 'SHOW TABLES FROM '.$this->escape_identifiers($this->database);
+		$sql = 'SHOW TABLES FROM '.$this->_escape_char.$this->database.$this->_escape_char;
 
 		if ($prefix_limit !== FALSE && $this->dbprefix !== '')
 		{

@@ -1,28 +1,47 @@
 <?php
 
-defined('BASEPATH') OR exit('No direct script access allowed');
+use GuzzleHttp\Client;
 
 class Sms {
 
-    function SendSms($phone = '', $message = '') {
-        $curl = curl_init();
+    private $username;
+    private $key;
+    private $client;
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "http://sms114.xyz/sms/smsmasking.php?username=simsms&key=9d8d09cc7a767df670ccb5a5d71fe77e&number=" . $phone . "&message=" . urlencode($message),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-        ));
+    public function __construct() {
+        $this->username = 'simsms';
+        $this->key = '9d8d09cc7a767df670ccb5a5d71fe77e';
+        $this->client = new Client([
+            'base_uri' => 'http://sms114.xyz',
+        ]);
+    }
 
-        $response = curl_exec($curl);
+    public function send($number, $message) {
+        $body = [
+            'username' => $this->username,
+            'key' => $this->key,
+            'number' => $number,
+            'message' => $message
+        ];
+//		$resp = $this->httpRequest('POST', '/sms/smsmasking.php', $body);
+        $resp = $this->httpRequest('POST', '/sms/api_sms_otp_send_json.php', $body);
+        return $resp;
+    }
 
-        curl_close($curl);
-        return $response;
+    public function httpRequest($method, $url, $bodyReq = null) {
+        $resp = null;
+
+        try {
+            $response = $this->client->request($method, $url, [
+                'query' => $bodyReq
+            ]);
+
+            $resp = $response->getBody();
+        } catch (\Exception $e) {
+            $resp = $e->getResponse()->getBody(true);
+        }
+
+        return $resp;
     }
 
 }
-

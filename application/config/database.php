@@ -72,38 +72,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   | the query builder class.
  */
 $active_group = 'default';
+
 $query_builder = TRUE;
+date_default_timezone_set('Asia/Jakarta');
 
 $db['default'] = array(
     'dsn' => '',
-    'hostname' => '165.22.248.132',
-    'port' => 3306,
-    'username' => 'rabbani',
-    'password' => 'FREjV9R3Z9hlKj9e',
-    'database' => 'main',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => FALSE,
-    'db_debug' => (ENVIRONMENT !== 'production'),
-    'cache_on' => FALSE,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => TRUE,
-    'compress' => FALSE,
-    'stricton' => FALSE,
-    'failover' => array(),
-    'save_queries' => TRUE
-);
-
-$db['db2'] = array(
-    'dsn' => '',
-    'hostname' => '165.22.248.132',
-    'port' => 3306,
-    'username' => 'rabbani', //username database kedua
-    'password' => 'FREjV9R3Z9hlKj9e', //password database kedua
-    'database' => 'main', //nama database kedua
+    'hostname' => 'db-main-rabbani-id-do-user-9387143-0.b.db.ondigitalocean.com',
+    'username' => 'admindo',
+    'password' => 'AVNS_-FWLN_6ykih7rl2utx0',
+    'port' => 25060,
+    'database' => 'dblive',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
@@ -115,7 +94,7 @@ $db['db2'] = array(
     'swap_pre' => '',
     'encrypt' => FALSE,
     'compress' => FALSE,
-    'stricton' => FALSE,
+    // 'stricton' => FALSE,
     'failover' => array(),
     'save_queries' => TRUE
 );

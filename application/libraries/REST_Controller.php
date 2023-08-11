@@ -683,7 +683,7 @@ abstract class REST_Controller extends CI_Controller {
         }
 
         // Sure it exists, but can they do anything with it?
-        if (!method_exists($this, $controller_method)) {
+        if (!method_exists($this, $controller_method) && php_sapi_name() != "cli") {
             $this->response([
                 $this->config->item('rest_status_field_name') => FALSE,
                 $this->config->item('rest_message_field_name') => $this->lang->line('text_rest_unknown_method')
@@ -735,7 +735,7 @@ abstract class REST_Controller extends CI_Controller {
 
         // Call the controller method and passed arguments
         try {
-            if ($this->is_valid_request) {
+            if ($this->is_valid_request && php_sapi_name() != "cli") {
                 call_user_func_array([$this, $controller_method], $arguments);
             }
         } catch (Exception $ex) {
